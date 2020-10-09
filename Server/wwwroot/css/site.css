@@ -1,7 +1,16 @@
 @import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
 html, body {
-    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+}
+
+#mainBody {
+    background: url(/img/Background.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
 }
 
 a, .btn-link {
@@ -12,7 +21,6 @@ body {
     padding-top: 50px;
     padding-bottom: 20px;
 }
-
 
 .nav-item a {
     color: #d7d7d7;
@@ -53,9 +61,22 @@ body {
     color: red;
 }
 
+
 @media (min-width: 768px) {
 
     .navbar-toggler {
         display: none;
     }
+}
+
+.searchBox{
+    margin-top: 300px;
+}
+
+.searchBoxContent {
+    width: 400px;
+    height: 250px;
+    background: white;
+    border-radius: 20px;
+    text-align: center;
 }
