@@ -2,7 +2,7 @@
 
 .searchBoxContent {
     width: 700px;
-    background: white;
+    background: rgba(255, 255, 255, .8);
     border-radius: 20px;
     padding: 25px;
     font-size: 0.9em;
@@ -20,6 +20,14 @@
 
 .btn:hover{
     background-color: #1B8EE5;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, .0);
+}
+
+.form-control:focus{
+    background-color: rgba(255, 255, 255, .0);
 }
 
 @media (min-width: 768px){
