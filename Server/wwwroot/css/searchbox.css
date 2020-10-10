@@ -30,7 +30,7 @@
     background-color: rgba(255, 255, 255, .0);
 }
 
-@media (min-width: 768px){
+@media (min-width: 768px) and (min-height: 600px){
     .searchBox {
         margin-top: 300px;
     }
