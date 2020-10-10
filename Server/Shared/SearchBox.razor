@@ -2,13 +2,13 @@
     <div class="searchBox d-flex flex-row justify-content-center align-items-center">
         <div class="searchBoxContent">
             <div class="pickup form-row">
-                <div class="form-group col-md-5">
-                    <label for="pickupLocation">PICK UP LOCATION</label>
-                    <input type="text" class="form-control" id="pickupLocation" placeholder="Enter location">
-                </div>
+				<div class="form-group col-md-5">
+					<label for="pickupLocation">PICK UP LOCATION</label>
+					<input type="text" class="form-control" id="pickupLocation" placeholder="Enter location">
+				</div>
                 <div class="form-group col-md-4">
                     <label for="pickupDate">PICK UP DATE</label>
-                    <input type="date" class="form-control" id="pickupDate" placeholder="Enter date" min="@currentDate">
+                    <input type="date" class="form-control" id="pickupDate" placeholder="Enter date" min="@minimumDate">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="pickupTime">PICK UP TIME</label>
@@ -22,7 +22,7 @@
                 </div>
                 <div class="form-group col-md-4">
                     <label for="dropoffDate">DROP OFF DATE</label>
-                    <input type="date" class="form-control" id="dropoffDate" placeholder="Enter date" min="@currentDate">
+                    <input type="date" class="form-control" id="dropoffDate" placeholder="Enter date" min="@minimumDate">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="dropoffTime">DROP OFF TIME</label>
@@ -44,10 +44,8 @@
 </div>
 
 @code {
+	// TODO: Support multiple timezones by using UTC time on the server
 
-    static DateTime currentDateTime = DateTime.Now;
-    static DateTime tomorrow = currentDateTime.AddDays(1);
-    string currentDate = (currentDateTime).ToString("yyyy-MM-dd");
-
-
+    // Store the date string so the same value is reused until the page is refreshed
+	string minimumDate = DateTime.Now.ToShortDateString();
 }
