@@ -1,6 +1,6 @@
 using System;
 
-namespace Server.Data
+namespace QARS.Data
 {
 	public class WeatherForecast
 	{

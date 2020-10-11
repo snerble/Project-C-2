@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Server.Data.Models
+namespace QARS.Data.Models
 {
 	public class User
 	{

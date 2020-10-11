@@ -66,14 +66,14 @@
 @code {
 	private string selection = "create";
 
-	Server.Data.Models.User user;
+	QARS.Data.Models.User user;
 	int id;
 	string name;
 	int age;
 
 	public async Task Create()
 	{
-		Context.Add(new Server.Data.Models.User() { Name = name, Age = age });
+		Context.Add(new QARS.Data.Models.User() { Name = name, Age = age });
 		await Context.SaveChangesAsync();
 	}
 

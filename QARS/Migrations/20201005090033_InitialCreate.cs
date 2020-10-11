@@ -1,6 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Server.Migrations
+namespace QARS.Migrations
 {
 	public partial class InitialCreate : Migration
 	{

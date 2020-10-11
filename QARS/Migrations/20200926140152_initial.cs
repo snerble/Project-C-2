@@ -1,8 +1,10 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Server.Migrations
+namespace QARS.Migrations
 {
+#pragma warning disable IDE1006 // Naming Styles
 	public partial class initial : Migration
+#pragma warning restore IDE1006 // Naming Styles
 	{
 		protected override void Up(MigrationBuilder migrationBuilder)
 		{
