@@ -44,7 +44,7 @@
 			if (user?.Id != id)
 			{
 				user = Context.Users.Find(id);
-				name = user?.Name;
+				name = user?.FullName;
 				age = user?.Age ?? 0;
 			}
 			if (user is null)
@@ -73,7 +73,7 @@
 
 	public async Task Create()
 	{
-		Context.Add(new QARS.Data.Models.User() { Name = name, Age = age });
+		Context.Add(new QARS.Data.Models.User() { FullName = name, Age = age });
 		await Context.SaveChangesAsync();
 	}
 
@@ -91,7 +91,7 @@
 
 	public async Task Edit()
 	{
-		(user.Name, user.Age) = (name, age);
+		(user.FullName, user.Age) = (name, age);
 		Context.Users.Update(user);
 		user = null;
 		await Context.SaveChangesAsync();

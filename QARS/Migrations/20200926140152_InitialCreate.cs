@@ -2,9 +2,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace QARS.Migrations
 {
-#pragma warning disable IDE1006 // Naming Styles
-	public partial class initial : Migration
-#pragma warning restore IDE1006 // Naming Styles
+	public partial class InitialCreate : Migration
 	{
 		protected override void Up(MigrationBuilder migrationBuilder)
 		{
