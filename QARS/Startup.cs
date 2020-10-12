@@ -11,7 +11,10 @@ using QARS.Data;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 
 namespace QARS
@@ -32,7 +35,15 @@ namespace QARS
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
 			services.AddSingleton<WeatherForecastService>();
-			services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+
+			// When in Debug mode and EntityFramework isn't running, use the connection string specified in UseConnection. Otherwise use DefaultConnection
+			services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration.GetConnectionString(
+#if DEBUG
+				Assembly.GetEntryAssembly().GetName().Name != "ef" ?
+					Configuration.GetValue<string>("UseConnection") : 
+#endif
+					"DefaultConnection"
+			)));
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
