@@ -3,44 +3,74 @@
 <div class="container h-100">
 	<div class="searchBox d-flex flex-row justify-content-center align-items-center">
 		<div class="searchBoxContent">
-			<div class="pickup form-row">
-				<div class="form-group col-md-5">
-					<label for="pickupLocation">PICK UP LOCATION</label>
-					<input type="text" class="form-control" id="pickupLocation" placeholder="Enter location">
-				</div>
-				<div class="form-group col-md-4">
-					<label for="pickupDate">PICK UP DATE</label>
-					<input type="date" class="form-control" id="pickupDate" placeholder="Enter date" min="@minimumDate">
-				</div>
-				<div class="form-group col-md-3">
-					<label for="pickupTime">PICK UP TIME</label>
-					<input type="time" class="form-control" id="pickupTime" placeholder="Enter time">
-				</div>
-			</div>
-			<div class="dropoff form-row">
-				<div class="form-group col-md-5">
-					<label for="dropoffLocation">DROP OFF LOCATION</label>
-					<input type="text" class="form-control" id="dropoffLocation" placeholder="Enter location">
-				</div>
-				<div class="form-group col-md-4">
-					<label for="dropoffDate">DROP OFF DATE</label>
-					<input type="date" class="form-control" id="dropoffDate" placeholder="Enter date" min="@minimumDate">
-				</div>
-				<div class="form-group col-md-3">
-					<label for="dropoffTime">DROP OFF TIME</label>
-					<input type="time" class="form-control" id="dropoffTime" placeholder="Enter time">
-				</div>
-			</div>
-			<div class="vehicleTypeSubmit form-row d-flex justify-content-between">
-				<div class="form-group col-md-5">
-					<label for="vehicleType">VEHICLE TYPE</label>
-					<select id="vehicleType" class="form-control">
-						<option selected>Car</option>
-						<option>Van</option>
-					</select>
-				</div>
-				<button type="submit" class="btn btn-primary btn-lg col-md-6 ml-auto">Search Car</button>
-			</div>
+            <form method="get">
+                <div class="pickup form-row">
+                    <div class="form-group col-md-5">
+                        <label for="pickupLocation">PICK UP LOCATION</label>
+                        <select id="pickupLocation" class="form-control">
+                            <option>Rotterdam, Netherlands</option>
+                            <option>Amsterdam, Netherlands</option>
+                        </select>
+
+                        @*Moet worden iets worden van:
+
+                        <select id="pickupLocation" class="form-control selectpicker" @bind="Cars.CarLocation">
+                            <option>Select Location</option>
+                            @foreach(var location in locations)
+                                {
+                                    <option>@location.city+", "+@location.country</option>
+                                }
+                        </select>
+                        *@
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="pickupDate">PICK UP DATE</label>
+                        <input type="date" class="form-control" id="pickupDate" placeholder="Enter date" min="@minimumDate">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="pickupTime">PICK UP TIME</label>
+                        <input type="time" class="form-control" id="pickupTime" placeholder="Enter time">
+                    </div>
+                </div>
+                <div class="dropoff form-row">
+                    <div class="form-group col-md-5">
+                        <label for="dropoffLocation">DROP OFF LOCATION</label>
+                        <select id="dropoffLocation" class="form-control">
+                            <option>Rotterdam, Netherlands</option>
+                            <option>Amsterdam, Netherlands</option>
+                        </select>
+
+                        @*Moet worden iets worden van:
+
+                        <select id="dropoffLocation" class="form-control selectpicker" @bind="Cars.CarLocation">
+                            <option>Select Location</option>
+                            @foreach(var location in locations)
+                                {
+                                    <option>@location.city+", "+@location.country</option>
+                                }
+                        </select>
+                        *@
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="dropoffDate">DROP OFF DATE</label>
+                        <input type="date" class="form-control" id="dropoffDate" placeholder="Enter date" min="@minimumDate">
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="dropoffTime">DROP OFF TIME</label>
+                        <input type="time" class="form-control" id="dropoffTime" placeholder="Enter time">
+                    </div>
+                </div>
+                <div class="vehicleTypeSubmit form-row d-flex justify-content-between">
+                    <div class="form-group col-md-5">
+                        <label for="vehicleType">VEHICLE TYPE</label>
+                        <select id="vehicleType" class="form-control">
+                            <option selected>Car</option>
+                            <option>Van</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-lg col-md-6 ml-auto">Search Car</button>
+                </div>
+            </form>
 		</div>
 	</div>
 </div>
