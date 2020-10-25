@@ -1,20 +1,19 @@
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
-using Microsoft.Extensions.Configuration;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-
 using Bogus;
 
-using QARS;
-using QARS.Data;
+using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
+
 using QARS.Data.Models;
 
 using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
-using Microsoft.EntityFrameworkCore.Storage;
 
 namespace QARS.Tests.Database
 {
@@ -24,36 +23,83 @@ namespace QARS.Tests.Database
 	[TestClass]
 	public partial class Setup : TestBase
 	{
-		/// <summary>
-		/// Saves any changes made to the database.
-		/// </summary>
+		public IDbContextTransaction Transaction { get; private set; }
+
+		[TestInitialize]
+		public async Task TestInitialize()
+		{
+			Transaction = await Context.Database.BeginTransactionAsync();
+		}
+
 		[TestCleanup]
 		public async Task TestCleanup()
 		{
-			await Context.SaveChangesAsync();
+			try
+			{
+				Context.SaveChanges();
+			}
+			finally
+			{
+				// If the transaction is still open, roll it back
+				if (Transaction == Context.Database.CurrentTransaction)
+					await Transaction.RollbackAsync();
+				await Transaction.DisposeAsync();
+
+				// Reload all tracked entities since the transaction may have affected them
+				Context.ChangeTracker.Entries().ToList().ForEach(x => x.Reload());
+			}
 		}
 
-		private async Task Populate(object entity)
+		[TestMethod]
+		public async Task ExportTestDatabase()
 		{
-			EntityEntry tracker = await Context.AddAsync(entity);
+			await new UserDataSourceAttribute(10).AddToContextAsync(Context);
+			await PopulateCarExtras();
 
-			// Confirm that the entity was added
-			Assert.AreEqual(tracker.State, EntityState.Added);
+			await Transaction.CommitAsync();
 		}
 
 		[TestMethod]
 		[Description("Inserts a batch of Users into the database.")]
-		[UserDataSource(10)]
-		public async Task PopulateUsers(User entity) => await Populate(entity);
+		[UserDataSource(10, true)]
+		public async Task PopulateUsers(object[] entities) => await Context.AddRangeAsync(entities);
 
 		[TestMethod]
 		[Description("Inserts a batch of Cars into the database.")]
-		[CarDataSource(20)]
-		public async Task PopulateCars(Car entity) => await Populate(entity);
+		[CarDataSource(20, true)]
+		public async Task PopulateCars(object[] entities) => await Context.AddRangeAsync(entities);
 
 		[TestMethod]
 		[Description("Inserts a batch of Extras into the database.")]
-		[ExtraDataSource(50)]
-		public async Task PopulateExtras(Extra entity) => await Populate(entity);
+		[ExtraDataSource(50, true)]
+		public async Task PopulateExtras(object[] entities) => await Context.AddRangeAsync(entities);
+
+		[TestMethod]
+		[Description("Inserts cars and extrans into the database and then inserts a random combination of CarExtras into the database.")]
+		public async Task PopulateCarExtras()
+		{
+			Task<IEnumerable<object>> addCarsTask = new CarDataSourceAttribute(20).AddToContextAsync(Context);
+			Task<IEnumerable<object>> addExtrasTask = new ExtraDataSourceAttribute(50).AddToContextAsync(Context);
+
+			// Set up the randomizer with a predefined seed
+			var r = new Randomizer(58982990);
+			var carExtras = new List<CarExtra>();
+
+			var cars = (await addCarsTask).Cast<Car>().ToList();
+			var extras = (await addExtrasTask).Cast<Extra>().ToList();
+			
+			// Loop through all cars
+			foreach	(Car car in cars)
+			{
+				// Determine how many extras should be assigned to the car
+				int extrasAmount = r.Number(3);
+
+				// Shuffle the extras list, take the first few elements and pack them into CarExtra objects and add them to the carExtras list
+				carExtras.AddRange(r.Shuffle(extras).Take(extrasAmount).Select(extra => new CarExtra() { Car = car, Extra = extra }));
+			}
+
+			// Insert the carExtras
+			await Context.AddRangeAsync(carExtras); 
+		}
 	}
 }

@@ -3,15 +3,8 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <RootNamespace>QARS</RootNamespace>
     <AssemblyName>QARS</AssemblyName>
+    <UserSecretsId>1560333c-8b50-4f1e-8de7-ec6e41147a44</UserSecretsId>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Remove="Migrations\20201011215214_RelationTesting.cs" />
-    <Compile Remove="Migrations\20201011215214_RelationTesting.Designer.cs" />
-    <Compile Remove="Migrations\20201011221618_RelationTesting.cs" />
-    <Compile Remove="Migrations\20201011221618_RelationTesting.Designer.cs" />
-    <Compile Remove="Migrations\20201011234641_AddCarManufacturer.cs" />
-    <Compile Remove="Migrations\20201011234641_AddCarManufacturer.Designer.cs" />
-  </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -24,5 +17,8 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Data\Services\" />
   </ItemGroup>
 </Project>

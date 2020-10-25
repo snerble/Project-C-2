@@ -1,7 +1,5 @@
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,13 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 using QARS.Data;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Linq;
 using System.Reflection;
-using System.Threading.Tasks;
 
 namespace QARS
 {
@@ -40,7 +32,7 @@ namespace QARS
 			services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration.GetConnectionString(
 #if DEBUG
 				Assembly.GetEntryAssembly().GetName().Name != "ef" ?
-					Configuration.GetValue<string>("UseConnection") : 
+					Configuration.GetValue<string>("UseConnection") :
 #endif
 					"DefaultConnection"
 			)));

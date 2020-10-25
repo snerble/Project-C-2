@@ -6,10 +6,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using QARS.Data;
 
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Text;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace QARS.Tests
@@ -29,6 +26,9 @@ namespace QARS.Tests
 		/// </summary>
 		public static AppDbContext Context { get; private set; }
 
+		/// <inheritdoc cref="Debugger.IsAttached"/>
+		public static bool IsDebugging => Debugger.IsAttached;
+
 		/// <summary>
 		/// Gets or sets the testing context.
 		/// </summary>
@@ -45,8 +45,7 @@ namespace QARS.Tests
 
 			// Create the database connection
 			Context = new AppDbContext(new DbContextOptionsBuilder<AppDbContext>()
-				.UseSqlite(Configuration.GetConnectionString(Configuration.GetValue<string>("UseConnection"))
-					?? Configuration.GetConnectionString("DefaultConnection"))
+				.UseSqlite(Configuration.GetConnectionString("DefaultConnection"))
 				.Options);
 
 			// Always ensure the database exists

@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace QARS.Data.Models
 {
@@ -15,6 +12,6 @@ namespace QARS.Data.Models
 
 		public IList<CarExtra> CarExtras { get; set; }
 
-		public override string ToString() => User.ObjectToString(this);
+		public override string ToString() => Utils.GetDetailedString(this);
 	}
 }
