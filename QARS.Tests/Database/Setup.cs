@@ -83,7 +83,7 @@ namespace QARS.Tests.Database
 
 			// Set up the randomizer with a predefined seed
 			var r = new Randomizer(58982990);
-			var carExtras = new List<CarExtra>();
+			var carExtras = new List<ReservationExtra>();
 
 			var cars = (await addCarsTask).Cast<Car>().ToList();
 			var extras = (await addExtrasTask).Cast<Extra>().ToList();
@@ -95,7 +95,7 @@ namespace QARS.Tests.Database
 				int extrasAmount = r.Number(3);
 
 				// Shuffle the extras list, take the first few elements and pack them into CarExtra objects and add them to the carExtras list
-				carExtras.AddRange(r.Shuffle(extras).Take(extrasAmount).Select(extra => new CarExtra() { Car = car, Extra = extra }));
+				carExtras.AddRange(r.Shuffle(extras).Take(extrasAmount).Select(extra => new ReservationExtra() { Car = car, Extra = extra }));
 			}
 
 			// Insert the carExtras

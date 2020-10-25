@@ -26,7 +26,6 @@ namespace QARS
 		{
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
-			services.AddSingleton<WeatherForecastService>();
 
 			// When in Debug mode and EntityFramework isn't running, use the connection string specified in UseConnection. Otherwise use DefaultConnection
 			services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration.GetConnectionString(

@@ -352,3 +352,5 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 *.db
+/QARS/Database.db-wal
+/QARS/Database.db-shm

@@ -2,6 +2,7 @@ using Microsoft.CodeAnalysis.CSharp;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Reflection;
 
@@ -13,15 +14,16 @@ namespace QARS
 	internal static class Utils
 	{
 		/// <summary>
-		/// Returns a string representation of a given object which displays it's public properties.
+		/// Returns a string representation of a given object which includes it's public properties.
 		/// </summary>
 		public static string GetDetailedString(object o)
 		{
+			// List to store the values that will later be combined
 			var values = new List<object>();
 
 			// Loop through all public instance properties
 			foreach (PropertyInfo prop in from prop in o.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance)
-										  where prop.CanRead
+										  where prop.CanRead && prop.GetCustomAttribute<NotMappedAttribute>() == null
 										  select prop)
 			{
 				object value = prop.GetValue(o);
@@ -34,9 +36,10 @@ namespace QARS
 				if (value == DBNull.Value || value is null)
 					value = "null";
 
-				values.Add(value ?? "null");
+				values.Add(value);
 			}
 
+			// Return a string that begins with the type name, followed the values from it's public properties
 			return $"{o.GetType().Name}({string.Join(", ", values)})";
 		}
 	}
