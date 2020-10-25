@@ -1,0 +1,44 @@
+﻿@page "/signup"
+@inject NavigationManager NavigationManager
+@using System.IO
+
+
+<style>
+    button {
+        font-size: 40px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 20px;
+    }
+
+    #container {
+        text-align: center;
+    }
+
+    #input {
+        display: block;
+        margin: auto
+    }
+</style>
+
+<button class="align-content-between" @onclick="Signupp"> signup</button>
+<br />
+<input placeholder="Email" @bind="Email" />
+<br />
+<input placeholder="username" @bind="userfirst" />
+<br />
+<input placeholder="password" @bind="firstpassword" />
+<br />
+
+@code{
+    string Email;
+    string userfirst;
+    string firstpassword;
+    private void Signupp()
+    {
+        if (Email != null && userfirst != null && firstpassword != null)
+        {
+            NavigationManager.NavigateTo("login");
+        }
+    }
+}
