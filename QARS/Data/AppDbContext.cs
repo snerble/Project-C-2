@@ -78,7 +78,7 @@ namespace QARS.Data
 				// Make some properties readonly after insertion
 				entity.Property($"{nameof(Store.Franchisee)}Id")
 					.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
-				entity.Property($"{nameof(Store.Location)}Id") // The Location object should change instead of the FK
+				entity.Property(s => s.LocationId) // The Location object should change instead of the FK
 					.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
 			});
 			#endregion
@@ -96,7 +96,7 @@ namespace QARS.Data
 					.IsUnique();
 
 				// Make some properties readonly after insertion
-				entity.Property($"{nameof(User.Location)}Id") // The Location object should change instead of the FK
+				entity.Property(u => u.LocationId) // The Location object should change instead of the FK
 					.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
 			});
 			#endregion
