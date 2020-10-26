@@ -1,0 +1,33 @@
+tr:hover {
+    background-color: lightgray;
+}
+
+.customtablerow{
+    margin-top: 25px;
+    margin-bottom: 40px;
+}
+
+table {
+    display: block;
+    overflow-x: auto;
+    table-layout: fixed;
+    white-space: nowrap;
+}
+
+.add, .edit{
+    border-radius: 10px;
+    padding: 20px;
+}
+
+.heading{
+    background: white;
+    border-radius: 10px;
+    padding: 10px;
+    margin-bottom: 50px;
+    text-align: center;
+}
+table th, td {
+    table-layout: fixed;
+    width: 250px;
+}
+
