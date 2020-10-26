@@ -8,7 +8,7 @@ namespace QARS.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "CarModel",
+                name: "CarModels",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -31,7 +31,7 @@ namespace QARS.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CarModel", x => x.Id);
+                    table.PrimaryKey("PK_CarModels", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -140,9 +140,9 @@ namespace QARS.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Cars_CarModel_ModelId",
+                        name: "FK_Cars_CarModels_ModelId",
                         column: x => x.ModelId,
-                        principalTable: "CarModel",
+                        principalTable: "CarModels",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -212,6 +212,11 @@ namespace QARS.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.InsertData(
+                table: "CarModels",
+                columns: new[] { "Id", "Brand", "Category", "DayRate", "Description", "Doors", "Efficiency", "Emission", "FreeMileage", "FuelType", "HasAirconditioning", "KMRate", "Passengers", "SuitCases", "Transmission", "Type" },
+                values: new object[] { 1, "tesla", 4, 12.00m, "it's a car", 5, 10f, 5, 100m, 12, true, 0.19m, 5, 3, 2, "person car" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_LocationId",
@@ -290,7 +295,7 @@ namespace QARS.Migrations
                 name: "Stores");
 
             migrationBuilder.DropTable(
-                name: "CarModel");
+                name: "CarModels");
 
             migrationBuilder.DropTable(
                 name: "User");

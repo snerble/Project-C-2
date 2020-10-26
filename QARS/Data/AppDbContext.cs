@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 using QARS.Data.Models;
 
+using System.Collections.Generic;
+
 namespace QARS.Data
 {
 	public class AppDbContext : DbContext
@@ -25,9 +27,8 @@ namespace QARS.Data
 			// Car needs no additional configuration
 			#endregion
 
-			#region CarModel Configuration
-			// CarModel needs no additional configuration
-			#endregion
+			modelBuilder.Entity<CarModel>().HasData(GetCarModels());
+			base.OnModelCreating(modelBuilder);
 
 			#region Extra Configuration
 			// Extra needs no additional configuration
@@ -113,7 +114,38 @@ namespace QARS.Data
 
 		public DbSet<Car> Cars { get; set; }
 
+		public DbSet<CarModel> CarModels { get; set; }
+
 		public DbSet<Extra> Extras { get; set; }
 		public DbSet<Reservation> Reservations { get; set; }
+
+		private List<CarModel> GetCarModels()
+		{
+			return new List<CarModel>
+			{
+				new CarModel
+				{
+					Id = 1,
+					Brand = "tesla",
+					DayRate = 12.00m,
+					Category = CarCategory.Midsize,
+					Description = "it's a car",
+					Doors = 5,
+					Efficiency = 10.0f,
+					Emission = 5,
+					FreeMileage = 100m,
+					FuelType = FuelType.Electric,
+					HasAirconditioning = true,
+					KMRate = 0.19m,
+					Passengers = 5,
+					SuitCases = 3,
+					Transmission = TransmissionType.Automatic,
+					Type = "person car",
+
+				},
+			};
+		}
+
+
 	}
 }

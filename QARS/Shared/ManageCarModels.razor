@@ -1,0 +1,94 @@
+﻿@page "/managecarmodels"
+@inject CarModelServices service
+<div class="container">
+    <div class="row bg-light">
+        <table class="table table-bordered">
+            <thead class="thead-dark">
+                <tr>
+                    <th>CarModel Id</th>
+                    <th>Brand</th>
+                    <th>Day Rate</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Doors</th>
+                    <th>Efficiency</th>
+                    <th>Emission</th>
+                    <th>Free Mileage</th>
+                    <th>Fuel Type</th>
+                    <th>Has Airconditioning</th>
+                    <th>KM Rate</th>
+                    <th>Passengers</th>
+                    <th>Suitcases</th>
+                    <th>Transmission</th>
+                    <th>Type</th>
+                    <th>Delete Car Model</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (CarModels.Any())
+                {
+                    @foreach (var carmodel in CarModels)
+                    {
+                        <tr @onclick="(() => SetCarModelForUpdate(carmodel))">
+                            <td>@carmodel.Id</td>
+                            <td>@carmodel.Brand</td>
+                            <td>@carmodel.DayRate</td>
+                            <td>@carmodel.Category</td>
+                            <td>@carmodel.Description</td>
+                            <td>@carmodel.Doors</td>
+                            <td>@carmodel.Efficiency</td>
+                            <td>@carmodel.Emission</td>
+                            <td>@carmodel.FreeMileage</td>
+                            <td>@carmodel.FuelType</td>
+                            <td>@carmodel.HasAirconditioning</td>
+                            <td>@carmodel.KMRate</td>
+                            <td>@carmodel.Passengers</td>
+                            <td>@carmodel.SuitCases</td>
+                            <td>@carmodel.Transmission</td>
+                            <td>@carmodel.Type</td>
+                            <td><button class="btn btn-danger" @onclick="(() => DeleteCarModel(carmodel))">Delete</button></td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr><td colspan="6"><strong>No products available</strong></td></tr>
+                }
+            </tbody>
+            </table>
+        </div>
+    </div>
+
+@code {
+    List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCarModels();
+    }
+    private async Task RefreshCarModels()
+    {
+        CarModels = await service.GetCarModelAsync();
+    }
+    public QARS.Data.Models.CarModel NewCarModel { get; set; } = new Data.Models.CarModel();
+    private async Task AddNewCarModel()
+    {
+        await service.AddCarModelAsync(NewCarModel);
+        NewCarModel = new Data.Models.CarModel();
+        await RefreshCarModels();
+    }
+    QARS.Data.Models.CarModel UpdateCarModel = new Data.Models.CarModel();
+    private void SetCarModelForUpdate(QARS.Data.Models.CarModel carmodel)
+    {
+        UpdateCarModel = carmodel;
+    }
+    private async Task UpdateCarModelData()
+    {
+        await service.UpdateCarModelAsync(UpdateCarModel);
+        await RefreshCarModels();
+    }
+    private async Task DeleteCarModel(QARS.Data.Models.CarModel carmodel)
+    {
+        await service.DeleteCarModelAsync(carmodel);
+        await RefreshCarModels();
+    }
+}

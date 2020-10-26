@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using QARS.Data;
+using QARS.Data.Services;
 
 using System.Reflection;
 
@@ -35,6 +36,8 @@ namespace QARS
 #endif
 					"DefaultConnection"
 			)));
+
+			services.AddScoped<CarModelServices>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
