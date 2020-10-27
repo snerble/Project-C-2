@@ -105,6 +105,7 @@ namespace QARS.Data
 
 		public DbSet<Location> Locations { get; set; }
 
+		public DbSet<User> Users { get; set; }
 		public DbSet<Administrator> Admins { get; set; }
 		public DbSet<Franchisee> Franchisees { get; set; }
 		public DbSet<Employee> Employees { get; set; }
