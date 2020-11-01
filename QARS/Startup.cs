@@ -10,6 +10,8 @@ using QARS.Data.Services;
 
 using System.Reflection;
 
+using Blazored.Modal;
+
 namespace QARS
 {
 	public class Startup
@@ -27,6 +29,7 @@ namespace QARS
 		{
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
+			services.AddBlazoredModal();
 
 			// When in Debug mode and EntityFramework isn't running, use the connection string specified in UseConnection. Otherwise use DefaultConnection
 			services.AddDbContext<AppDbContext>(options => options.UseSqlite(Configuration.GetConnectionString(

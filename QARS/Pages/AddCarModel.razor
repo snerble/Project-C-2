@@ -1,0 +1,103 @@
+﻿@inject CarModelServices service
+
+<link href="/css/carmodelmodal.css" rel="stylesheet"/>
+
+<EditForm Model="@NewCarModel">
+    <div class="form-group">
+        <label for="brand">Brand</label>
+        <input type="text" id="brand" class="form-control" @bind="@NewCarModel.Brand" />
+    </div>
+    <div class="form-group">
+        <label for="dayrate">DayRate</label>
+        <input type="text" id="dayrate" class="form-control" @bind="@NewCarModel.DayRate" />
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <select class="form-control" @bind="@NewCarModel.Category">
+            @foreach (QARS.Data.Models.CarCategory category in Enum.GetValues(typeof(QARS.Data.Models.CarCategory)))
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" id="description" class="form-control" @bind="@NewCarModel.Description" />
+    </div>
+    <div class="form-group">
+        <label for="doors">Doors</label>
+        <input type="text" id="doors" class="form-control" @bind="@NewCarModel.Doors" />
+    </div>
+    <div class="form-group">
+        <label for="efficiency">Efficiency</label>
+        <input type="text" id="efficiency" class="form-control" @bind="@NewCarModel.Efficiency" />
+    </div>
+    <div class="form-group">
+        <label for="emission">Emission</label>
+        <input type="text" id="emission" class="form-control" @bind="@NewCarModel.Emission" />
+    </div>
+    <div class="form-group">
+        <label for="freeMileage">FreeMileage</label>
+        <input type="text" id="freeMileage" class="form-control" @bind="@NewCarModel.FreeMileage" />
+    </div>
+    <div class="form-group">
+        <label for="fuelType">FuelType</label>
+        <select class="form-control" @bind="NewCarModel.FuelType">
+            @foreach (QARS.Data.Models.FuelType fueltype in Enum.GetValues(typeof(QARS.Data.Models.FuelType)))
+            {
+                <option value="@fueltype">@fueltype</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" name="hasairconditioning" value="True" @bind="@NewCarModel.HasAirconditioning" />
+        <label for="hasairconditioning">HasAirconditioning</label>
+    </div>
+    <div class="form-group">
+        <label for="kmrate">KMRate</label>
+        <input type="text" id="kmrate" class="form-control" @bind="@NewCarModel.KMRate" />
+    </div>
+    <div class="form-group">
+        <label for="passenger">Passengers</label>
+        <input type="text" id="passenger" class="form-control" @bind="@NewCarModel.Passengers" />
+    </div>
+    <div class="form-group">
+        <label for="suitCases">SuitCases</label>
+        <input type="text" id="suitCases" class="form-control" @bind="@NewCarModel.SuitCases" />
+    </div>
+    <div class="form-group">
+        <label for="transmission">Transmission</label>
+        <select class="form-control" @bind="NewCarModel.Transmission">
+            @foreach (QARS.Data.Models.TransmissionType transmission in Enum.GetValues(typeof(QARS.Data.Models.TransmissionType)))
+            {
+                <option value="@transmission">@transmission</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="type">Type</label>
+        <input type="text" id="type" class="form-control" @bind="@NewCarModel.Type" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-success" @onclick="AddNewCarModel"> Add CarModel</button>
+    </div>
+</EditForm>
+
+@code {
+    List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCarModels();
+    }
+    private async Task RefreshCarModels()
+    {
+        CarModels = await service.GetCarModelAsync();
+    }
+    public QARS.Data.Models.CarModel NewCarModel { get; set; } = new Data.Models.CarModel();
+    private async Task AddNewCarModel()
+    {
+        await service.AddCarModelAsync(NewCarModel);
+        NewCarModel = new Data.Models.CarModel();
+        await RefreshCarModels();
+    }
+}

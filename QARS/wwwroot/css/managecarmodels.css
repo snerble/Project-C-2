@@ -1,3 +1,7 @@
+#mainBody{
+    background: white;
+}
+
 tr:hover {
     background-color: lightgray;
 }

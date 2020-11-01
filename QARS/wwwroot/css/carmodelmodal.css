@@ -1,0 +1,9 @@
+.blazored-modal-content{
+    height: 500px;
+    overflow-y: auto;
+}
+
+.blazored-modal{
+    width: 40%;
+}
+

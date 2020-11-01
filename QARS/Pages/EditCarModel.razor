@@ -1,0 +1,109 @@
+﻿@inject CarModelServices service
+
+<link href="/css/carmodelmodal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateCarModel">
+    <div class="form-group">
+        <label for="brand">Brand</label>
+        <input type="text" id="brand" class="form-control" @bind="@UpdateCarModel.Brand" />
+    </div>
+    <div class="form-group">
+        <label for="dayrate">DayRate</label>
+        <input type="text" id="dayrate" class="form-control" @bind="@UpdateCarModel.DayRate" />
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label>
+        <select class="form-control" @bind="@UpdateCarModel.Category">
+            @foreach (QARS.Data.Models.CarCategory category in Enum.GetValues(typeof(QARS.Data.Models.CarCategory)))
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <input type="text" id="description" class="form-control" @bind="@UpdateCarModel.Description" />
+    </div>
+    <div class="form-group">
+        <label for="doors">Doors</label>
+        <input type="text" id="doors" class="form-control" @bind="@UpdateCarModel.Doors" />
+    </div>
+    <div class="form-group">
+        <label for="efficiency">Efficiency</label>
+        <input type="text" id="efficiency" class="form-control" @bind="@UpdateCarModel.Efficiency" />
+    </div>
+    <div class="form-group">
+        <label for="emission">Emission</label>
+        <input type="text" id="emission" class="form-control" @bind="@UpdateCarModel.Emission" />
+    </div>
+    <div class="form-group">
+        <label for="freeMileage">FreeMileage</label>
+        <input type="text" id="freeMileage" class="form-control" @bind="@UpdateCarModel.FreeMileage" />
+    </div>
+    <div class="form-group">
+        <label for="fuelType">FuelType</label>
+        <select class="form-control" @bind="UpdateCarModel.FuelType">
+            @foreach (QARS.Data.Models.FuelType fueltype in Enum.GetValues(typeof(QARS.Data.Models.FuelType)))
+            {
+                <option value="@fueltype">@fueltype</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" name="hasairconditioning" value="True" @bind="@UpdateCarModel.HasAirconditioning" />
+        <label for="hasairconditioning">HasAirconditioning</label>
+    </div>
+    <div class="form-group">
+        <label for="kmrate">KMRate</label>
+        <input type="text" id="kmrate" class="form-control" @bind="@UpdateCarModel.KMRate" />
+    </div>
+    <div class="form-group">
+        <label for="passenger">Passengers</label>
+        <input type="text" id="passenger" class="form-control" @bind="@UpdateCarModel.Passengers" />
+    </div>
+    <div class="form-group">
+        <label for="suitCases">SuitCases</label>
+        <input type="text" id="suitCases" class="form-control" @bind="@UpdateCarModel.SuitCases" />
+    </div>
+    <div class="form-group">
+        <label for="transmission">Transmission</label>
+        <select class="form-control" @bind="UpdateCarModel.Transmission">
+            @foreach (QARS.Data.Models.TransmissionType transmission in Enum.GetValues(typeof(QARS.Data.Models.TransmissionType)))
+            {
+                <option value="@transmission">@transmission</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="type">Type</label>
+        <input type="text" id="type" class="form-control" @bind="@UpdateCarModel.Type" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" @onclick="UpdateCarModelData"> Update CarModel</button>
+    </div>
+</EditForm>
+
+@code {
+    List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public QARS.Data.Models.CarModel CarModel { get; set; }
+
+    QARS.Data.Models.CarModel carModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        carModel = CarModel;
+    }
+
+    QARS.Data.Models.CarModel UpdateCarModel = new Data.Models.CarModel();
+    private void SetCarModelForUpdate(QARS.Data.Models.CarModel carModel)
+    {
+        UpdateCarModel = carModel;
+    }
+    private async Task UpdateCarModelData()
+    {
+        await service.UpdateCarModelAsync(UpdateCarModel);
+    }
+}
