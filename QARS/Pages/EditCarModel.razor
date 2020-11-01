@@ -79,7 +79,7 @@
         <input type="text" id="type" class="form-control" @bind="@UpdateCarModel.Type" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-warning" @onclick="UpdateCarModelData"> Update CarModel</button>
+        <button class="btn btn-warning" @onclick="UpdateCarModelData">Update</button>
     </div>
 </EditForm>
 
@@ -95,6 +95,7 @@
     protected override void OnInitialized()
     {
         carModel = CarModel;
+        SetCarModelForUpdate(carModel);
     }
 
     QARS.Data.Models.CarModel UpdateCarModel = new Data.Models.CarModel();
@@ -105,5 +106,6 @@
     private async Task UpdateCarModelData()
     {
         await service.UpdateCarModelAsync(UpdateCarModel);
+        await BlazoredModal.Close(ModalResult.Ok<QARS.Data.Models.CarModel>(carModel));
     }
 }

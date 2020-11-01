@@ -6,7 +6,7 @@
 <div class="back container">
     <div class="heading">
         <h1 class="display-3">Car Models Manager</h1>
-        <p class="lead">All existing car models are displayed below. Create new car models using the form on the left. Edit car models by clicking them and editing them using the right form. On the far right side of the table you can delete car models from the database.</p>
+        <p class="lead">All existing car models are displayed below. Create new car models using the 'Add Car Model' button. Edit and delete car models by using the action buttons displayed in the table.</p>
         <button @onclick="@(() => ShowAddCarModel())" class="btn btn-success">Add Car Model</button>
     </div>
 
@@ -18,7 +18,6 @@
                     <th scope="col">Brand</th>
                     <th scope="col">Type</th>
                     <th scope="col">Category</th>
-                    <th scope="col">Fuel Type</th>
                     <th scope="col">Day Rate</th>
                     <th scope="col">Actions</th>
                 </tr>
@@ -33,16 +32,8 @@
                     <td>@carmodel.Brand</td>
                     <td>@carmodel.Type</td>
                     <td>@carmodel.Category</td>
-                    @if (carmodel.FuelType == Data.Models.FuelType.Electric)
-                    {
-                        <td>@carmodel.Efficiency kWh/100 km</td>
-                    }
-                    else
-                    {
-                        <td>@carmodel.Efficiency L/km</td>
-                    }
                     <td>€@carmodel.DayRate.ToString("0.00")</td>
-                    <td><button class="btn btn-danger" @onclick="(() => DeleteCarModel(carmodel))">Delete</button><button @onclick="@(() => ShowEditCarModel(carmodel))" class="btn btn-warning">Edit</button></td>
+                    <td><button class="btn btn-danger" @onclick="(() => DeleteCarModel(carmodel))">Delete</button>  <button @onclick="@(() => ShowEditCarModel(carmodel))" class="btn btn-warning">Show & Edit</button></td>
                 </tr>
                     }
                 }
@@ -72,12 +63,13 @@
         await RefreshCarModels();
     }
     [CascadingParameter] public IModalService Modal { get; set; }
-    void ShowEditCarModel(QARS.Data.Models.CarModel carmodel)
+    protected async Task ShowEditCarModel(QARS.Data.Models.CarModel carmodel)
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(QARS.Pages.EditCarModel.CarModel), carmodel);
 
         Modal.Show<QARS.Pages.EditCarModel>("Edit Car Model", parameters);
+        await RefreshCarModels();
     }
 
     void ShowAddCarModel()
