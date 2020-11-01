@@ -7,8 +7,9 @@ tr:hover {
 }
 
 .customtablerow{
-    margin-top: 25px;
-    margin-bottom: 40px;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    align-items: center;
 }
 
 table {
@@ -27,7 +28,7 @@ table {
     background: white;
     border-radius: 10px;
     padding: 10px;
-    margin-bottom: 50px;
+    margin-bottom: 10px;
     text-align: center;
 }
 table th, td {

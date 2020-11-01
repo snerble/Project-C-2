@@ -85,19 +85,13 @@
 
 @code {
     List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshCarModels();
-    }
-    private async Task RefreshCarModels()
-    {
-        CarModels = await service.GetCarModelAsync();
-    }
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
     public QARS.Data.Models.CarModel NewCarModel { get; set; } = new Data.Models.CarModel();
     private async Task AddNewCarModel()
     {
         await service.AddCarModelAsync(NewCarModel);
         NewCarModel = new Data.Models.CarModel();
-        await RefreshCarModels();
+        await BlazoredModal.Close(ModalResult.Ok(true));
     }
 }
