@@ -6,8 +6,12 @@
     <UserSecretsId>1560333c-8b50-4f1e-8de7-ec6e41147a44</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Data\Services\Class.cs" />
     <Compile Remove="Migrations\20201025213735_InitialCreate.cs" />
     <Compile Remove="Migrations\20201025213735_InitialCreate.Designer.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="Data\Services\AddlocationService.razor" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />
