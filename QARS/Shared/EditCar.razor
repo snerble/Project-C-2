@@ -42,6 +42,9 @@
         <label for="mileage">Mileage</label>
         <input type="text" id="mileage" class="form-control" @bind="@UpdateCar.Mileage" />
     </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" @onclick="UpdateCarData">Update</button>
+    </div>
 </EditForm>
 
 @code {
