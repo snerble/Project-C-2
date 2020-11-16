@@ -23,9 +23,8 @@ namespace QARS.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			#region Car
-			// Car needs no additional configuration
-			#endregion
+			modelBuilder.Entity<Car>().HasData(GetCars());
+			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<CarModel>().HasData(GetCarModels());
 			base.OnModelCreating(modelBuilder);
@@ -143,6 +142,14 @@ namespace QARS.Data
 					Type = "person car",
 
 				},
+			};
+		}
+
+		private List<Car> GetCars()
+		{
+			return new List<Car>
+			{
+				
 			};
 		}
 

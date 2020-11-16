@@ -30,7 +30,7 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the current store location of this <see cref="Car"/>.
 		/// </summary>
-		public Store Location { get; set; }
+		public Location Location { get; set; }
 
 		/// <summary>
 		/// Gets or sets whether this <see cref="Car"/> is available for reservations.

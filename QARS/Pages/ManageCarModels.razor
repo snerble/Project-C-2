@@ -75,16 +75,16 @@
     async Task ShowEditCarModel(QARS.Data.Models.CarModel carmodel)
     {
         var parameters = new ModalParameters();
-        parameters.Add(nameof(QARS.Pages.EditCarModel.CarModel), carmodel);
+        parameters.Add(nameof(EditCarModel.CarModel), carmodel);
 
-        var editModal = Modal.Show<QARS.Pages.EditCarModel>("Edit Car Model", parameters);
+        var editModal = Modal.Show<EditCarModel>("Edit Car Model", parameters);
         var result = await editModal.Result;
         StateHasChanged();
     }
 
     async Task ShowAddCarModel()
     {
-        var addModal = Modal.Show<QARS.Pages.AddCarModel>("Add Car Model");
+        var addModal = Modal.Show<AddCarModel>("Add Car Model");
         var result = await addModal.Result;
     }
 }

@@ -1,0 +1,90 @@
+﻿@page "/managecars"
+@inject CarServices service
+
+<link rel="searchbox stylesheet" href="/css/managecars.css">
+
+
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-3">
+        <UserDashboard />
+    </div>
+
+    <div class="col-9">
+        <div class="back container">
+            <div class="heading">
+                <h1 class="display-3" style="text-align: left;">Cars Manager</h1>
+                <p class="lead" style="text-align: left;">All existing cars are displayed below. Create new cars using the 'Add Car' button. Edit and delete cars by using the action buttons displayed in the table.</p>
+            </div>
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Car Model ID</th>
+                            <th scope="col">LicensePlate</th>
+                            <th scope="col">Location ID</th>
+                            <th scope="col">Available</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Cars.Any())
+                        {
+                            @foreach (var car in Cars)
+                            {
+                                <tr>
+                                    <td scope="col">@car.Id</td>
+                                    <td>@car.Model.Id</td>
+                                    <td>@car.LicensePlate</td>
+                                    <td>@car.Location.Id</td>
+                                    <td>@car.Available</td>
+                                    <td><button class="btn btn-danger" @onclick="(() => DeleteCar(car))">Delete</button>  <button @onclick="@(() => ShowEditCar(car))" class="btn btn-warning">Show & Edit</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No cars available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button @onclick="@(() => ShowAddCar())" class="btn btn-success">Add Car</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<QARS.Data.Models.Car> Cars = new List<QARS.Data.Models.Car>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCars();
+    }
+    private async Task RefreshCars()
+    {
+        Cars = await service.GetCarAsync();
+    }
+
+    private async Task DeleteCar(QARS.Data.Models.Car car)
+    {
+        await service.DeleteCarAsync(car);
+        await RefreshCars();
+    }
+    [CascadingParameter] public IModalService Modal { get; set; }
+    async Task ShowEditCar(QARS.Data.Models.Car car)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditCar.Car), car);
+
+        var editModal = Modal.Show<EditCar>("Edit Car", parameters);
+        var result = await editModal.Result;
+        StateHasChanged();
+    }
+
+    async Task ShowAddCar()
+    {
+        var addModal = Modal.Show<AddCar>("Add Car");
+        var result = await addModal.Result;
+    }
+}

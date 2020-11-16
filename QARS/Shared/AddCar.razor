@@ -1,0 +1,72 @@
+﻿@inject CarServices service
+@inject AppDbContext dbContext
+
+@using QARS.Data.Models;
+
+<link href="/css/carmodal.css" rel="stylesheet"/>
+
+<EditForm Model="@NewCar">
+    <div class="form-group">
+        <label for="carmodelid">Car Model Id</label>
+        <select class="form-control" @bind="@NewCar.Model.Id">
+            @foreach (var carmodel in dbContext.CarModels)
+            {
+                <option value="@carmodel.Id">@carmodel.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="licenseplate">DayRate</label>
+        <input type="text" id="licenseplate" class="form-control" @bind="@NewCar.LicensePlate" />
+    </div>
+    <div class="form-group">
+        <label for="storeid">Store Id</label>
+        <select class="form-control" @bind="@NewCar.Store.Id">
+            @foreach (var store in dbContext.Stores)
+            {
+                <option value="@store.Id">@store.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="locationid">Location Id</label>
+        <select class="form-control" @bind="@NewCar.Location.Id">
+            @foreach (var location in dbContext.Locations)
+            {
+                <option value="@location.Id">@location.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" name="available" value="True" @bind="@NewCar.Available" />
+        <label for="available">Available</label>
+    </div>
+    <div class="form-group">
+        <label for="mileage">Mileage</label>
+        <input type="text" id="mileage" class="form-control" @bind="@NewCar.Mileage" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-success" @onclick="AddNewCar">Add Car</button>
+    </div>
+</EditForm>
+
+@code {
+    List<Car> Cars = new List<Car>();
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    public Car NewCar { get; set; } = new Car() 
+    {
+        Model = new CarModel(),
+        Store = new Store(),
+        Location = new Location()
+    };
+    
+
+    private async Task AddNewCar()
+    {
+        await service.AddCarAsync(NewCar);
+        NewCar = new Data.Models.Car();
+        await BlazoredModal.Close(ModalResult.Ok(true));
+    }
+
+}

@@ -37,7 +37,7 @@ namespace QARS.Data.Models
 		/// Gets or sets the initial <see cref="Store"/> location if the <see cref="Car"/>
 		/// when this reservation was made.
 		/// </summary>
-		public Store CarLocation { get; set; }
+		public Location CarLocation { get; set; }
 
 		/// <summary>
 		/// Gets the mileage of the <see cref="Car"/> when this <see cref="Reservation"/>

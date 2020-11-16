@@ -41,6 +41,7 @@ namespace QARS
 			)));
 
 			services.AddScoped<CarModelServices>();
+			services.AddScoped<CarServices>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

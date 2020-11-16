@@ -1,0 +1,75 @@
+﻿@inject CarServices service
+
+<link href="/css/carmodal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateCar">
+    <div class="form-group">
+        <label for="carmodelid">Car Model Id</label>
+        <select class="form-control" @bind="@UpdateCar.Model">
+            @foreach (var carmodel in CarModels)
+            {
+                <option value="@carmodel">@carmodel.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="licenseplate">DayRate</label>
+        <input type="text" id="licenseplate" class="form-control" @bind="@UpdateCar.LicensePlate" />
+    </div>
+    <div class="form-group">
+        <label for="storeid">Store Id</label>
+        <select class="form-control" @bind="@UpdateCar.Store">
+            @foreach (var store in Stores)
+            {
+                <option value="@store">@store.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="locationid">Location Id</label>
+        <select class="form-control" @bind="@UpdateCar.Location">
+            @foreach (var location in Locations)
+            {
+                <option value="@location">@location.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" name="available" value="True" @bind="@UpdateCar.Available" />
+        <label for="available">Available</label>
+    </div>
+    <div class="form-group">
+        <label for="mileage">Mileage</label>
+        <input type="text" id="mileage" class="form-control" @bind="@UpdateCar.Mileage" />
+    </div>
+</EditForm>
+
+@code {
+    List<QARS.Data.Models.Car> Cars = new List<QARS.Data.Models.Car>();
+    List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
+    List<QARS.Data.Models.Location> Locations = new List<QARS.Data.Models.Location>();
+    List<QARS.Data.Models.Store> Stores = new List<QARS.Data.Models.Store>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public QARS.Data.Models.Car Car { get; set; }
+
+    QARS.Data.Models.Car car { get; set; }
+
+    protected override void OnInitialized()
+    {
+        car = Car;
+        SetCarForUpdate(car);
+    }
+
+    QARS.Data.Models.Car UpdateCar = new Data.Models.Car();
+    private void SetCarForUpdate(QARS.Data.Models.Car car)
+    {
+        UpdateCar = car;
+    }
+    private async Task UpdateCarData()
+    {
+        await service.UpdateCarAsync(UpdateCar);
+        await BlazoredModal.Close(ModalResult.Ok<QARS.Data.Models.Car>(car));
+    }
+}
