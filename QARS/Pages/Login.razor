@@ -9,22 +9,22 @@
 <style>
     button {
         font-size: 40px;
-        padding: 10px;
-        border-radius: 10px;
+        padding: 5px;
+        border-radius: 1px;
         margin: 10px;
         float: left;
-        margin-left: auto;
+        margin-left: 2;
     }
 
     #container {
         text-align: center;
         align-items: center;
-        margin-left: auto;
+        margin-left: 2;
     }
 
     #input {
         display: block;
-        margin: auto
+        margin: auto;
     }
     #mainBody {
         background: url(/img/a5596ffd4897b35688d3b3b882d7919d.jpg);
@@ -36,9 +36,9 @@
 <br />
 <input placeholder="Password" @bind="password" />
 <br />
-<button class="btn btn-primary" @onclick="Signup"> signup </button> 
+<button class="btn btn-primary col-md-1 ml-2" @onclick="Signup"> signup </button> 
 <br />
-<button class="btn btn-primary" @onclick="Loginvalidation"> validate</button>
+<button class="btn btn-primary col-md-1 ml-2" @onclick="Loginvalidation"> validate</button>
 <br />
 
 
