@@ -67,21 +67,8 @@ namespace QARS.Data
 			});
 			#endregion
 
-			#region Store Configuration
-			modelBuilder.Entity<Store>(entity =>
-			{
-				// Set up the one-way Store.Location foreign key and prevent the Location from being deleted
-				entity.HasOne(s => s.Location)
-					.WithOne()
-					.OnDelete(DeleteBehavior.Restrict);
-
-				// Make some properties readonly after insertion
-				entity.Property($"{nameof(Store.Franchisee)}Id")
-					.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
-				entity.Property(s => s.LocationId) // The Location object should change instead of the FK
-					.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
-			});
-			#endregion
+			modelBuilder.Entity<Store>().HasData(GetStores());
+			base.OnModelCreating(modelBuilder);
 
 			#region User Configuration
 			modelBuilder.Entity<User>(entity =>
@@ -153,6 +140,13 @@ namespace QARS.Data
 			};
 		}
 
+		private List<Store> GetStores()
+		{
+			return new List<Store>
+			{
+
+			};
+		}
 
 	}
 }

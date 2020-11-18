@@ -1,0 +1,55 @@
+﻿@inject StoreServices service
+@inject AppDbContext dbContext
+
+@using QARS.Data.Models;
+
+<link href="/css/storemodal.css" rel="stylesheet"/>
+
+<EditForm Model="@NewStore">
+    <div class="form-group">
+        <label for="franchiseeid">Franchisee Id</label>
+        <select class="form-control" @bind="@NewStore.Franchisee.Id">
+            @foreach (var franchisee in dbContext.Franchisees)
+            {
+                <option value="@franchisee.Id">@franchisee.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="locationid">Location Id</label>
+        <select class="form-control" @bind="@NewStore.Location.Id">
+            @foreach (var location in dbContext.Locations)
+            {
+                <option value="@location.Id">@location.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" rows="3" @bind="@NewStore.Description"></textarea>
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-success" @onclick="AddNewStore">Add Store</button>
+    </div>
+</EditForm>
+
+@code {
+    List<Store> Stores = new List<Store>();
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    public Store NewStore { get; set; } = new Store()
+    {
+        Location = new Location(),
+        Franchisee = new Franchisee()
+    };
+
+
+    private async Task AddNewStore()
+    {
+        NewStore.Location.Id = NewStore.LocationId;
+        await service.AddStoreAsync(NewStore);
+        NewStore = new Store();
+        await BlazoredModal.Close(ModalResult.Ok(true));
+    }
+
+}

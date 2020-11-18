@@ -1,0 +1,87 @@
+﻿@page "/managestores"
+@inject StoreServices service
+@using QARS.Data.Models
+
+<link rel="stylesheet" href="/css/managestores.css">
+
+
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-3">
+        <UserDashboard />
+    </div>
+
+    <div class="col-9">
+        <div class="back container">
+            <div class="heading">
+                <h1 class="display-3" style="text-align: left;">Store Manager</h1>
+                <p class="lead" style="text-align: left;">All existing stores are displayed below. Create new store using the 'Add Store' button. Edit and delete stores by using the action buttons displayed in the table.</p>
+            </div>
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Franchisee ID</th>
+                            <th scope="col">Location ID</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Stores.Any())
+                        {
+                            @foreach (var store in Stores)
+                            {
+                                <tr>
+                                    <td scope="col">@store.Id</td>
+                                    <td>@store.Franchisee.Id</td>
+                                    <td>@store.Location.Id</td>
+                                    <td><button class="btn btn-danger" @onclick="(() => DeleteStore(store))">Delete</button>  <button @onclick="@(() => ShowEditStore(store))" class="btn btn-warning">Show & Edit</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No stores available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button @onclick="@(() => ShowAddStore())" class="btn btn-success">Add Store</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<Store> Stores = new List<Store>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshStores();
+    }
+    private async Task RefreshStores()
+    {
+        Stores = await service.GetStoreAsync();
+    }
+
+    private async Task DeleteStore(Store store)
+    {
+        await service.DeleteStoreAsync(store);
+        await RefreshStores();
+    }
+    [CascadingParameter] public IModalService Modal { get; set; }
+    async Task ShowEditStore(Store store)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditStore.Store), store);
+
+        var editModal = Modal.Show<EditStore>("Edit store", parameters);
+        var result = await editModal.Result;
+        StateHasChanged();
+    }
+
+    async Task ShowAddStore()
+    {
+        var addModal = Modal.Show<AddStore>("Add Store");
+        var result = await addModal.Result;
+    }
+}

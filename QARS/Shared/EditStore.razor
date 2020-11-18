@@ -1,0 +1,60 @@
+﻿@inject StoreServices service
+@using QARS.Data.Models
+@inject AppDbContext dbContext
+
+<link href="/css/storemodal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateStore">
+    <div class="form-group">
+        <label for="franchiseeid">Franchisee Id</label>
+        <select class="form-control" @bind="@UpdateStore.Franchisee.Id">
+            @foreach (var franchisee in dbContext.Franchisees)
+            {
+                <option value="@franchisee.Id">@franchisee.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="locationid">Location Id</label>
+        <select class="form-control" @bind="@UpdateStore.Location.Id">
+            @foreach (var location in dbContext.Locations)
+            {
+                <option value="@location.Id">@location.Id</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea class="form-control" id="description" rows="3" @bind="@UpdateStore.Description"></textarea>
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" @onclick="UpdateStoreData">Update</button>
+    </div>
+</EditForm>
+
+@code {
+    List<Store> Stores = new List<Store>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Store Store { get; set; }
+
+    Store store { get; set; }
+
+    protected override void OnInitialized()
+    {
+        store = Store;
+        SetStoreForUpdate(store);
+    }
+
+    Store UpdateStore = new Store();
+    private void SetStoreForUpdate(Store store)
+    {
+        UpdateStore = store;
+    }
+    private async Task UpdateStoreData()
+    {
+        await service.UpdateStoreAsync(UpdateStore);
+        await BlazoredModal.Close(ModalResult.Ok<Store>(store));
+    }
+}
