@@ -114,7 +114,7 @@ namespace QARS.Migrations
                         column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -126,7 +126,7 @@ namespace QARS.Migrations
                     ModelId = table.Column<int>(nullable: true),
                     LicensePlate = table.Column<string>(maxLength: 16, nullable: false),
                     StoreId = table.Column<int>(nullable: true),
-                    LocationId = table.Column<int>(nullable: true),
+                    LocationId = table.Column<int>(nullable: false),
                     Available = table.Column<bool>(nullable: false),
                     Mileage = table.Column<decimal>(nullable: false)
                 },
@@ -134,11 +134,11 @@ namespace QARS.Migrations
                 {
                     table.PrimaryKey("PK_Cars", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Cars_Stores_LocationId",
+                        name: "FK_Cars_Locations_LocationId",
                         column: x => x.LocationId,
-                        principalTable: "Stores",
+                        principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Cars_CarModels_ModelId",
                         column: x => x.ModelId,
@@ -176,9 +176,9 @@ namespace QARS.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Reservations_Stores_CarLocationId",
+                        name: "FK_Reservations_Locations_CarLocationId",
                         column: x => x.CarLocationId,
-                        principalTable: "Stores",
+                        principalTable: "Locations",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -261,8 +261,7 @@ namespace QARS.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Stores_LocationId",
                 table: "Stores",
-                column: "LocationId",
-                unique: true);
+                column: "LocationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_User_Email",
@@ -292,10 +291,10 @@ namespace QARS.Migrations
                 name: "Cars");
 
             migrationBuilder.DropTable(
-                name: "Stores");
+                name: "CarModels");
 
             migrationBuilder.DropTable(
-                name: "CarModels");
+                name: "Stores");
 
             migrationBuilder.DropTable(
                 name: "User");

@@ -9,6 +9,8 @@
     <Compile Remove="Data\Services\Class.cs" />
     <Compile Remove="Migrations\20201025213735_InitialCreate.cs" />
     <Compile Remove="Migrations\20201025213735_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201026145705_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201026145705_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Data\Services\AddlocationService.razor" />

@@ -1,0 +1,75 @@
+﻿@inject FranchiseeServices service
+@inject AppDbContext dbContext
+
+@using QARS.Data.Models;
+
+<link href="/css/modal.css" rel="stylesheet"/>
+
+<EditForm Model="@NewFranchisee">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" class="form-control" @bind="@NewFranchisee.Email" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="text" id="password" class="form-control" @bind="@NewFranchisee.RawPassword" />
+    </div>
+    <div class="form-group">
+        <label for="firstname">Firstname</label>
+        <input type="text" id="firstname" class="form-control" @bind="@NewFranchisee.FirstName" />
+    </div>
+    <div class="form-group">
+        <label for="lastname">Lastname</label>
+        <input type="text" id="lastname" class="form-control" @bind="@NewFranchisee.LastName" />
+    </div>
+    <div class="form-group">
+        <label for="phonenumber">Phone Number</label>
+        <input type="text" id="phonenumber" class="form-control" @bind="@NewFranchisee.PhoneNumber" />
+    </div>
+    <div class="form-group">
+        <label for="locationaddress">Address</label>
+        <input type="text" id="locationaddress" class="form-control" @bind="@NewFranchisee.Location.Address" />
+    </div>
+    <div class="form-group">
+        <label for="locationcity">City</label>
+        <input type="text" id="locationcity" class="form-control" @bind="@NewFranchisee.Location.City" />
+    </div>
+    <div class="form-group">
+        <label for="locationzip">ZipCode</label>
+        <input type="text" id="locationzip" class="form-control" @bind="@NewFranchisee.Location.ZipCode" />
+    </div>
+    <div class="form-group">
+        <label for="locationcountry">Country</label>
+        <input type="text" id="locationcountry" class="form-control" @bind="@NewFranchisee.Location.CountryCode" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-success" @onclick="AddNewFranchisee">Add Franchisee</button>
+    </div>
+</EditForm>
+
+@code {
+    List<Franchisee> Franchisees = new List<Franchisee>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    public Franchisee NewFranchisee { get; set; } = new Franchisee()
+    {
+        Location = new Location()
+
+    };
+
+
+    private async Task AddNewFranchisee()
+    {
+        NewFranchisee.LocationId = NewFranchisee.Location.Id;
+        NewFranchisee.Password = Franchisee.GetPasswordHash(NewFranchisee.Email, NewFranchisee.RawPassword);
+        await service.AddFranchiseeAsync(NewFranchisee);
+        NewFranchisee = new Franchisee()
+        {
+            Location = new Location()
+        };
+
+        await service.CloseModal(BlazoredModal);
+    }
+
+}

@@ -33,9 +33,8 @@ namespace QARS.Data
 			// Extra needs no additional configuration
 			#endregion
 
-			#region Location Configuration
-			// Location needs no additional configuration
-			#endregion
+			modelBuilder.Entity<Location>().HasData(GetLocations());
+			base.OnModelCreating(modelBuilder);
 
 			#region Reservation Configuration
 			modelBuilder.Entity<Reservation>(entity =>
@@ -87,6 +86,9 @@ namespace QARS.Data
 					.Metadata.SetAfterSaveBehavior(PropertySaveBehavior.Throw);
 			});
 			#endregion
+
+			modelBuilder.Entity<Franchisee>().HasData(GetFranchisees());
+			base.OnModelCreating(modelBuilder);
 		}
 
 		public DbSet<Location> Locations { get; set; }
@@ -143,6 +145,22 @@ namespace QARS.Data
 		private List<Store> GetStores()
 		{
 			return new List<Store>
+			{
+
+			};
+		}
+
+		private List<Franchisee> GetFranchisees()
+		{
+			return new List<Franchisee>
+			{
+
+			};
+		}
+
+		private List<Location> GetLocations()
+		{
+			return new List<Location>
 			{
 
 			};

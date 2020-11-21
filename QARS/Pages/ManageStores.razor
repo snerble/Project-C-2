@@ -1,6 +1,7 @@
 ﻿@page "/managestores"
 @inject StoreServices service
 @using QARS.Data.Models
+@inject AppDbContext dbContext
 
 <link rel="stylesheet" href="/css/managestores.css">
 
@@ -35,7 +36,7 @@
                                 <tr>
                                     <td scope="col">@store.Id</td>
                                     <td>@store.Franchisee.Id</td>
-                                    <td>@store.Location.Id</td>
+                                    <td>@store.Location.Address</td>
                                     <td><button class="btn btn-danger" @onclick="(() => DeleteStore(store))">Delete</button>  <button @onclick="@(() => ShowEditStore(store))" class="btn btn-warning">Show & Edit</button></td>
                                 </tr>
                             }
@@ -54,6 +55,8 @@
 
 @code {
     List<Store> Stores = new List<Store>();
+
+
     protected override async Task OnInitializedAsync()
     {
         await RefreshStores();

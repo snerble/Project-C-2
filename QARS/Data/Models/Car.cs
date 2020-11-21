@@ -11,7 +11,7 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the primary key of this <see cref="Car"/>.
 		/// </summary>
-		public int? Id { get; set; }
+		public int Id { get; set; }
 		/// <summary>
 		/// Gets or sets the model of this <see cref="Car"/>.
 		/// </summary>
@@ -27,6 +27,12 @@ namespace QARS.Data.Models
 		/// Gets or sets the original <see cref="Models.Store"/> of this <see cref="Car"/>.
 		/// </summary>
 		public Store Store { get; set; }
+
+		/// <summary>
+		/// Gets or sets the id of the <see cref="Location"/> of this <see cref="User"/>.
+		/// </summary>
+		public int LocationId { get; set; }
+
 		/// <summary>
 		/// Gets or sets the current store location of this <see cref="Car"/>.
 		/// </summary>
