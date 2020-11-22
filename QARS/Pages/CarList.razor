@@ -1,22 +1,25 @@
 ﻿@page "/searchcar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}"
 @inject AppDbContext dbContext
 @inject CarServices service
+@inject NavigationManager navManager
 @using QARS.Data.Models
 
-
-<h3>CarList</h3>
-<p>@pickupLocation</p>
+<div class="jumbotron">
+    <h3>CarList</h3>
+</div>
 
 @if (Cars.Any())
 {
     @foreach (var car in Cars)
     {
+        int buttonNumber = car.Id;
         @if (car.Location.City == pickupLocation)
         {
             <div class="jumbotron">
                 <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
                 <p class="lead">Price per day: €@car.Model.DayRate</p>
                 <p class="lead">Description: @car.Model.Description</p>
+                <button type="button" class="btn btn-primary btn-lg" @onclick="@(e =>GoTo(buttonNumber))">View Car</button>
             </div>
         }
     }
@@ -33,6 +36,8 @@
     {
         Cars = await service.GetCarAsync();
     }
+
+    int carId = new int();
 
     [Parameter]
     public string pickupLocation { get; set; }
@@ -51,4 +56,9 @@
 
     [Parameter]
     public string dropoffTime { get; set; }
+
+    public void GoTo(int buttonNumber)
+    {
+        navManager.NavigateTo("/car/"+buttonNumber.ToString());
+    }
 }
