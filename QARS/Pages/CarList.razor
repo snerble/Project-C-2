@@ -1,0 +1,54 @@
+﻿@page "/searchcar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}"
+@inject AppDbContext dbContext
+@inject CarServices service
+@using QARS.Data.Models
+
+
+<h3>CarList</h3>
+<p>@pickupLocation</p>
+
+@if (Cars.Any())
+{
+    @foreach (var car in Cars)
+    {
+        @if (car.Location.City == pickupLocation)
+        {
+            <div class="jumbotron">
+                <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
+                <p class="lead">Price per day: €@car.Model.DayRate</p>
+                <p class="lead">Description: @car.Model.Description</p>
+            </div>
+        }
+    }
+}
+
+
+@code {
+    List<Car> Cars = new List<Car>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCars();
+    }
+    private async Task RefreshCars()
+    {
+        Cars = await service.GetCarAsync();
+    }
+
+    [Parameter]
+    public string pickupLocation { get; set; }
+
+    [Parameter]
+    public string pickupDate { get; set; }
+
+    [Parameter]
+    public string pickupTime { get; set; }
+
+    [Parameter]
+    public string dropoffLocation { get; set; }
+
+    [Parameter]
+    public string dropoffDate { get; set; }
+
+    [Parameter]
+    public string dropoffTime { get; set; }
+}
