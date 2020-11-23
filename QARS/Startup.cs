@@ -58,7 +58,7 @@ namespace QARS
 			#region Service Registration
 			services.AddScoped<CarModelServices>();
 
-			services.ConfigureApplicationCookie(x => x.LoginPath = "/OtherLogin");
+			services.ConfigureApplicationCookie(x => x.LoginPath = "/Login");
 			#endregion
 		}
 

@@ -1,40 +1,63 @@
-﻿<link rel="navbar stylesheet" href="/css/navbar.css">
-<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3 fixed-top">
-    <div class="container">
-        <a class="navbar-brand" asp-area="" asp-page="/Index" href="" style="color: #1B8EE5; font-weight: 800; font-size: 2em;">QARS</a>
-        <button class="navbar-toggler" @onclick="ToggleNavMenu" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="@NavMenuCssClass navbar-collapse d-sm-inline-flex flex-sm-row-reverse" @onclick="CollapseNavMenu">
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="/locations">LOCATIONS</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/contact">CONTACT</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/login">LOGIN</a>
-                </li>
-            </ul>
-        </div>
-    </div>
+﻿@using System.Reflection
+
+<link rel="navbar stylesheet" href="/css/navbar.css">
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light border-bottom box-shadow mb-3">
+	<div class="container">
+		<a class="navbar-brand" asp-area="" asp-page="/Index" href="" style="color: #1B8EE5; font-weight: 800; font-size: 2em;">QARS</a>
+		<button class="navbar-toggler" @onclick="ToggleNavMenu" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+				aria-expanded="false" aria-label="Toggle navigation">
+			<span class="navbar-toggler-icon"></span>
+		</button>
+		<div class="@NavMenuCssClass navbar-collapse d-sm-inline-flex flex-sm-row-reverse" @onclick="CollapseNavMenu">
+			<ul class="navbar-nav ml-auto">
+				@foreach (var navItem in NavItems)
+				{
+					<li class="nav-item">
+						<NavLink class="nav-link" href="@navItem.RouteAttrib.Template">@navItem.NavAttrib.Name</NavLink>
+					</li>
+				}
+				<li class="nav-item">
+					<AuthorizeView>
+						<Authorized>
+							<span class="nav-link alert-danger">You are logged in</span>
+						</Authorized>
+						<NotAuthorized>
+							<NavLink class="nav-link" href="/Login">Login</NavLink>
+						</NotAuthorized>
+					</AuthorizeView>
+				</li>
+			</ul>
+		</div>
+	</div>
 </nav>
 
 
 @code {
-    bool collapseNavMenu = true;
+	private static List<(NavigationTabAttribute NavAttrib, RouteAttribute RouteAttrib)> NavItems { get; } = GetNavItems();
 
-    string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+	bool collapseNavMenu = true;
 
-    void ToggleNavMenu()
-    {
-        collapseNavMenu = !collapseNavMenu;
-    }
+	string NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    void CollapseNavMenu()
-    {
-        collapseNavMenu = true;
-    }
+	void ToggleNavMenu()
+	{
+		collapseNavMenu = !collapseNavMenu;
+	}
+
+	void CollapseNavMenu()
+	{
+		collapseNavMenu = true;
+	}
+
+	private static List<(NavigationTabAttribute, RouteAttribute)> GetNavItems()
+	{
+		var types = new List<(NavigationTabAttribute, RouteAttribute)>();
+
+		foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+			if (type.GetCustomAttribute<NavigationTabAttribute>() is NavigationTabAttribute navAttrib
+				&& type.GetCustomAttribute<RouteAttribute>() is RouteAttribute routeAttrib)
+				types.Add((navAttrib, routeAttrib));
+
+		return types.OrderBy(x => x.Item1.Index).ThenBy(x => x.Item1.Name).ToList();
+	}
 }
