@@ -33,7 +33,7 @@ namespace QARS.Data.Authentication
 				.FirstOrDefaultAsync(u => u.Id == user.Id, cancellationToken)
 			)?.Roles.Select(ur => ur.Role.Name).ToList() ?? new List<string>();
 		}
-		
+
 		public async Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
 		{
 			return await Users

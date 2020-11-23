@@ -54,7 +54,7 @@ namespace QARS.Data.Models
 			{
 				if (Available)
 					throw new InvalidOperationException("This car is already available.");
-				Available = true; 
+				Available = true;
 			}
 		}
 		/// <summary>
@@ -67,7 +67,7 @@ namespace QARS.Data.Models
 			{
 				if (!Available)
 					throw new InvalidOperationException("This car is already reserved");
-				Available = false; 
+				Available = false;
 			}
 		}
 

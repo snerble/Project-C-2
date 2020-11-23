@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace QARS.Data.Authentication
 {
 	public class QARSRoleStore : IRoleStore<Role>, IQueryableRoleStore<Role>
-    {
+	{
 		/// <summary>
 		/// Initializes a new instance of <see cref="QARSRoleStore"/> with the given database
 		/// context.
@@ -26,7 +26,7 @@ namespace QARS.Data.Authentication
 		private AppDbContext DbContext { get; }
 
 		public async Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
-        {
+		{
 			EntityEntry<Role> entry = await DbContext.AddAsync(role, cancellationToken);
 			await DbContext.SaveChangesAsync(cancellationToken);
 			if (entry.State == EntityState.Added)
@@ -34,11 +34,11 @@ namespace QARS.Data.Authentication
 			return IdentityResult.Failed();
 		}
 
-        public async Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
-        {
-            int.TryParse(roleId, out int id);
-            return await DbContext.Roles.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
-        }
+		public async Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
+		{
+			int.TryParse(roleId, out int id);
+			return await DbContext.Roles.FirstOrDefaultAsync(x => x.Id == id, cancellationToken);
+		}
 
 		public async Task<Role> FindByNameAsync(string normalizedRoleName, CancellationToken cancellationToken)
 			=> await DbContext.Roles.FirstOrDefaultAsync(x => x.NormalizedName == normalizedRoleName, cancellationToken);
@@ -50,13 +50,13 @@ namespace QARS.Data.Authentication
 			=> Task.FromResult(role.Name);
 
 		public Task<string> GetNormalizedRoleNameAsync(Role role, CancellationToken cancellationToken)
-            => Task.FromResult(role.NormalizedName);
+			=> Task.FromResult(role.NormalizedName);
 
-        public Task SetRoleNameAsync(Role role, string roleName, CancellationToken cancellationToken)
-        {
-            role.Name = roleName;
-            return Task.CompletedTask;
-        }
+		public Task SetRoleNameAsync(Role role, string roleName, CancellationToken cancellationToken)
+		{
+			role.Name = roleName;
+			return Task.CompletedTask;
+		}
 
 		public Task SetNormalizedRoleNameAsync(Role role, string normalizedName, CancellationToken cancellationToken)
 		{
@@ -65,13 +65,13 @@ namespace QARS.Data.Authentication
 		}
 
 		public async Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
-        {
+		{
 			EntityEntry<Role> entry = DbContext.Update(role);
 			await DbContext.SaveChangesAsync(cancellationToken);
 			if (entry.State == EntityState.Detached)
 				return IdentityResult.Failed();
 			return IdentityResult.Success;
-        }
+		}
 
 		public async Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
 		{

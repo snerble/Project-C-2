@@ -38,10 +38,10 @@ namespace QARS.Data.Authentication
 				// Add the new user to it's default role
 				await AddToRoleAsync(user, user switch
 				{
-					Administrator _ => Role.Admin, 
-					Customer _ => Role.Customer, 
-					Employee _ => Role.Employee, 
-					Franchisee _ => Role.Franchisee, 
+					Administrator _ => Role.Admin,
+					Customer _ => Role.Customer,
+					Employee _ => Role.Employee,
+					Franchisee _ => Role.Franchisee,
 					_ => throw new ArgumentException($"Unknown user type ")
 				}, cancellationToken);
 

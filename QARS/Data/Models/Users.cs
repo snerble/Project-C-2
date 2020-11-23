@@ -53,7 +53,7 @@ namespace QARS.Data.Models
 		/// </summary>
 		[Required, Phone]
 		public string PhoneNumber { get; set; }
-		
+
 		/// <summary>
 		/// Gets or sets the id of the <see cref="Location"/> of this <see cref="User"/>.
 		/// </summary>
