@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201026145705_InitialCreate")]
+    [Migration("20201122191553_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -256,8 +256,7 @@ namespace QARS.Migrations
 
                     b.HasIndex("FranchiseeId");
 
-                    b.HasIndex("LocationId")
-                        .IsUnique();
+                    b.HasIndex("LocationId");
 
                     b.ToTable("Stores");
                 });
@@ -339,7 +338,7 @@ namespace QARS.Migrations
 
             modelBuilder.Entity("QARS.Data.Models.Car", b =>
                 {
-                    b.HasOne("QARS.Data.Models.Store", "Location")
+                    b.HasOne("QARS.Data.Models.Location", "Location")
                         .WithMany()
                         .HasForeignKey("LocationId");
 
@@ -358,7 +357,7 @@ namespace QARS.Migrations
                         .WithMany()
                         .HasForeignKey("CarId");
 
-                    b.HasOne("QARS.Data.Models.Store", "CarLocation")
+                    b.HasOne("QARS.Data.Models.Location", "CarLocation")
                         .WithMany()
                         .HasForeignKey("CarLocationId");
 
@@ -389,9 +388,9 @@ namespace QARS.Migrations
                         .HasForeignKey("FranchiseeId");
 
                     b.HasOne("QARS.Data.Models.Location", "Location")
-                        .WithOne()
-                        .HasForeignKey("QARS.Data.Models.Store", "LocationId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .WithMany()
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 

@@ -4,7 +4,7 @@
 
 <h1>Please validate your information</h1>
 
-<p>Validate: @validation</p>
+<p>Validate: @validations</p>
 
 <style>
     button {
@@ -13,13 +13,13 @@
         border-radius: 1px;
         margin: 10px;
         float: left;
-        margin-left: 2;
+        margin-left: auto;
     }
 
     #container {
         text-align: center;
         align-items: center;
-        margin-left: 2;
+        margin-left: auto;
     }
 
     #input {
@@ -43,7 +43,7 @@
 
 
 @code {
-    string validation = "";
+    string validations = "";
     private string password;
     private string username;
 
@@ -51,11 +51,11 @@
     {
         if (password == "password" && username == "rowan")
         {
-            validation = " welcome " + username;
+            validations = " welcome " + username;
         }
         else
         {
-            validation = "invalid username or password please try again";
+            validations = "invalid username or password please try again";
         }
     }
 

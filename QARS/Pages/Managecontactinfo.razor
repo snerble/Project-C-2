@@ -1,0 +1,34 @@
+﻿@page "/managecontactinfo"
+//
+@using QARS.Data.Models
+
+
+@*@code {
+            List<Contact> Contacts = new List<Contact>();
+        protected override async Task OnInitializedAsync()
+        {
+            await RefreshContact();
+        }
+        private async Task RefreshContacts()
+        {
+            Contacts = await service.GetContactsAsync();
+        }
+
+        private async Task DeleteContact(Contact contact)
+        {
+            await service.DeleteContactsAsync(contact);
+            await RefreshContacts();
+        }
+        [CascadingParameter] public IModalService Modal { get; set; }
+        async Task ShowEditContact(Contact contact)
+        {
+            var parameters = new ModalParameters();
+            parameters.Add(nameof(EditStore.Store), contact);
+
+            var editModal = Modal.Show<EditContact>("Edit contact", parameters);
+            var result = await editModal.Result;
+            StateHasChanged();
+        }
+
+
+    }*@
