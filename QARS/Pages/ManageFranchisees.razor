@@ -1,0 +1,91 @@
+﻿@page "/managefranchisees"
+@inject FranchiseeServices service
+@using QARS.Data.Models
+
+<link rel="stylesheet" href="/css/managefranchisees.css">
+
+
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-3">
+        <UserDashboard />
+    </div>
+
+    <div class="col-9">
+        <div class="back container">
+            <div class="heading">
+                <h1 class="display-3" style="text-align: left;">Franchisee Manager</h1>
+                <p class="lead" style="text-align: left;">All existing franchisees are displayed below. Create a new franchisee using the 'Add Franchisee' button. Edit and delete franchisees by using the action buttons displayed in the table.</p>
+            </div>
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Firstname</th>
+                            <th scope="col">Lastname</th>
+                            <th scope="col">Phone Number</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Franchisees.Any())
+                        {
+                            @foreach (var franchisee in Franchisees)
+                            {
+                                <tr>
+                                    <td scope="col">@franchisee.Id</td>
+                                    <td>@franchisee.Email</td>
+                                    <td>@franchisee.FirstName</td>
+                                    <td>@franchisee.LastName</td>
+                                    <td>@franchisee.PhoneNumber</td>
+                                    <td><button class="btn btn-danger" @onclick="(() => DeleteFranchisee(franchisee))">Delete</button>  <button @onclick="@(() => ShowEditFranchisee(franchisee))" class="btn btn-warning">Show & Edit</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No franchisees available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button @onclick="@(() => ShowAddFranchisee())" class="btn btn-success">Add Franchisee</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<Franchisee> Franchisees = new List<Franchisee>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshFranchisees();
+    }
+    private async Task RefreshFranchisees()
+    {
+        Franchisees = await service.GetFranchiseeAsync();
+    }
+
+    private async Task DeleteFranchisee(Franchisee franchisee)
+    {
+        await service.DeleteFranchiseeAsync(franchisee);
+        await RefreshFranchisees();
+    }
+    [CascadingParameter] public IModalService Modal { get; set; }
+    async Task ShowEditFranchisee(Franchisee franchisee)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditFranchisee.Franchisee), franchisee);
+
+        var editModal = Modal.Show<EditFranchisee>("Edit Franchisee", parameters);
+        var result = await editModal.Result;
+        StateHasChanged();
+    }
+
+    async Task ShowAddFranchisee()
+    {
+        var addModal = Modal.Show<AddFranchisee>("Add Franchisee");
+        var result = await addModal.Result;
+    }
+}

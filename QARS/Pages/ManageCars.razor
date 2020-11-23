@@ -1,5 +1,7 @@
 ﻿@page "/managecars"
 @inject CarServices service
+@using QARS.Data.Models
+@inject AppDbContext dbContext
 
 <link rel="searchbox stylesheet" href="/css/managecars.css">
 
@@ -37,7 +39,7 @@
                                     <td scope="col">@car.Id</td>
                                     <td>@car.Model.Id</td>
                                     <td>@car.LicensePlate</td>
-                                    <td>@car.Location.Id</td>
+                                    <td>@car.LocationId</td>
                                     <td>@car.Available</td>
                                     <td><button class="btn btn-danger" @onclick="(() => DeleteCar(car))">Delete</button>  <button @onclick="@(() => ShowEditCar(car))" class="btn btn-warning">Show & Edit</button></td>
                                 </tr>
@@ -56,7 +58,7 @@
 </div>
 
 @code {
-    List<QARS.Data.Models.Car> Cars = new List<QARS.Data.Models.Car>();
+    List<Car> Cars = new List<Car>();
     protected override async Task OnInitializedAsync()
     {
         await RefreshCars();
@@ -66,13 +68,13 @@
         Cars = await service.GetCarAsync();
     }
 
-    private async Task DeleteCar(QARS.Data.Models.Car car)
+    private async Task DeleteCar(Car car)
     {
         await service.DeleteCarAsync(car);
         await RefreshCars();
     }
     [CascadingParameter] public IModalService Modal { get; set; }
-    async Task ShowEditCar(QARS.Data.Models.Car car)
+    async Task ShowEditCar(Car car)
     {
         var parameters = new ModalParameters();
         parameters.Add(nameof(EditCar.Car), car);

@@ -18,7 +18,7 @@ namespace QARS.Migrations
 
             modelBuilder.Entity("QARS.Data.Models.Car", b =>
                 {
-                    b.Property<int?>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
@@ -30,7 +30,7 @@ namespace QARS.Migrations
                         .HasColumnType("TEXT")
                         .HasMaxLength(16);
 
-                    b.Property<int?>("LocationId")
+                    b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
 
                     b.Property<decimal>("Mileage")
@@ -338,7 +338,9 @@ namespace QARS.Migrations
                 {
                     b.HasOne("QARS.Data.Models.Location", "Location")
                         .WithMany()
-                        .HasForeignKey("LocationId");
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("QARS.Data.Models.CarModel", "Model")
                         .WithMany()

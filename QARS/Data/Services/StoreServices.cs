@@ -20,7 +20,10 @@ namespace QARS.Data.Services
 
 		public async Task<List<Store>> GetStoreAsync()
 		{
-			return await dbContext.Stores.ToListAsync();
+			return await dbContext.Stores
+				.Include(s => s.Location)
+				.Include(s => s.Franchisee)
+				.ToListAsync();
 		}
 
 		public async Task<Store> AddStoreAsync(Store store)
