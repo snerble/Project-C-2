@@ -107,7 +107,7 @@ namespace QARS.Data
 		public DbSet<Extra> Extras { get; set; }
 		public DbSet<Reservation> Reservations { get; set; }
 
-		// public DbSet<Contact> Contacts { get; set; }
+		public DbSet<Contact> Contacts { get; set; }
 
 		private List<CarModel> GetCarModels()
 		{

@@ -1,34 +1,82 @@
-﻿@page "/managecontactinfo"
-//
-@using QARS.Data.Models
+﻿@*@page "/managecontactinfo"
+@inject contactservices service
+@using qars.data.models
 
 
-@*@code {
-            List<Contact> Contacts = new List<Contact>();
-        protected override async Task OnInitializedAsync()
-        {
-            await RefreshContact();
-        }
-        private async Task RefreshContacts()
-        {
-            Contacts = await service.GetContactsAsync();
-        }
-
-        private async Task DeleteContact(Contact contact)
-        {
-            await service.DeleteContactsAsync(contact);
-            await RefreshContacts();
-        }
-        [CascadingParameter] public IModalService Modal { get; set; }
-        async Task ShowEditContact(Contact contact)
-        {
-            var parameters = new ModalParameters();
-            parameters.Add(nameof(EditStore.Store), contact);
-
-            var editModal = Modal.Show<EditContact>("Edit contact", parameters);
-            var result = await editModal.Result;
-            StateHasChanged();
-        }
 
 
-    }*@
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-3">
+        <userdashboard />
+    </div>
+
+    <div class="col-9">
+        <div class="back container">
+            <div class="heading">
+                <h1 class="display-3" style="text-align: left;">store manager</h1>
+                <p class="lead" style="text-align: left;">all existing stores are displayed below. create new store using the 'add store' button. edit and delete stores by using the action buttons displayed in the table.</p>
+            </div>
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">id</th>
+                            <th scope="col">franchisee id</th>
+                            <th scope="col">location id</th>
+                            <th scope="col">actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (contact.any())
+                        {
+                            @foreach (var contact in contact)
+                            {
+                                <tr>
+                                    <td scope="col">@contact.id</td>
+                                    <td>@contact.id</td>
+                                    <td>@contact.</td>
+                                    <td><button class="btn btn-danger" @onclick="(() => deletecontact(contact))">delete</button>  <button @onclick="@(() => showeditcontact(contact))" class="btn btn-warning">show & edit</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>no contacts available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@code 
+{
+        list<contact> contacts = new list<contact>();
+    protected override async task oninitializedasync()
+    {
+        await refreshcontact();
+    }
+    private async task refreshcontacts()
+    {
+        contacts = await service.getcontactsasync();
+    }
+
+    private async task deletecontact(contact contact)
+    {
+        await service.deletecontactsasync(contact);
+        await refreshcontacts();
+    }
+    [cascadingparameter] public imodalservice modal { get; set; }
+    async task showeditcontact(contact contact)
+    {
+        var parameters = new modalparameters();
+        parameters.add(nameof(editstore.store), contact);
+
+        var editmodal = modal.show<editcontact>("edit contact", parameters);
+        var result = await editmodal.result;
+        statehaschanged();
+    }
+}*@

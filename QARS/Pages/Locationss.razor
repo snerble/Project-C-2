@@ -64,7 +64,8 @@
                         {
                             @foreach (var location in dbContext.Locations)
                             {
-                                <tr @onclick="Lookup"  >
+                                var locationid = location.Id;
+                                <tr @onclick= "@(e =>Lookup(locationid))" >
                                     <td>@location.City</td>
 
                                 </tr>
@@ -92,11 +93,11 @@
     string b;
     string c;
     private string signup;
-    void Lookup()
+    void Lookup(int locationid)
     {
         foreach(var location in dbContext.Locations)
         {
-            if (location.City == location.City)
+            if (location.Id == locationid)
             {
                 a = location.Address;
                 b = location.CountryCode;

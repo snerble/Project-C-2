@@ -8,7 +8,7 @@ namespace QARS.Data.Models
 		public int Id { get; set; }
 
 		[Required]
-		public string Contacts { get; set; }
+		public string Tell{ get; set; }
 
 		[Required]
 		public string Contactaddress { get; set; }

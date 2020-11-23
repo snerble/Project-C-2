@@ -35,6 +35,21 @@ namespace QARS.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Contacts",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    Tell = table.Column<string>(nullable: false),
+                    Contactaddress = table.Column<string>(nullable: false),
+                    Discript = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Contacts", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Extras",
                 columns: table => new
                 {
@@ -126,7 +141,7 @@ namespace QARS.Migrations
                     ModelId = table.Column<int>(nullable: true),
                     LicensePlate = table.Column<string>(maxLength: 16, nullable: false),
                     StoreId = table.Column<int>(nullable: true),
-                    LocationId = table.Column<int>(nullable: true),
+                    LocationId = table.Column<int>(nullable: false),
                     Available = table.Column<bool>(nullable: false),
                     Mileage = table.Column<decimal>(nullable: false)
                 },
@@ -138,7 +153,7 @@ namespace QARS.Migrations
                         column: x => x.LocationId,
                         principalTable: "Locations",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Cars_CarModels_ModelId",
                         column: x => x.ModelId,
@@ -278,6 +293,9 @@ namespace QARS.Migrations
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Contacts");
+
             migrationBuilder.DropTable(
                 name: "ReservationExtras");
 
