@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
 
@@ -9,6 +11,7 @@ namespace QARS.Data.Models
 	/// <summary>
 	/// Serves as the base class for all user types in <see cref="QARS"/>.
 	/// </summary>
+	[DebuggerDisplay("Id = {Id}, Email = {Email}")]
 	public abstract class User
 	{
 		/// <summary>
@@ -21,19 +24,19 @@ namespace QARS.Data.Models
 		/// </summary>
 		[Required, EmailAddress]
 		public string Email { get; set; }
+		/// <summary>
+		/// Gets or sets the normalized e-mail of this <see cref="User"/>.
+		/// <para/>
+		/// This property is used to optimize queries.
+		/// </summary>
+		[Required, EmailAddress]
+		public string NormalizedEmail { get; set; }
 
 		/// <summary>
 		/// Gets or sets the hashed password for this <see cref="User"/>.
 		/// </summary>
 		[Required, MinLength(64), MaxLength(64)]
 		public byte[] Password { get; set; }
-		/// <summary>
-		/// Gets or sets the raw password.
-		/// <para/>
-		/// This property is not mapped and is only intended for temporary storage.
-		/// </summary>
-		[NotMapped]
-		internal string RawPassword { get; set; }
 
 		/// <summary>
 		/// Gets or sets the first name of this <see cref="User"/>.
@@ -60,21 +63,12 @@ namespace QARS.Data.Models
 		/// </summary>
 		public Location Location { get; set; }
 
-		public override string ToString() => Utils.GetDetailedString(this);
-
 		/// <summary>
-		/// Hashes the given <paramref name="password"/> together with <see cref="Email"/> and sets
-		/// the <see cref="Password"/> property.
+		/// Gets or sets a list of <see cref="UserRole"/>s for this user.
 		/// </summary>
-		/// <param name="password">The raw password of this user.</param>
-		public void SetPassword(string password)
-		{
-			if (string.IsNullOrEmpty(Email))
-				throw new InvalidOperationException($"{nameof(Password)} cannot be set if {nameof(Email)} is undefined or empty.");
+		public List<UserRole> Roles { get; set; }
 
-			RawPassword = password;
-			Password = GetPasswordHash(Email, password);
-		}
+		public override string ToString() => Utils.GetDetailedString(this);
 
 		/// <summary>
 		/// Generates and returns a new salted <see cref="SHA512"/> hash.
@@ -89,26 +83,26 @@ namespace QARS.Data.Models
 			if (string.IsNullOrEmpty(password))
 				throw new ArgumentException($"'{nameof(password)}' cannot be null or empty", nameof(password));
 
-			string saltedString = $"{salt}#:#{password}"; // Salt the password
+			string saltedString = $"{salt}#:#{password}"; // https://imgur.com/k2L1aQg
 			using var sha512 = SHA512.Create();
 			return sha512.ComputeHash(Encoding.UTF8.GetBytes(saltedString));
 		}
 	}
 
 	/// <summary>
-	/// Represents a user with special privileges in the system.
+	/// Represents a customer at <see cref="QARS"/>.
 	/// </summary>
-	public sealed class Administrator : User { }
+	public class Customer : User { }
 	/// <summary>
 	/// Represents a franchise owner.
 	/// </summary>
-	public sealed class Franchisee : User { }
+	public class Franchisee : User { }
 	/// <summary>
 	/// Represents an employee working at <see cref="QARS"/>.
 	/// </summary>
-	public sealed class Employee : User { }
+	public class Employee : User { }
 	/// <summary>
-	/// Represents a customer at <see cref="QARS"/>.
+	/// Represents a user with special privileges in the system.
 	/// </summary>
-	public sealed class Customer : User { }
+	public class Administrator : Employee { }
 }

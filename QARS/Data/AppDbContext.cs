@@ -1,9 +1,12 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 using QARS.Data.Models;
 
 using System.Collections.Generic;
+using System.Linq;
 
 namespace QARS.Data
 {
@@ -23,12 +26,16 @@ namespace QARS.Data
 
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
-			#region Car
+			#region Car Configuration
 			// Car needs no additional configuration
 			#endregion
 
-			modelBuilder.Entity<CarModel>().HasData(GetCarModels());
-			base.OnModelCreating(modelBuilder);
+			#region CarModel Configuration
+			modelBuilder.Entity<CarModel>(entity =>
+			{
+				entity.HasData(GetCarModels());
+			});
+			#endregion
 
 			#region Extra Configuration
 			// Extra needs no additional configuration
@@ -56,8 +63,8 @@ namespace QARS.Data
 			#region ReservationExtra Configuration
 			modelBuilder.Entity<ReservationExtra>(entity =>
 			{
-				// Rename the table to ReservationExtras and add composite primary key on ReservationId and ExtraId
-				entity.ToTable("ReservationExtras")
+				// Add a composite primary key on ReservationId and ExtraId
+				entity.ToTable($"{nameof(ReservationExtra)}s")
 					.HasKey($"{nameof(ReservationExtra.Reservation)}Id", $"{nameof(ReservationExtra.Extra)}Id");
 
 				// Configure the many-to-many relation between Reservations and Extras
@@ -65,6 +72,15 @@ namespace QARS.Data
 					.WithMany(r => r.Extras);
 				entity.HasOne(ce => ce.Extra)
 					.WithMany(e => e.ReservationExtras);
+			});
+			#endregion
+
+			#region Role Configuration
+			modelBuilder.Entity<Role>(entity =>
+			{
+				// Set a unique key on Role.Name
+				entity.HasIndex(r => r.Name)
+					.IsUnique();
 			});
 			#endregion
 
@@ -84,12 +100,25 @@ namespace QARS.Data
 			});
 			#endregion
 
+			#region UserRole Configuration
+			modelBuilder.Entity<UserRole>(entity =>
+			{
+				// Add the composite primary key on the foreign key shadow properties
+				entity.ToTable($"{nameof(UserRole)}s")
+					.HasKey($"{nameof(UserRole.User)}Id", $"{nameof(UserRole.Role)}Id");
+
+				// Configure the navigation property on User
+				entity.HasOne(ur => ur.User)
+					.WithMany(u => u.Roles);
+			});
+			#endregion
+
 			#region User Configuration
 			modelBuilder.Entity<User>(entity =>
 			{
 				// Set up the one-way User.Location foreign key and prevent the Location from being deleted
 				entity.HasOne(u => u.Location)
-					.WithOne()
+					.WithMany()
 					.OnDelete(DeleteBehavior.Restrict);
 
 				// Set unique key on User.Email
@@ -103,22 +132,18 @@ namespace QARS.Data
 			#endregion
 		}
 
-		public DbSet<Location> Locations { get; set; }
-
-		public DbSet<User> Users { get; set; }
-		public DbSet<Administrator> Admins { get; set; }
-		public DbSet<Franchisee> Franchisees { get; set; }
-		public DbSet<Employee> Employees { get; set; }
-		public DbSet<Customer> Customers { get; set; }
-
-		public DbSet<Store> Stores { get; set; }
-
 		public DbSet<Car> Cars { get; set; }
-
 		public DbSet<CarModel> CarModels { get; set; }
-
 		public DbSet<Extra> Extras { get; set; }
+		public DbSet<Location> Locations { get; set; }
 		public DbSet<Reservation> Reservations { get; set; }
+		public DbSet<Role> Roles { get; set; }
+		public DbSet<User> Users { get; set; }
+		public DbSet<Store> Stores { get; set; }
+		public DbSet<Customer> Customers { get; set; }
+		public DbSet<Employee> Employees { get; set; }
+		public DbSet<Franchisee> Franchisees { get; set; }
+		public DbSet<Administrator> Admins { get; set; }
 
 		private List<CarModel> GetCarModels()
 		{
@@ -146,7 +171,5 @@ namespace QARS.Data
 				},
 			};
 		}
-
-
 	}
 }

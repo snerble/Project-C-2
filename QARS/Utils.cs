@@ -28,13 +28,13 @@ namespace QARS
 			{
 				object value = prop.GetValue(o);
 
-				// If value is a string, escape it's characters
-				if ((Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) == typeof(string))
-					value = SymbolDisplay.FormatLiteral(value as string, true);
-
 				// If value is DBNull or just null, replace it with the string 'null'
 				if (value == DBNull.Value || value is null)
 					value = "null";
+
+				// If value is a string, escape it's characters
+				else if ((Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType) == typeof(string))
+					value = SymbolDisplay.FormatLiteral(value as string, true);
 
 				values.Add(value);
 			}
