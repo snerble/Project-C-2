@@ -79,7 +79,6 @@
     private async Task UpdateFranchiseeData()
     {
         UpdateFranchisee.LocationId = UpdateFranchisee.Location.Id;
-        Console.WriteLine(UpdateFranchisee.Location.Id);
         UpdateFranchisee.RawPassword = RawPassword;
         UpdateFranchisee.Password = Franchisee.GetPasswordHash(UpdateFranchisee.Email, RawPassword);
         await service.UpdateFranchiseeAsync(UpdateFranchisee);

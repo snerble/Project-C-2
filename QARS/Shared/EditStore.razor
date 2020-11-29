@@ -7,21 +7,28 @@
 <EditForm Model="@UpdateStore">
     <div class="form-group">
         <label for="franchiseeid">Franchisee Id</label>
-        <select class="form-control" @bind="@UpdateStore.Franchisee.Id">
+        <select class="form-control" @bind="@franchiseeId">
             @foreach (var franchisee in dbContext.Franchisees)
             {
-                <option value="@franchisee.Id">@franchisee.Id</option>
+                <option value="@franchisee.Id">[@franchisee.Id]   @franchisee.FirstName @franchisee.LastName</option>
             }
         </select>
     </div>
     <div class="form-group">
-        <label for="locationid">Location Id</label>
-        <select class="form-control" @bind="@UpdateStore.Location.Id">
-            @foreach (var location in dbContext.Locations)
-            {
-                <option value="@location.Id">@location.Id</option>
-            }
-        </select>
+        <label for="locationaddress">Address</label>
+        <input type="text" id="locationaddress" class="form-control" @bind="@UpdateStore.Location.Address" />
+    </div>
+    <div class="form-group">
+        <label for="locationcity">City</label>
+        <input type="text" id="locationcity" class="form-control" @bind="@UpdateStore.Location.City" />
+    </div>
+    <div class="form-group">
+        <label for="locationzip">ZipCode</label>
+        <input type="text" id="locationzip" class="form-control" @bind="@UpdateStore.Location.ZipCode" />
+    </div>
+    <div class="form-group">
+        <label for="locationcountry">Country</label>
+        <input type="text" id="locationcountry" class="form-control" @bind="@UpdateStore.Location.CountryCode" />
     </div>
     <div class="form-group">
         <label for="description">Description</label>
@@ -33,17 +40,20 @@
 </EditForm>
 
 @code {
-    List<Store> Stores = new List<Store>();
-
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public Store Store { get; set; }
 
     Store store { get; set; }
+    public int locationId = 0;
+    public int franchiseeId = 0;
 
     protected override void OnInitialized()
     {
         store = Store;
+        locationId = store.LocationId;
+        franchiseeId = store.Franchisee.Id;
+        store.Location = dbContext.Locations.FirstOrDefault(x => x.Id == locationId);
         SetStoreForUpdate(store);
     }
 
@@ -54,6 +64,7 @@
     }
     private async Task UpdateStoreData()
     {
+        UpdateStore.Franchisee = dbContext.Franchisees.FirstOrDefault(x => x.Id == franchiseeId);
         await service.UpdateStoreAsync(UpdateStore);
         await BlazoredModal.Close(ModalResult.Ok<Store>(store));
     }
