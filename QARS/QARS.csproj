@@ -13,6 +13,10 @@
     <Compile Remove="Migrations\20201026145705_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201122191553_InitialCreate.cs" />
     <Compile Remove="Migrations\20201122191553_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201123101055_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201123101055_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201129114922_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201129114922_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Remove="Data\Services\AddlocationService.razor" />

@@ -1,6 +1,7 @@
 ﻿@inject FranchiseeServices service
 @using QARS.Data.Models
 @inject AppDbContext dbContext
+@inject AddlocationServices location_service
 
 <link href="/css/modal.css" rel="stylesheet" />
 
@@ -11,7 +12,7 @@
     </div>
     <div class="form-group">
         <label for="password">Password</label>
-        <input type="text" id="password" class="form-control" @bind="@UpdateFranchisee.RawPassword" />
+        <input type="text" id="password" class="form-control" @bind="@RawPassword" />
     </div>
     <div class="form-group">
         <label for="firstname">Firstname</label>
@@ -47,20 +48,22 @@
 </EditForm>
 
 @code {
-    List<Franchisee> Franchisees = new List<Franchisee>();
-
-
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public Franchisee Franchisee { get; set; }
 
-
     Franchisee franchisee { get; set; }
+
+    public string RawPassword = string.Empty;
+
+    public int locationId = 0;
 
 
     protected override void OnInitialized()
     {
         franchisee = Franchisee;
+        locationId = franchisee.LocationId;
+        franchisee.Location = dbContext.Locations.FirstOrDefault(x => x.Id == locationId);
         SetFranchiseeForUpdate(franchisee);
     }
 
@@ -68,6 +71,7 @@
     {
         Location = new Location()
     };
+
     private void SetFranchiseeForUpdate(Franchisee franchisee)
     {
         UpdateFranchisee = franchisee;
@@ -75,7 +79,9 @@
     private async Task UpdateFranchiseeData()
     {
         UpdateFranchisee.LocationId = UpdateFranchisee.Location.Id;
-        UpdateFranchisee.SetPassword(UpdateFranchisee.Password.ToString());
+        Console.WriteLine(UpdateFranchisee.Location.Id);
+        UpdateFranchisee.RawPassword = RawPassword;
+        UpdateFranchisee.Password = Franchisee.GetPasswordHash(UpdateFranchisee.Email, RawPassword);
         await service.UpdateFranchiseeAsync(UpdateFranchisee);
         await BlazoredModal.Close(ModalResult.Ok<Franchisee>(franchisee));
     }

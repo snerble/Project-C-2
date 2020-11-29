@@ -58,7 +58,7 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the location where this <see cref="User"/> resides.
 		/// </summary>
-		public Location Location { get; set; }
+		public virtual Location Location { get; set; }
 
 		public override string ToString() => Utils.GetDetailedString(this);
 

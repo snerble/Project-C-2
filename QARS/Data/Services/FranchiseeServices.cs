@@ -9,6 +9,7 @@ using QARS.Data.Models;
 using Blazored.Modal;
 using Blazored.Modal.Services;
 
+
 namespace QARS.Data.Services
 {
 	public class FranchiseeServices
