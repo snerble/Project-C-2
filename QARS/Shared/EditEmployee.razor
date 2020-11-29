@@ -1,0 +1,80 @@
+﻿@inject EmployeeServices service
+@using QARS.Data.Models
+@inject AppDbContext dbContext
+
+<link href="/css/modal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateEmployee">
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" class="form-control" @bind="@UpdateEmployee.Email" />
+    </div>
+    <div class="form-group">
+        <label for="firstname">Firstname</label>
+        <input type="text" id="firstname" class="form-control" @bind="@UpdateEmployee.FirstName" />
+    </div>
+    <div class="form-group">
+        <label for="lastname">Lastname</label>
+        <input type="text" id="lastname" class="form-control" @bind="@UpdateEmployee.LastName" />
+    </div>
+    <div class="form-group">
+        <label for="phonenumber">Phone Number</label>
+        <input type="text" id="phonenumber" class="form-control" @bind="@UpdateEmployee.PhoneNumber" />
+    </div>
+    <div class="form-group">
+        <label for="locationaddress">Address</label>
+        <input type="text" id="locationaddress" class="form-control" @bind="@UpdateEmployee.Location.Address" />
+    </div>
+    <div class="form-group">
+        <label for="locationcity">City</label>
+        <input type="text" id="locationcity" class="form-control" @bind="@UpdateEmployee.Location.City" />
+    </div>
+    <div class="form-group">
+        <label for="locationzip">ZipCode</label>
+        <input type="text" id="locationzip" class="form-control" @bind="@UpdateEmployee.Location.ZipCode" />
+    </div>
+    <div class="form-group">
+        <label for="locationcountry">Country</label>
+        <input type="text" id="locationcountry" class="form-control" @bind="@UpdateEmployee.Location.CountryCode" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" @onclick="UpdateEmployeeData">Update</button>
+    </div>
+</EditForm>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Employee Employee { get; set; }
+
+    Employee employee { get; set; }
+
+    public string RawPassword = string.Empty;
+
+    public int locationId = 0;
+
+
+    protected override void OnInitialized()
+    {
+        employee = Employee;
+        locationId = employee.LocationId;
+        employee.Location = dbContext.Locations.FirstOrDefault(x => x.Id == locationId);
+        SetEmployeeForUpdate(employee);
+    }
+
+    Employee UpdateEmployee = new Employee()
+    {
+        Location = new Location()
+    };
+
+    private void SetEmployeeForUpdate(Employee employee)
+    {
+        UpdateEmployee = employee;
+    }
+    private async Task UpdateEmployeeData()
+    {
+        UpdateEmployee.LocationId = UpdateEmployee.Location.Id;
+        await service.UpdateEmployeeAsync(UpdateEmployee);
+        await BlazoredModal.Close(ModalResult.Ok<Employee>(employee));
+    }
+}

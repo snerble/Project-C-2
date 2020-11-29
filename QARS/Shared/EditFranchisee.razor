@@ -11,10 +11,6 @@
         <input type="text" id="email" class="form-control" @bind="@UpdateFranchisee.Email" />
     </div>
     <div class="form-group">
-        <label for="password">Password</label>
-        <input type="text" id="password" class="form-control" @bind="@RawPassword" />
-    </div>
-    <div class="form-group">
         <label for="firstname">Firstname</label>
         <input type="text" id="firstname" class="form-control" @bind="@UpdateFranchisee.FirstName" />
     </div>
@@ -79,8 +75,6 @@
     private async Task UpdateFranchiseeData()
     {
         UpdateFranchisee.LocationId = UpdateFranchisee.Location.Id;
-        UpdateFranchisee.RawPassword = RawPassword;
-        UpdateFranchisee.Password = Franchisee.GetPasswordHash(UpdateFranchisee.Email, RawPassword);
         await service.UpdateFranchiseeAsync(UpdateFranchisee);
         await BlazoredModal.Close(ModalResult.Ok<Franchisee>(franchisee));
     }

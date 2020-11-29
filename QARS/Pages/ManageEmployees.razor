@@ -1,0 +1,91 @@
+﻿@page "/manageemployees"
+@inject EmployeeServices service
+@using QARS.Data.Models
+
+<link rel="stylesheet" href="/css/manage.css">
+
+
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-3">
+        <UserDashboard />
+    </div>
+
+    <div class="col-9">
+        <div class="back container">
+            <div class="heading">
+                <h1 class="display-3" style="text-align: left;">Employee Manager</h1>
+                <p class="lead" style="text-align: left;">All existing employees are displayed below. Create a new employee using the 'Add Employee' button. Edit and delete employees by using the action buttons displayed in the table.</p>
+            </div>
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Firstname</th>
+                            <th scope="col">Lastname</th>
+                            <th scope="col">Phone Number</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Employees.Any())
+                        {
+                            @foreach (var employee in Employees)
+                            {
+                                <tr>
+                                    <td scope="col">@employee.Id</td>
+                                    <td>@employee.Email</td>
+                                    <td>@employee.FirstName</td>
+                                    <td>@employee.LastName</td>
+                                    <td>@employee.PhoneNumber</td>
+                                    <td><button class="btn btn-danger" @onclick="(() => DeleteEmployee(employee))">Delete</button>  <button @onclick="@(() => ShowEditEmployee(employee))" class="btn btn-warning">Show & Edit</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No employees available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button @onclick="@(() => ShowAddEmployee())" class="btn btn-success">Add Employee</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<Employee> Employees = new List<Employee>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshEmployees();
+    }
+    private async Task RefreshEmployees()
+    {
+        Employees = await service.GetEmployeesAsync();
+    }
+
+    private async Task DeleteEmployee(Employee employee)
+    {
+        await service.DeleteEmployeeAsync(employee);
+        await RefreshEmployees();
+    }
+    [CascadingParameter] public IModalService Modal { get; set; }
+    async Task ShowEditEmployee(Employee employee)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditEmployee.Employee), employee);
+
+        var editModal = Modal.Show<EditEmployee>("Edit Employee", parameters);
+        var result = await editModal.Result;
+        StateHasChanged();
+    }
+
+    async Task ShowAddEmployee()
+    {
+        var addModal = Modal.Show<AddEmployee>("Add Employee");
+        var result = await addModal.Result;
+    }
+}
