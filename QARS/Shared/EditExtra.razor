@@ -1,0 +1,49 @@
+﻿@inject ExtraServices service
+@using QARS.Data.Models
+
+<link href="/css/modal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateExtra">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" id="name" class="form-control" @bind="@UpdateExtra.Name" />
+    </div>
+    <div class="form-group">
+        <label for="cost">Cost</label>
+        <input type="text" id="cost" class="form-control" @bind="@UpdateExtra.Cost" />
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea rows="3" id="description" class="form-control" @bind="@UpdateExtra.Description" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" @onclick="UpdateExtraData">Update</button>
+    </div>
+</EditForm>
+
+@code {
+    List<Extra> Extras = new List<Extra>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Extra Extra { get; set; }
+
+    Extra extra { get; set; }
+
+    protected override void OnInitialized()
+    {
+        extra = Extra;
+        SetExtraForUpdate(extra);
+    }
+
+    Extra UpdateExtra = new Extra();
+    private void SetExtraForUpdate(Extra extra)
+    {
+        UpdateExtra = extra;
+    }
+    private async Task UpdateExtraData()
+    {
+        await service.UpdateExtraAsync(UpdateExtra);
+        await BlazoredModal.Close(ModalResult.Ok<Extra>(extra));
+    }
+}

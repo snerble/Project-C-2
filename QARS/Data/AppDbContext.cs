@@ -29,9 +29,8 @@ namespace QARS.Data
 			modelBuilder.Entity<CarModel>().HasData(GetCarModels());
 			base.OnModelCreating(modelBuilder);
 
-			#region Extra Configuration
-			// Extra needs no additional configuration
-			#endregion
+			modelBuilder.Entity<Extra>().HasData(GetExtras());
+			base.OnModelCreating(modelBuilder);
 
 			modelBuilder.Entity<Location>().HasData(GetLocations());
 			base.OnModelCreating(modelBuilder);
@@ -173,6 +172,14 @@ namespace QARS.Data
 		private List<Employee> GetEmployees()
 		{
 			return new List<Employee>
+			{
+
+			};
+		}
+
+		private List<Extra> GetExtras()
+		{
+			return new List<Extra>
 			{
 
 			};

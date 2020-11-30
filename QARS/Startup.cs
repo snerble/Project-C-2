@@ -46,6 +46,7 @@ namespace QARS
 			services.AddScoped<StoreServices>();
 			services.AddScoped<FranchiseeServices>();
 			services.AddScoped<EmployeeServices>();
+			services.AddScoped<ExtraServices>();
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
