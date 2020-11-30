@@ -33,6 +33,11 @@ namespace QARS.Data.Models
 		public string NormalizedEmail { get; set; }
 
 		/// <summary>
+		/// Gets or sets whether this <see cref="User"/>'s email has been verified.
+		/// </summary>
+		public bool IsEmailVerified { get; set; } = false;
+
+		/// <summary>
 		/// Gets or sets the hashed password for this <see cref="User"/>.
 		/// </summary>
 		[Required, MinLength(64), MaxLength(64)]
