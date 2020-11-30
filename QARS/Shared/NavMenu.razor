@@ -16,16 +16,7 @@
 						<NavLink class="nav-link" href="@navItem.RouteAttrib.Template">@navItem.NavAttrib.Name</NavLink>
 					</li>
 				}
-				<li class="nav-item">
-					<AuthorizeView>
-						<Authorized>
-							<span class="nav-link alert-danger">You are logged in</span>
-						</Authorized>
-						<NotAuthorized>
-							<NavLink class="nav-link" href="/Login">Login</NavLink>
-						</NotAuthorized>
-					</AuthorizeView>
-				</li>
+				<LoginDisplay/>
 			</ul>
 		</div>
 	</div>
