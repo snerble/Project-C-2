@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
+using QARS.Areas.Identity;
 using QARS.Data;
 using QARS.Data.Authentication;
 using QARS.Data.Models;
@@ -43,23 +45,29 @@ namespace QARS
 			)));
 			#endregion
 
+			#region Identity Setup
 			services.AddDefaultIdentity<User>(config =>
 			{
+				// TODO add actual password requirements
 				config.Password.RequireDigit = false;
 				config.Password.RequireLowercase = false;
 				config.Password.RequiredLength = 0;
 				config.Password.RequireUppercase = false;
 				config.Password.RequireNonAlphanumeric = false;
+
+				config.User.RequireUniqueEmail = true;
 			})
 				.AddRoles<Role>()
 				.AddRoleStore<QARSRoleStore>()
-				.AddUserStore<QARSUserStore>();
+				.AddUserStore<QARSUserStore>(); 
+			#endregion
 
 			#region Service Registration
 			services.AddScoped<CarModelServices>();
+			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<User>>();
+			#endregion
 
 			services.ConfigureApplicationCookie(x => x.LoginPath = "/Login");
-			#endregion
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -84,8 +92,8 @@ namespace QARS
 
 			app.UseRouting();
 
-			app.UseAuthorization();
 			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
 			{

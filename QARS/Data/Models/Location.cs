@@ -25,11 +25,13 @@ namespace QARS.Data.Models
 		/// Gets or sets the zip code of this <see cref="Location"/>.
 		/// </summary>
 		[Required]
+		[Display(Name = "Zip code")]
 		public string ZipCode { get; set; }
 		/// <summary>
 		/// Gets or sets the location of this <see cref="Location"/>.
 		/// </summary>
 		[Required]
+		[Display(Name = "Country")]
 		public string CountryCode { get; set; }
 	}
 }
