@@ -1,11 +1,16 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
-a, .btn-link {
+a, .nav-link {
     color: #0366d6;
 }
 
-.nav-item a {
-    color: #d7d7d7;
+.nav-item button {
+    background: none !important;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-item * {
     border-radius: 4px;
     height: 3rem;
     display: flex;
@@ -13,14 +18,12 @@ a, .btn-link {
     line-height: 3rem;
 }
 
-    .nav-item a.active {
+    .nav-item *.active {
         background-color: rgba(0,0,0,0.05);
-        color: white;
     }
 
-    .nav-item a:hover {
+    .nav-item *:hover {
         background-color: rgba(0,0,0,0.025);
-        color: white;
     }
 
 .nav-link {
@@ -55,7 +58,6 @@ a, .btn-link {
 
 
 @media (min-width: 768px) {
-
     .navbar-toggler {
         display: none;
     }
