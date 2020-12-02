@@ -5,7 +5,8 @@
 
 <link href="/css/modal.css" rel="stylesheet" />
 
-<EditForm Model="@UpdateFranchisee">
+<EditForm Model="@UpdateFranchisee" OnValidSubmit="UpdateFranchiseeData">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" class="form-control" @bind="@UpdateFranchisee.Email" />
@@ -39,8 +40,9 @@
         <input type="text" id="locationcountry" class="form-control" @bind="@UpdateFranchisee.Location.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-warning" @onclick="UpdateFranchiseeData">Update</button>
+        <button class="btn btn-warning" type="submit">Update</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {

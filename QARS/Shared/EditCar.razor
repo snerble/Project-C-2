@@ -4,7 +4,8 @@
 
 <link href="/css/carmodal.css" rel="stylesheet" />
 
-<EditForm Model="@UpdateCar">
+<EditForm Model="@UpdateCar" OnValidSubmit="UpdateCarData">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="carmodelid">Car Model Id</label>
         <select class="form-control" @bind="@carModelId">
@@ -52,8 +53,9 @@
         <input type="text" id="countrycode" class="form-control" @bind="@UpdateCar.Location.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-warning" @onclick="UpdateCarData">Update</button>
+        <button class="btn btn-warning" type="submit">Update</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {

@@ -6,6 +6,7 @@
 <link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@NewEmployee" OnValidSubmit="@AddNewEmployee">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" class="form-control" @bind="@NewEmployee.Email" />
@@ -45,6 +46,7 @@
     <div class="text-center p-3 mb-3">
         <button class="btn btn-success" type="submit">Add Employee</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {

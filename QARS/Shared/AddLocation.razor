@@ -5,7 +5,8 @@
 
 <link href="/css/locationmodal.css" rel="stylesheet" />
 
-<EditForm Model="@NewLocation">
+<EditForm Model="@NewLocation" OnValidSubmit="AddNewLocation">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="address">Address</label>
         <input type="text" id="address" class="form-control" @bind="@NewLocation.Address" />
@@ -23,8 +24,9 @@
         <input type="text" id="countrycode" class="form-control" @bind="@NewLocation.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-success" @onclick="AddNewLocation">Add Location</button>
+        <button class="btn btn-success" type="submit">Add Location</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {

@@ -4,7 +4,8 @@
 
 <link href="/css/modal.css" rel="stylesheet" />
 
-<EditForm Model="@UpdateEmployee">
+<EditForm Model="@UpdateEmployee" OnValidSubmit="UpdateEmployeeData">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" class="form-control" @bind="@UpdateEmployee.Email" />
@@ -38,8 +39,9 @@
         <input type="text" id="locationcountry" class="form-control" @bind="@UpdateEmployee.Location.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-warning" @onclick="UpdateEmployeeData">Update</button>
+        <button class="btn btn-warning" type="submit">Update</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {

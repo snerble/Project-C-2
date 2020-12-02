@@ -5,7 +5,8 @@
 
 <link href="/css/storemodal.css" rel="stylesheet"/>
 
-<EditForm Model="@NewStore">
+<EditForm Model="@NewStore" OnValidSubmit="AddNewStore">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="franchiseeid">Franchisee Id</label>
         <select class="form-control" @bind="@FranchiseeId">
@@ -36,8 +37,9 @@
         <textarea class="form-control" id="description" rows="3" @bind="@NewStore.Description"></textarea>
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-success" @onclick="AddNewStore">Add Store</button>
+        <button class="btn btn-success" type="submit">Add Store</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {
