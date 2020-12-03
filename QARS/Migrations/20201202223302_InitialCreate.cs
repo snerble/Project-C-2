@@ -138,9 +138,9 @@ namespace QARS.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ModelId = table.Column<int>(nullable: true),
+                    ModelId = table.Column<int>(nullable: false),
                     LicensePlate = table.Column<string>(maxLength: 16, nullable: false),
-                    StoreId = table.Column<int>(nullable: true),
+                    StoreId = table.Column<int>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     Available = table.Column<bool>(nullable: false),
                     Mileage = table.Column<decimal>(nullable: false)
@@ -159,13 +159,13 @@ namespace QARS.Migrations
                         column: x => x.ModelId,
                         principalTable: "CarModels",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Cars_Stores_StoreId",
                         column: x => x.StoreId,
                         principalTable: "Stores",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(

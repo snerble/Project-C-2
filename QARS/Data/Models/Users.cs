@@ -25,14 +25,14 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the hashed password for this <see cref="User"/>.
 		/// </summary>
-		[Required, MinLength(64), MaxLength(64)]
+		[MinLength(64), MaxLength(64)]
 		public byte[] Password { get; set; }
 		/// <summary>
 		/// Gets or sets the raw password.
 		/// <para/>
 		/// This property is not mapped and is only intended for temporary storage.
 		/// </summary>
-		[NotMapped]
+		[Required, NotMapped]
 		internal string RawPassword { get; set; }
 
 		/// <summary>
