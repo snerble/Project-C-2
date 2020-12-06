@@ -1,15 +1,20 @@
+using HeyRed.MarkdownSharp;
+
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 
 using QARS.Areas.Identity;
 using QARS.Data;
 using QARS.Data.Authentication;
+using QARS.Data.Configuration;
 using QARS.Data.Models;
 using QARS.Data.Services;
 
@@ -56,18 +61,32 @@ namespace QARS
 				config.Password.RequireNonAlphanumeric = false;
 
 				config.User.RequireUniqueEmail = true;
+
+				config.SignIn.RequireConfirmedEmail = true;
 			})
+				.AddDefaultTokenProviders()
 				.AddRoles<Role>()
 				.AddRoleStore<QARSRoleStore>()
-				.AddUserStore<QARSUserStore>(); 
+				.AddUserStore<QARSUserStore>();
+			#endregion
+
+			#region Service Configuration
+			services.Configure<MarkdownOptions>(Configuration.GetSection(nameof(MarkdownOptions)));
+			services.Configure<EmailSettings>(Configuration.GetSection(nameof(EmailSettings)));
+
+			services.ConfigureApplicationCookie(x => x.LoginPath = "/Login");
 			#endregion
 
 			#region Service Registration
+			services.AddScoped<EmailSender>();
+			services.AddScoped<IEmailSender, EmailSender>();
+
 			services.AddScoped<CarModelServices>();
 			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<User>>();
-			#endregion
 
-			services.ConfigureApplicationCookie(x => x.LoginPath = "/Login");
+			services.AddTransient<IRazorViewToStringRenderer, RazorViewRenderer>();
+			services.AddTransient(sp => new Markdown(sp.GetService<IOptions<MarkdownOptions>>().Value));
+			#endregion
 		}
 
 		// This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -99,7 +99,7 @@ namespace QARS.Areas.Identity.Pages.Account
 					LastName = Input.LastName,
 					Email = Input.Email,
 					PhoneNumber = Input.PhoneNumber,
-					LocationId = 1
+					Location = Input.Location
 				};
 				IdentityResult result = await _userManager.CreateAsync(user, Input.Password);
 				if (result.Succeeded)

@@ -31,27 +31,28 @@ namespace QARS.Data.Authentication
 
 		public async Task<IdentityResult> CreateAsync(User user, CancellationToken cancellationToken)
 		{
-			EntityEntry<User> entry = await DbContext.AddAsync(user, cancellationToken);
-			if (entry.State == EntityState.Added)
+			try
 			{
-				// Add the new user to it's default role
+				// Insert the user
+				await DbContext.AddAsync(user, cancellationToken);
+
+				// Assign the user to it's default role based on it's type
 				await AddToRoleAsync(user, user switch
 				{
 					Administrator _ => Role.Admin,
 					Customer _ => Role.Customer,
 					Employee _ => Role.Employee,
 					Franchisee _ => Role.Franchisee,
-					_ => throw new ArgumentException($"Unknown user type ")
+					_ => throw new ArgumentException($"Unknown user type {user.GetType()}")
 				}, cancellationToken);
-
-				// Save changes (this is done late to ensure that the role was also added succesfully)
+				
 				await DbContext.SaveChangesAsync(cancellationToken);
 				return IdentityResult.Success;
 			}
-
-			// Save changes to ensure that nothing lingers
-			await DbContext.SaveChangesAsync(cancellationToken);
-			return IdentityResult.Failed();
+			catch (DbUpdateException e)
+			{
+				return IdentityResult.Failed(Utils.GetIdentityErrors(e));
+			}
 		}
 
 		public async Task<User> FindByIdAsync(string userId, CancellationToken cancellationToken)
@@ -80,20 +81,30 @@ namespace QARS.Data.Authentication
 
 		public async Task<IdentityResult> UpdateAsync(User user, CancellationToken cancellationToken)
 		{
-			EntityEntry<User> entry = DbContext.Update(user);
-			await DbContext.SaveChangesAsync(cancellationToken);
-			if (entry.State == EntityState.Detached)
-				return IdentityResult.Failed();
-			return IdentityResult.Success;
+			try
+			{
+				EntityEntry<User> entry = DbContext.Update(user);
+				await DbContext.SaveChangesAsync(cancellationToken);
+				return IdentityResult.Success;
+			}
+			catch (DbUpdateException e)
+			{
+				return IdentityResult.Failed(Utils.GetIdentityErrors(e));
+			}
 		}
 
 		public async Task<IdentityResult> DeleteAsync(User user, CancellationToken cancellationToken)
 		{
-			EntityEntry<User> entry = DbContext.Remove(user);
-			await DbContext.SaveChangesAsync(cancellationToken);
-			if (entry.State == EntityState.Deleted)
+			try
+			{
+				DbContext.Remove(user);
+				await DbContext.SaveChangesAsync(cancellationToken);
 				return IdentityResult.Success;
-			return IdentityResult.Failed();
+			}
+			catch (DbUpdateException e)
+			{
+				return IdentityResult.Failed(Utils.GetIdentityErrors(e));
+			}
 		}
 
 		public void Dispose()

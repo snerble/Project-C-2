@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Identity;
+
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -5,6 +7,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Diagnostics;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace QARS.Data.Models
 {
@@ -22,7 +25,7 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the e-mail address of this <see cref="User"/>.
 		/// </summary>
-		[Required, EmailAddress]
+		[Required, EmailAddress, PersonalData]
 		public string Email { get; set; }
 		/// <summary>
 		/// Gets or sets the normalized e-mail of this <see cref="User"/>.
@@ -46,17 +49,17 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the first name of this <see cref="User"/>.
 		/// </summary>
-		[Required, MinLength(1)]
+		[Required, MinLength(1), PersonalData]
 		public string FirstName { get; set; }
 		/// <summary>
 		/// Gets or sets the last name of this <see cref="User"/>.
 		/// </summary>
-		[Required, MinLength(1)]
+		[Required, MinLength(1), PersonalData]
 		public string LastName { get; set; }
 		/// <summary>
 		/// Gets or sets the phone number of this <see cref="User"/>.
 		/// </summary>
-		[Required, Phone]
+		[Required, Phone, PersonalData]
 		public string PhoneNumber { get; set; }
 
 		/// <summary>
@@ -72,6 +75,13 @@ namespace QARS.Data.Models
 		/// Gets or sets a list of <see cref="UserRole"/>s for this user.
 		/// </summary>
 		public List<UserRole> Roles { get; set; }
+
+		[PersonalData]
+		public async Task<Dictionary<string, object>> GetPersonalData(AppDbContext dbContext)
+		{
+			await dbContext.Entry(this).Reference(x => x.Location).LoadAsync();
+			return new Dictionary<string, object> { { "Location", Location } };
+		}
 
 		public override string ToString() => Utils.GetDetailedString(this);
 

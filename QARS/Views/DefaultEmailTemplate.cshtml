@@ -1,0 +1,12 @@
+﻿@model EmailModel
+
+@{ 
+	Layout = "_Layout";
+}
+
+<div>
+	<p>Hi,</p>
+</div>
+<div>
+	@Html.Raw(Model.Message)
+</div>

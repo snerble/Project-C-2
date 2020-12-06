@@ -27,11 +27,16 @@ namespace QARS.Data.Authentication
 
 		public async Task<IdentityResult> CreateAsync(Role role, CancellationToken cancellationToken)
 		{
-			EntityEntry<Role> entry = await DbContext.AddAsync(role, cancellationToken);
-			await DbContext.SaveChangesAsync(cancellationToken);
-			if (entry.State == EntityState.Added)
+			try
+			{
+				await DbContext.AddAsync(role, cancellationToken);
+				await DbContext.SaveChangesAsync(cancellationToken);
 				return IdentityResult.Success;
-			return IdentityResult.Failed();
+			}
+			catch (DbUpdateException e)
+			{
+				return IdentityResult.Failed(Utils.GetIdentityErrors(e));
+			}
 		}
 
 		public async Task<Role> FindByIdAsync(string roleId, CancellationToken cancellationToken)
@@ -66,20 +71,30 @@ namespace QARS.Data.Authentication
 
 		public async Task<IdentityResult> UpdateAsync(Role role, CancellationToken cancellationToken)
 		{
-			EntityEntry<Role> entry = DbContext.Update(role);
-			await DbContext.SaveChangesAsync(cancellationToken);
-			if (entry.State == EntityState.Detached)
-				return IdentityResult.Failed();
-			return IdentityResult.Success;
+			try
+			{
+				DbContext.Update(role);
+				await DbContext.SaveChangesAsync(cancellationToken);
+				return IdentityResult.Success;
+			}
+			catch (DbUpdateException e)
+			{
+				return IdentityResult.Failed(Utils.GetIdentityErrors(e));
+			}
 		}
 
 		public async Task<IdentityResult> DeleteAsync(Role role, CancellationToken cancellationToken)
 		{
-			EntityEntry<Role> entry = DbContext.Remove(role);
-			await DbContext.SaveChangesAsync(cancellationToken);
-			if (entry.State == EntityState.Deleted)
+			try
+			{
+				DbContext.Remove(role);
+				await DbContext.SaveChangesAsync(cancellationToken);
 				return IdentityResult.Success;
-			return IdentityResult.Failed();
+			}
+			catch (DbUpdateException e)
+			{
+				return IdentityResult.Failed(Utils.GetIdentityErrors(e));
+			}
 		}
 
 		public void Dispose()

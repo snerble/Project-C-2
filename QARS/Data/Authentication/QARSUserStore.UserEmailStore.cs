@@ -18,7 +18,7 @@ namespace QARS.Data.Authentication
 			=> Task.FromResult(user.Email);
 		public Task<string> GetNormalizedEmailAsync(User user, CancellationToken cancellationToken)
 			=> Task.FromResult(user.NormalizedEmail);
-		public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken) => Task.FromResult(false);
+		public Task<bool> GetEmailConfirmedAsync(User user, CancellationToken cancellationToken) => Task.FromResult(user.IsEmailVerified);
 
 		public Task SetEmailAsync(User user, string email, CancellationToken cancellationToken)
 		{
@@ -30,6 +30,10 @@ namespace QARS.Data.Authentication
 			user.NormalizedEmail = normalizedEmail;
 			return Task.CompletedTask;
 		}
-		public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken) => Task.CompletedTask;
+		public Task SetEmailConfirmedAsync(User user, bool confirmed, CancellationToken cancellationToken)
+		{
+			user.IsEmailVerified = confirmed;
+			return Task.CompletedTask;
+		}
 	}
 }
