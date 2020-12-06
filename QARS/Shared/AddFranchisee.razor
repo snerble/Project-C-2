@@ -5,7 +5,8 @@
 
 <link href="/css/modal.css" rel="stylesheet"/>
 
-<EditForm Model="@NewFranchisee">
+<EditForm Model="@NewFranchisee" OnValidSubmit="@AddNewFranchisee">
+    <DataAnnotationsValidator />
     <div class="form-group">
         <label for="email">Email</label>
         <input type="text" id="email" class="form-control" @bind="@NewFranchisee.Email" />
@@ -43,8 +44,9 @@
         <input type="text" id="locationcountry" class="form-control" @bind="@NewFranchisee.Location.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-success" @onclick="AddNewFranchisee">Add Franchisee</button>
+        <button class="btn btn-success" type="submit">Add Franchisee</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {

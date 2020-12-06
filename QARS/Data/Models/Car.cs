@@ -15,17 +15,19 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// Gets or sets the model of this <see cref="Car"/>.
 		/// </summary>
+		[Required(ErrorMessage = "Model is required")]
 		public CarModel Model { get; set; }
 
 		/// <summary>
 		/// Gets or sets the license plate of this <see cref="Car"/>.
 		/// </summary>
-		[Required, StringLength(16)]
+		[Required(ErrorMessage = "License plate is required"), StringLength(16, ErrorMessage = "License plate is too long")]
 		public string LicensePlate { get; set; }
 
 		/// <summary>
 		/// Gets or sets the original <see cref="Models.Store"/> of this <see cref="Car"/>.
 		/// </summary>
+		[Required(ErrorMessage = "Store is required")]
 		public Store Store { get; set; }
 
 		/// <summary>

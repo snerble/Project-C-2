@@ -4,9 +4,11 @@
 @inject NavigationManager navManager
 @using QARS.Data.Models
 
-<div class="jumbotron">
-    <h3>CarList</h3>
-</div>
+<link href="/css/carList.css" rel="stylesheet" />
+
+
+
+<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime"/>
 
 @if (Cars.Any())
 {

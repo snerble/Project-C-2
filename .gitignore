@@ -354,3 +354,5 @@ MigrationBackup/
 *.db
 /QARS/Database.db-wal
 /QARS/Database.db-shm
+/QARS/Migrations/20201129135918_InitialCreate.cs
+/QARS/Migrations/20201129135918_InitialCreate.Designer.cs

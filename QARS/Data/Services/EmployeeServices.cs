@@ -12,42 +12,42 @@ using Blazored.Modal.Services;
 
 namespace QARS.Data.Services
 {
-	public class FranchiseeServices
+	public class EmployeeServices
 	{
 		private AppDbContext dbContext;
 
-		public FranchiseeServices(AppDbContext dbContext)
+		public EmployeeServices(AppDbContext dbContext)
 		{
 			this.dbContext = dbContext;
 		}
 
-		public async Task<List<Franchisee>> GetFranchiseeAsync()
+		public async Task<List<Employee>> GetEmployeesAsync()
 		{
-			return await dbContext.Franchisees.ToListAsync();
+			return await dbContext.Employees.ToListAsync();
 		}
 
-		public async Task<Franchisee> AddFranchiseeAsync(Franchisee franchisee)
+		public async Task<Employee> AddEmployeeAsync(Employee employee)
 		{
 			try
 			{
-				dbContext.Franchisees.Add(franchisee);
+				dbContext.Employees.Add(employee);
 				await dbContext.SaveChangesAsync();
 			}
 			catch (Exception)
 			{
 				throw;
 			}
-			return franchisee;
+			return employee;
 		}
 
-		public async Task<Franchisee> UpdateFranchiseeAsync(Franchisee franchisee)
+		public async Task<Employee> UpdateEmployeeAsync(Employee employee)
 		{
 			try
 			{
-				var franchiseeExist = dbContext.Franchisees.FirstOrDefault(p => p.Id == franchisee.Id);
-				if (franchiseeExist != null)
+				var employeeExist = dbContext.Employees.FirstOrDefault(p => p.Id == employee.Id);
+				if (employeeExist != null)
 				{
-					dbContext.Update(franchisee);
+					dbContext.Update(employee);
 					await dbContext.SaveChangesAsync();
 				}
 			}
@@ -55,14 +55,14 @@ namespace QARS.Data.Services
 			{
 				throw;
 			}
-			return franchisee;
+			return employee;
 		}
 
-		public async Task DeleteFranchiseeAsync(Franchisee franchisee)
+		public async Task DeleteEmployeeAsync(Employee employee)
 		{
 			try
 			{
-				dbContext.Franchisees.Remove(franchisee);
+				dbContext.Employees.Remove(employee);
 				await dbContext.SaveChangesAsync();
 			}
 			catch (Exception)
@@ -72,7 +72,6 @@ namespace QARS.Data.Services
 		}
 		public async Task CloseModal(BlazoredModalInstance blazoredmodal)
 		{
-
 			await blazoredmodal.Close(ModalResult.Ok(true));
 		}
 	}

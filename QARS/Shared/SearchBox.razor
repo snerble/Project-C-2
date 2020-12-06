@@ -14,9 +14,9 @@
                         <label for="pickupLocation">PICK UP LOCATION</label>
                         <select id="pickupLocation" class="form-control selectpicker" @bind="pickupLocation">
                             <option value="" disabled selected>select location</option>
-                            @foreach (var car in dbContext.Cars)
+                            @foreach (var store in dbContext.Stores)
                             {
-                                locationId = car.LocationId;
+                                locationId = store.LocationId;
                                 foreach (var location in dbContext.Locations)
                                 {
                                     if (location.Id == locationId)

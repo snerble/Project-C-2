@@ -36,10 +36,10 @@ namespace QARS.Migrations
                     b.Property<decimal>("Mileage")
                         .HasColumnType("TEXT");
 
-                    b.Property<int?>("ModelId")
+                    b.Property<int>("ModelId")
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("StoreId")
+                    b.Property<int>("StoreId")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
@@ -112,27 +112,6 @@ namespace QARS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CarModels");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Brand = "tesla",
-                            Category = 4,
-                            DayRate = 12.00m,
-                            Description = "it's a car",
-                            Doors = 5,
-                            Efficiency = 10f,
-                            Emission = 5,
-                            FreeMileage = 100m,
-                            FuelType = 12,
-                            HasAirconditioning = true,
-                            KMRate = 0.19m,
-                            Passengers = 5,
-                            SuitCases = 3,
-                            Transmission = 2,
-                            Type = "person car"
-                        });
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Contact", b =>
@@ -367,11 +346,15 @@ namespace QARS.Migrations
 
                     b.HasOne("QARS.Data.Models.CarModel", "Model")
                         .WithMany()
-                        .HasForeignKey("ModelId");
+                        .HasForeignKey("ModelId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("QARS.Data.Models.Store", "Store")
                         .WithMany()
-                        .HasForeignKey("StoreId");
+                        .HasForeignKey("StoreId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Reservation", b =>
