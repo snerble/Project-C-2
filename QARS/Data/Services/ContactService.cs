@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace qars.data.services
+namespace QARS.Data.Services
 {
 	public class ContactServices
 	{
@@ -24,7 +24,7 @@ namespace qars.data.services
 			return await dbContext.Contacts.ToListAsync();
 		}
 
-		public async Task<Contact> addcarasync(Contact contact)
+		public async Task<Contact> addcontactasync(Contact contact)
 		{
 			try
 			{

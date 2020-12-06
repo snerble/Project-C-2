@@ -1,13 +1,13 @@
-﻿@*@page "/managecontactinfo"
-@inject contactservices service
-@using qars.data.models
+﻿@page "/managecontactinfo"
+@inject ContactServices service
+
 
 
 
 
 <div class="col-12 d-flex justify-content-between">
     <div class="col-3">
-        <userdashboard />
+        <UserDashboard />
     </div>
 
     <div class="col-9">
@@ -21,21 +21,25 @@
                 <table class="table">
                     <thead class="thead-light">
                         <tr>
-                            <th scope="col">id</th>
-                            <th scope="col">franchisee id</th>
-                            <th scope="col">location id</th>
+                            <th scope="col">Id</th>
+                            <th scope="col">Tell</th>
+                            <th scope="col">Contactaddress</th>
+                            <th scope="col">Discript</th>
                             <th scope="col">actions</th>
+
                         </tr>
                     </thead>
                     <tbody>
-                        @if (contact.any())
+                        @if (contacts.Any())
                         {
-                            @foreach (var contact in contact)
+                            @foreach (var contact in contacts)
                             {
                                 <tr>
-                                    <td scope="col">@contact.id</td>
-                                    <td>@contact.id</td>
-                                    <td>@contact.</td>
+                                    <td>@contact.Id</td>
+                                    <td>@contact.Tell</td>
+                                    <td>@contact.Contactaddress</td>
+                                    <td>@contact.Discript</td>
+
                                     <td><button class="btn btn-danger" @onclick="(() => deletecontact(contact))">delete</button>  <button @onclick="@(() => showeditcontact(contact))" class="btn btn-warning">show & edit</button></td>
                                 </tr>
                             }
@@ -47,6 +51,7 @@
                     </tbody>
                 </table>
             </div>
+            <button @onclick="@(() => showaddcontact())"> addcontact </button>
         </div>
     </div>
 </div>
@@ -54,29 +59,35 @@
 
 @code 
 {
-        list<contact> contacts = new list<contact>();
-    protected override async task oninitializedasync()
+    List<Contact> contacts = new List<Contact>();
+    protected override async Task OnInitializedAsync()
     {
-        await refreshcontact();
-    }
-    private async task refreshcontacts()
-    {
-        contacts = await service.getcontactsasync();
-    }
-
-    private async task deletecontact(contact contact)
-    {
-        await service.deletecontactsasync(contact);
         await refreshcontacts();
     }
-    [cascadingparameter] public imodalservice modal { get; set; }
-    async task showeditcontact(contact contact)
+    private async Task refreshcontacts()
     {
-        var parameters = new modalparameters();
-        parameters.add(nameof(editstore.store), contact);
-
-        var editmodal = modal.show<editcontact>("edit contact", parameters);
-        var result = await editmodal.result;
-        statehaschanged();
+        contacts = await service.getContactasync();
     }
-}*@
+
+    private async Task deletecontact(Contact contact)
+    {
+        await service.Deletecontactsasync(contact);
+        await refreshcontacts();
+    }
+    [CascadingParameter] public IModalService modal { get; set; }
+    async Task showeditcontact(Contact contact)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditContact.Contact), contact);
+
+        var editmodal = modal.Show<EditContact>("edit contact", parameters);
+        var result = await editmodal.Result;
+        StateHasChanged();
+    }
+
+    async Task showaddcontact()
+    {
+        var addmodal = modal.Show<AddContact>("add");
+        var result = await addmodal.Result;
+    }
+}

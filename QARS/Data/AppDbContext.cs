@@ -89,6 +89,9 @@ namespace QARS.Data
 
 			modelBuilder.Entity<Franchisee>().HasData(GetFranchisees());
 			base.OnModelCreating(modelBuilder);
+
+			modelBuilder.Entity<Contact>().HasData(GetContacts());
+			base.OnModelCreating(modelBuilder);
 		}
 
 		public DbSet<Location> Locations { get; set; }
@@ -163,6 +166,14 @@ namespace QARS.Data
 		private List<Location> GetLocations()
 		{
 			return new List<Location>
+			{
+
+			};
+		}
+
+		private List<Contact> GetContacts()
+		{
+			return new List<Contact>
 			{
 
 			};
