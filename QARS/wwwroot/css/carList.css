@@ -14,7 +14,7 @@
     margin-top: 5px;
 }
 
-h6{
+.top-menu h6{
     text-transform: uppercase;
     font-size: 1.1em;
     display: inline-block;
@@ -50,4 +50,37 @@ h6{
 
 .box-line{
     border-right: 1px solid #03254C;
+}
+
+.cars{
+    background: white;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.filters {
+    background: rgba(255,255,255,0.8);
+    border-radius: 20px;
+    padding: 10px;
+    font-family: sans-serif;
+    height: 100%;
+}
+
+.filters p {
+    font-size: 0.88em;
+    border-bottom: 1px solid #03254C;
+    padding: 10px;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.filters h6 {
+    font-size: 0.88em;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.category-option{
+    margin-top: -20px;
+    margin-left: 20px;
 }
