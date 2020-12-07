@@ -11,8 +11,16 @@
 <TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime"/>
 
 <div class="row">
-    <div class="col-2 sm filters">
+    <div class="col-sm-2 filters">
         <p>Filters</p>
+
+        <h6>Sort By</h6>
+        <select class="btn btn-mini form-control" @bind="SortBy">
+            <option value="standard">Standard</option>
+            <option value="dayratelow">Day Rate (low - high)</option>
+            <option value="dayratehigh">Day Rate (high - low)</option>
+        </select><br />
+
         <h6>Category</h6><br />
         <div class="category-option">
             <input type="checkbox" class="form-check-input" @bind="CategoryMini"/>
@@ -28,13 +36,13 @@
             <input type="checkbox" class="form-check-input" @bind="CategoryFullsize" />
             <label class="form-check-label">Fullsize</label><br />
             <input type="checkbox" class="form-check-input" @bind="CategoryLuxury" />
-            <label class="form-check-label">Luxury</label><br />
+            <label id="lastcategory" class="form-check-label">Luxury</label><br />
         </div>
     </div>
-    <div class="col-1 sm nothing">
+    <div class="col-sm-1 nothing">
 
     </div>
-    <div class="col-9 sm cars">
+    <div class="col-sm-9 cars">
         @if (Cars.Any())
         {
             @foreach (var car in Cars)
@@ -70,8 +78,6 @@
         Cars = await service.GetCarAsync();
         AllCars = await service.GetCarAsync();
     }
-
-    int carId = new int();
 
     [Parameter]
     public string pickupLocation { get; set; }
@@ -111,6 +117,15 @@
     public bool CategoryFullsize { get { return Categories[5]; } set { Categories[5] = value; Filter(CategoryFullsize, "Fullsize"); } }
     public bool CategoryLuxury { get { return Categories[6]; } set { Categories[6] = value; Filter(CategoryLuxury, "Luxury"); } }
 
+    public string SortElement = string.Empty;
+    public string SortBy { get { return SortElement; } set { SortElement = value; Sort(); } }
+
+
+    /// <summary>
+    /// Sees if a category is true. If so, filter this category
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="value"></param>
     public void Filter(bool element, string value)
     {
         foreach (var category in Categories)
@@ -147,6 +162,27 @@
         if (NothingSelected)
         {
             Cars = AllCars;
+        }
+    }
+
+    public void Sort()
+    {
+        Console.WriteLine("Sorting by: " + SortElement);
+        if (SortElement == "dayratelow")
+        {
+            List<Car> SortedCarList = Cars.OrderBy(c => c.Model.DayRate).ToList();
+            Cars = SortedCarList;
+        }
+        else if (SortElement == "dayratehigh")
+        {
+            List<Car> SortedCarList = Cars.OrderBy(c => c.Model.DayRate).ToList();
+            SortedCarList.Reverse();
+            Cars = SortedCarList;
+        }
+        else if (SortElement == "standard")
+        {
+            List<Car> SortedCarList = Cars.OrderBy(c => c.Id).ToList();
+            Cars = SortedCarList;
         }
     }
 }

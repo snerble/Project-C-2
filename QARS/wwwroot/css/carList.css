@@ -84,3 +84,16 @@
     margin-top: -20px;
     margin-left: 20px;
 }
+
+select.btn-mini {
+    height: auto;
+    line-height: 10px;
+    border: 1px solid #03254C;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 0.8em;
+}
+
+#lastcategory{
+    margin-bottom: 15px;
+}
