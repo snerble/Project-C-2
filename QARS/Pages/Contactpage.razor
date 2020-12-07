@@ -1,10 +1,14 @@
 ﻿@page "/contact"
-
+@inject AppDbContext dbContext;
+@inject ContactServices service;
 @*Deze razor component is aangemaakt voor het maken vna de contact pagina*@
 
-<h1>Contact</h1
-<p>main location: dirkzee wasstraat 2583GH</p>
-<p> tel: 064323521 </p>
+<h1>
+    Contact
+</h1>
+<p>main location: @address</p>
+<p> tel: @tell </p>
+<p>@discript</p>
 
 
 
@@ -30,8 +34,9 @@
     }
 
     #mainBody {
-        background: url(/img/secondback.jpg) ;
+        background: url(/img/secondback.jpg);
     }
+
     #text {
         font-size: 3040px;
         padding: 10px;
@@ -39,5 +44,30 @@
         margin: 10px;
     }
 </style>
+
+
+
+@code{
+    string address;
+    string tell;
+    string discript;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Lookup();
+    }
+
+    void Lookup()
+    {
+        foreach (var contact in dbContext.Contacts)
+        {
+            address = contact.Contactaddress;
+            tell = contact.Tell;
+            discript = contact.Discript;
+        }
+    }
+
+}
 
 
