@@ -2,7 +2,7 @@
 @inject ContactServices service
 
 
-
+<link rel="searchbox stylesheet" href="/css/manage.css">
 
 
 <div class="col-12 d-flex justify-content-between">
@@ -51,7 +51,7 @@
                     </tbody>
                 </table>
             </div>
-            <button @onclick="@(() => showaddcontact())"> addcontact </button>
+            <button class="btn btn-success" @onclick="@(() => showaddcontact())"> addcontact </button>
         </div>
     </div>
 </div>
