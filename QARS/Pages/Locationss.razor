@@ -54,8 +54,8 @@
                     <thead class="thead-light">
                         <tr>
                             
-                            <th scope="col">Address</th>
                             <th scope="col">City</th>
+                            <th scope="col">Address</th>
 
                         </tr>
                     </thead>
@@ -67,7 +67,7 @@
                                 var locationid = location.Id;
                                 <tr @onclick= "@(e =>Lookup(locationid))" >
                                     <td>@location.City</td>
-
+                                    <td>@location.Address</td>
                                 </tr>
                             }
                         }
@@ -82,26 +82,26 @@
     </div>
 </div>
 
-<p>address: @a</p>
-<p>zipcode: @c</p>
-<p>country: @b</p>
+<p>address: @address</p>
+<p>zipcode: @Zipcode</p>
+<p>country: @Country</p>
 
 
 
 @code{
-    string a;
-    string b;
-    string c;
-    
+    string address;
+    string Zipcode;
+    string Country;
+
     void Lookup(int locationid)
     {
         foreach(var location in dbContext.Locations)
         {
             if (location.Id == locationid)
             {
-                a = location.Address;
-                b = location.CountryCode;
-                c = location.ZipCode;
+                address = location.Address;
+                Country = location.CountryCode;
+                Zipcode = location.ZipCode;
             }
         }
     }
