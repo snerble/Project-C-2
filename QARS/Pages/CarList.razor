@@ -23,19 +23,19 @@
 
         <h6>Category</h6><br />
         <div class="category-option">
-            <input type="checkbox" class="form-check-input" @bind="CategoryMini"/>
+            <input type="checkbox" class="form-check-input option" @bind="CategoryMini"/>
             <label class="form-check-label">Mini</label><br />
-            <input type="checkbox" class="form-check-input" @bind="CategoryCompact" />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryCompact" />
             <label class="form-check-label">Compact</label><br />
-            <input type="checkbox" class="form-check-input" @bind="CategoryEconomy" />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryEconomy" />
             <label class="form-check-label">Economy</label><br />
-            <input type="checkbox" class="form-check-input" @bind="CategoryMidsize" />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryMidsize" />
             <label class="form-check-label">Midsize</label><br />
-            <input type="checkbox" class="form-check-input" @bind="CategoryStandard" />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryStandard" />
             <label class="form-check-label">Standard</label><br />
-            <input type="checkbox" class="form-check-input" @bind="CategoryFullsize" />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryFullsize" />
             <label class="form-check-label">Fullsize</label><br />
-            <input type="checkbox" class="form-check-input" @bind="CategoryLuxury" />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryLuxury" />
             <label id="lastcategory" class="form-check-label">Luxury</label><br />
         </div>
     </div>
@@ -43,18 +43,38 @@
 
     </div>
     <div class="col-sm-9 cars">
+        <div class="header">
+            <h6 class="float-right">@Cars.Count() Results</h6>
+        </div>
         @if (Cars.Any())
         {
             @foreach (var car in Cars)
             {
+                float price = (float)car.Model.DayRate;
+                float pricePerKm = (float)car.Model.KMRate;
                 int buttonNumber = car.Id;
                 @if (car.Location.City == pickupLocation)
                 {
+                    <div class="row justify-content-center allcontent">
+                        <div class="col-sm-3 image">
 
-                    <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
-                    <p class="lead">Price per day: €@car.Model.DayRate</p>
-                    <p class="lead">Description: @car.Model.Description</p>
-                    <button type="button" class="btn btn-primary btn-lg" @onclick="@(e => GoTo(buttonNumber))">View Car</button>
+                        </div>
+                        <div class="col-sm-8 carcontent">
+                            <h1 class="display-4">@car.Model.Brand - @car.Model.Type</h1>
+                            <div class="row">
+                                <div class="col-6 carcontentleft">
+                                    <p>Seats up to @car.Model.Passengers passengers</p>
+                                    <p>Powered by @car.Model.FuelType</p>
+                                    <p>Including @car.Model.FreeMileage.ToString("0") free kilometers</p>
+                                </div>
+                                <div class="col-6 rightcarcontent">
+                                    <p>€@price.ToString("0.00")</p><br />
+                                    <p>+€@pricePerKm.ToString("0.00") per KM</p><br />
+                                    <button type="button" class="btn btn-primary btn-lg" @onclick="@(e => GoTo(buttonNumber))">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                 }
             }
@@ -167,7 +187,6 @@
 
     public void Sort()
     {
-        Console.WriteLine("Sorting by: " + SortElement);
         if (SortElement == "dayratelow")
         {
             List<Car> SortedCarList = Cars.OrderBy(c => c.Model.DayRate).ToList();
