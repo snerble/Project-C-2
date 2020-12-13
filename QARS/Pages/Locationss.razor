@@ -3,41 +3,43 @@
 @inject AppDbContext dbContext
 @*Deze razor component is voor het aanmaken van locations pagina*@
 
+@attribute [NavigationTab("Locations", Index = 0)]
+
 <h1>Locations work in progress</h1>
 
 
 
 <style>
-    button {
-        font-size: 40px;
-        padding: 10px;
-        border-radius: 10px;
-        margin: 10px;
-        float: left;
-        margin-left: auto;
-    }
+	button {
+		font-size: 40px;
+		padding: 10px;
+		border-radius: 10px;
+		margin: 10px;
+		float: left;
+		margin-left: auto;
+	}
 
-    #container {
-        text-align: center;
-        align-items: center;
-        margin-left: auto;
-    }
+	#container {
+		text-align: center;
+		align-items: center;
+		margin-left: auto;
+	}
 
-    #input {
-        display: block;
-        margin: auto
-    }
+	#input {
+		display: block;
+		margin: auto
+	}
 
-    #mainBody {
-        background: url(/img/a5596ffd4897b35688d3b3b882d7919d.jpg);
-    }
+	#mainBody {
+		background: url(/img/a5596ffd4897b35688d3b3b882d7919d.jpg);
+	}
 
-    #text {
-        font-size: 3040px;
-        padding: 10px;
-        border-radius: 10px;
-        margin: 10px;
-    }
+	#text {
+		font-size: 3040px;
+		padding: 10px;
+		border-radius: 10px;
+		margin: 10px;
+	}
 </style>
 
 
@@ -45,41 +47,41 @@
 
 
 <div class="col-12 d-flex justify-content-between">
-    <div class="col-9">
-        <div class="back container">
-            
+	<div class="col-9">
+		<div class="back container">
 
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            
-                            <th scope="col">City</th>
-                            <th scope="col">Address</th>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (dbContext.Locations.Any())
-                        {
-                            @foreach (var location in dbContext.Locations)
-                            {
-                                var locationid = location.Id;
-                                <tr @onclick= "@(e =>Lookup(locationid))" >
-                                    <td>@location.City</td>
-                                    <td>@location.Address</td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No locations available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
+			<div class="customtablerow row bg-light">
+				<table class="table">
+					<thead class="thead-light">
+						<tr>
+
+							<th scope="col">City</th>
+							<th scope="col">Address</th>
+
+						</tr>
+					</thead>
+					<tbody>
+						@if (dbContext.Locations.Any())
+						{
+							@foreach (var location in dbContext.Locations)
+							{
+								var locationid = location.Id;
+								<tr @onclick="@(e =>Lookup(locationid))">
+									<td>@location.City</td>
+									<td>@location.Address</td>
+								</tr>
+							}
+						}
+						else
+						{
+							<tr><td colspan="6"><strong>No locations available</strong></td></tr>
+						}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </div>
 
 <p>address: @address</p>
@@ -89,22 +91,22 @@
 
 
 @code{
-    string address;
-    string Zipcode;
-    string Country;
+	string address;
+	string Zipcode;
+	string Country;
 
-    void Lookup(int locationid)
-    {
-        foreach(var location in dbContext.Locations)
-        {
-            if (location.Id == locationid)
-            {
-                address = location.Address;
-                Country = location.CountryCode;
-                Zipcode = location.ZipCode;
-            }
-        }
-    }
+	void Lookup(int locationid)
+	{
+		foreach (var location in dbContext.Locations)
+		{
+			if (location.Id == locationid)
+			{
+				address = location.Address;
+				Country = location.CountryCode;
+				Zipcode = location.ZipCode;
+			}
+		}
+	}
 }
 
 
@@ -113,31 +115,31 @@
 
 
 @*@code {
-        List<QARS.Data.Models.Location>
-        Locations = new List<QARS.Data.Models.Location>
-            ();
-    }*@
+		List<QARS.Data.Models.Location>
+		Locations = new List<QARS.Data.Models.Location>
+			();
+	}*@
 
 
 
 @*<div class="container h-100">
-        <div class="searchBox d-flex flex-row justify-content-center align-items-center">
-            <div class="searchBoxContent">
-                <form method="get">
-                    <div class="dropoff form-row">
-                        <div class="form-group col-md-5">
-                            <label for="location">LOCATIONS</label>
-                            <select id="location" class="form-control">
-                                <option>Rotterdam, Netherlands</option>
-                                <option>Amsterdam, Netherlands</option>
-                            </select>
-                        </div>
-                        <button class="btn btn-primary btn-lg col-md-6 ml-auto"> Get information </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div> *@
+		<div class="searchBox d-flex flex-row justify-content-center align-items-center">
+			<div class="searchBoxContent">
+				<form method="get">
+					<div class="dropoff form-row">
+						<div class="form-group col-md-5">
+							<label for="location">LOCATIONS</label>
+							<select id="location" class="form-control">
+								<option>Rotterdam, Netherlands</option>
+								<option>Amsterdam, Netherlands</option>
+							</select>
+						</div>
+						<button class="btn btn-primary btn-lg col-md-6 ml-auto"> Get information </button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div> *@
 
 
 

@@ -14,7 +14,7 @@ namespace QARS.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.8");
+                .HasAnnotation("ProductVersion", "3.1.9");
 
             modelBuilder.Entity("QARS.Data.Models.Car", b =>
                 {
@@ -257,6 +257,25 @@ namespace QARS.Migrations
                     b.ToTable("ReservationExtras");
                 });
 
+            modelBuilder.Entity("QARS.Data.Models.Role", b =>
+                {
+                    b.Property<int?>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("NormalizedName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Roles");
+                });
+
             modelBuilder.Entity("QARS.Data.Models.Store", b =>
                 {
                     b.Property<int>("Id")
@@ -300,12 +319,19 @@ namespace QARS.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<bool>("IsEmailVerified")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("NormalizedEmail")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Password")
                         .HasColumnType("BLOB")
@@ -320,19 +346,26 @@ namespace QARS.Migrations
                     b.HasIndex("Email")
                         .IsUnique();
 
-                    b.HasIndex("LocationId")
-                        .IsUnique();
+                    b.HasIndex("LocationId");
 
-                    b.ToTable("User");
+                    b.ToTable("Users");
 
                     b.HasDiscriminator<string>("Discriminator").HasValue("User");
                 });
 
-            modelBuilder.Entity("QARS.Data.Models.Administrator", b =>
+            modelBuilder.Entity("QARS.Data.Models.UserRole", b =>
                 {
-                    b.HasBaseType("QARS.Data.Models.User");
+                    b.Property<int?>("UserId")
+                        .HasColumnType("INTEGER");
 
-                    b.HasDiscriminator().HasValue("Administrator");
+                    b.Property<int?>("RoleId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("UserId", "RoleId");
+
+                    b.HasIndex("RoleId");
+
+                    b.ToTable("UserRoles");
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Customer", b =>
@@ -354,6 +387,13 @@ namespace QARS.Migrations
                     b.HasBaseType("QARS.Data.Models.User");
 
                     b.HasDiscriminator().HasValue("Franchisee");
+                });
+
+            modelBuilder.Entity("QARS.Data.Models.Administrator", b =>
+                {
+                    b.HasBaseType("QARS.Data.Models.Employee");
+
+                    b.HasDiscriminator().HasValue("Administrator");
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Car", b =>
@@ -423,9 +463,24 @@ namespace QARS.Migrations
             modelBuilder.Entity("QARS.Data.Models.User", b =>
                 {
                     b.HasOne("QARS.Data.Models.Location", "Location")
-                        .WithOne()
-                        .HasForeignKey("QARS.Data.Models.User", "LocationId")
+                        .WithMany()
+                        .HasForeignKey("LocationId")
                         .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("QARS.Data.Models.UserRole", b =>
+                {
+                    b.HasOne("QARS.Data.Models.Role", "Role")
+                        .WithMany()
+                        .HasForeignKey("RoleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("QARS.Data.Models.User", "User")
+                        .WithMany("Roles")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

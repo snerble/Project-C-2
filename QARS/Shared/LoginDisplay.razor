@@ -1,0 +1,14 @@
+﻿<AuthorizeView>
+	<Authorized>
+		<li class="nav-item"><a class="nav-link " href="Identity/Account/Manage">Account</a></li>
+		<li class="nav-item">
+			<form method="post" action="Identity/Account/LogOut">
+				<button type="submit" class="btn-link nav-link btn">Log out</button>
+			</form>
+		</li>
+	</Authorized>
+	<NotAuthorized>
+		<li class="nav-item"><a class="nav-link" href="Identity/Account/Register">Register</a></li>
+		<li class="nav-item"><a class="nav-link" href="Identity/Account/Login">Log in</a></li>
+	</NotAuthorized>
+</AuthorizeView>

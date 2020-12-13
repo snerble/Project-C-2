@@ -1,5 +1,11 @@
 ﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
 
+/*This modifies main so that it fills the screen and allows the searchbox to be centered vertically.*/
+.main {
+    display: flex;
+    flex-flow: column;
+}
+
 .searchBoxContent {
     width: 700px;
     background: rgba(255, 255, 255, .8);
@@ -11,14 +17,14 @@
     margin-bottom: 25px;
 }
 
-.btn {
+.searchBox .btn {
     background-color: #03254c;
     border: 0px;
     text-transform: uppercase;
     font-weight: 800;
 }
 
-.btn:hover{
+.searchBox .btn:hover{
     background-color: #1B8EE5;
 }
 
@@ -32,10 +38,10 @@
 
 @media (min-width: 768px) and (min-height: 600px){
     .searchBox {
-        margin-top: 300px;
+        margin-bottom: 75px;
     }
 
-    .btn {
+    .searchBox .btn {
         margin-right: 25px;
     }
 }
@@ -48,7 +54,7 @@
         padding-top: 25px;
     }
 
-    .btn{
+    .searchBox .btn {
         margin-top: 25px;
     }
 }

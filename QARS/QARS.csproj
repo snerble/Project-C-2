@@ -6,38 +6,25 @@
     <UserSecretsId>1560333c-8b50-4f1e-8de7-ec6e41147a44</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="Data\Services\Class.cs" />
-    <Compile Remove="Migrations\20201025213735_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201025213735_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201026145705_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201026145705_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201122191553_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201122191553_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201123101055_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201123101055_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201130063103_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201130063103_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201130070313_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201130070313_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201130074337_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201130074337_InitialCreate.Designer.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Remove="Data\Services\AddlocationService.razor" />
+    <Compile Remove="Migrations\20201213211225_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201213211225_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.8">
+    <PackageReference Include="MailKit" Version="2.10.0" />
+    <PackageReference Include="Markdown" Version="2.2.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.9">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.1.8" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.8">
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.9" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.1.9">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
+    <PackageReference Include="MimeKit" Version="2.10.0" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Migrations\" />
