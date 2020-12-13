@@ -61,6 +61,9 @@ project.lock.json
 project.fragment.lock.json
 artifacts/
 
+### VisualStudioCode ###
+.vscode/*
+
 # StyleCop
 StyleCopReport.xml
 
@@ -348,3 +351,10 @@ MigrationBackup/
 
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
+*.db
+/QARS/Database.db-wal
+/QARS/Database.db-shm
+/QARS/Migrations/20201129135918_InitialCreate.cs
+/QARS/Migrations/20201129135918_InitialCreate.Designer.cs
+/QARS/Migrations/20201207122141_InitialCreate.cs
+/QARS/Migrations/20201207122141_InitialCreate.Designer.cs

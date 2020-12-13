@@ -1,0 +1,87 @@
+﻿@page "/manageextras"
+@inject ExtraServices service
+@using QARS.Data.Models
+
+<link rel="stylesheet" href="/css/manage.css">
+
+
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-3">
+        <UserDashboard />
+    </div>
+
+    <div class="col-9">
+        <div class="back container">
+            <div class="heading">
+                <h1 class="display-3" style="text-align: left;">Extra Manager</h1>
+                <p class="lead" style="text-align: left;">All existing extras are displayed below. Create new extras using the 'Add Extra' button. Edit and delete extras by using the action buttons displayed in the table.</p>
+            </div>
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">Name</th>
+                            <th scope="col">Cost</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Extras.Any())
+                        {
+                            @foreach (var extra in Extras)
+                            {
+                                <tr>
+                                    <td scope="col">@extra.Id</td>
+                                    <td>@extra.Name</td>
+                                    <td>@extra.Cost</td>
+                                    <td><button class="btn btn-danger" @onclick="(() => DeleteExtra(extra))">Delete</button>  <button @onclick="@(() => ShowEditExtra(extra))" class="btn btn-warning">Show & Edit</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No extras available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <button @onclick="@(() => ShowAddExtra())" class="btn btn-success">Add Extra</button>
+        </div>
+    </div>
+</div>
+
+@code {
+    List<Extra> Extras = new List<Extra>();
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshExtras();
+    }
+    private async Task RefreshExtras()
+    {
+        Extras = await service.GetExtraAsync();
+    }
+
+    private async Task DeleteExtra(Extra extra)
+    {
+        await service.DeleteExtranAsync(extra);
+        await RefreshExtras();
+    }
+    [CascadingParameter] public IModalService Modal { get; set; }
+    async Task ShowEditExtra(Extra extra)
+    {
+        var parameters = new ModalParameters();
+        parameters.Add(nameof(EditExtra.Extra), extra);
+
+        var editModal = Modal.Show<EditExtra>("Edit Extra", parameters);
+        var result = await editModal.Result;
+        StateHasChanged();
+    }
+
+    async Task ShowAddExtra()
+    {
+        var addModal = Modal.Show<AddExtra>("Add Extra");
+        var result = await addModal.Result;
+    }
+}

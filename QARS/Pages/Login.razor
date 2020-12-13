@@ -1,0 +1,67 @@
+﻿@page "/login"
+@inject NavigationManager NavigationManager
+@using System.IO
+
+<h1>Please validate your information</h1>
+
+<p>Validate: @validations</p>
+
+<style>
+    button {
+        font-size: 40px;
+        padding: 5px;
+        border-radius: 1px;
+        margin: 10px;
+        float: left;
+        margin-left: auto;
+    }
+
+    #container {
+        text-align: center;
+        align-items: center;
+        margin-left: auto;
+    }
+
+    #input {
+        display: block;
+        margin: auto;
+    }
+    #mainBody {
+        background: url(/img/a5596ffd4897b35688d3b3b882d7919d.jpg);
+    }
+</style>
+
+
+<input placeholder="Username" @bind="username" />
+<br />
+<input placeholder="Password" @bind="password" />
+<br />
+<button class="btn btn-primary col-md-1 ml-2" @onclick="Signup"> signup </button> 
+<br />
+<button class="btn btn-primary col-md-1 ml-2" @onclick="Loginvalidation"> validate</button>
+<br />
+
+
+@code {
+    string validations = "";
+    private string password;
+    private string username;
+
+    void Loginvalidation()
+    {
+        if (password == "password" && username == "rowan")
+        {
+            validations = " welcome " + username;
+        }
+        else
+        {
+            validations = "invalid username or password please try again";
+        }
+    }
+
+
+    private void Signup()
+    {
+        NavigationManager.NavigateTo("Signup");
+    }
+}

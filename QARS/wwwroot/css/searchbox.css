@@ -1,0 +1,57 @@
+﻿@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+.searchBoxContent {
+    width: 700px;
+    background: rgba(255, 255, 255, .8);
+    border-radius: 20px;
+    padding: 25px;
+    font-size: 0.9em;
+    font-weight: 400;
+    color: #03254c;
+    margin-bottom: 25px;
+}
+
+.btn {
+    background-color: #03254c;
+    border: 0px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.btn:hover{
+    background-color: #1B8EE5;
+}
+
+.form-control {
+    background-color: rgba(255, 255, 255, .0);
+}
+
+.form-control:focus{
+    background-color: rgba(255, 255, 255, .0);
+}
+
+@media (min-width: 768px) and (min-height: 600px){
+    .searchBox {
+        margin-top: 300px;
+    }
+
+    .btn {
+        margin-right: 25px;
+    }
+}
+
+@media (max-width: 768px){
+    .dropoff{
+        padding-top: 25px;
+    }
+    .vehicleTypeSubmit{
+        padding-top: 25px;
+    }
+
+    .btn{
+        margin-top: 25px;
+    }
+}
+
+
+

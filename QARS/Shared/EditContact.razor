@@ -1,0 +1,49 @@
+﻿@inject ContactServices service
+@using QARS.Data.Models
+
+
+
+<EditForm Model="@UpdateContact">
+    <div class="form-group">
+        <label for="tell">Tell</label>
+        <input type="text" id="tell" class="form-control" @bind="@UpdateContact.Tell" />
+    </div>
+    <div class="form-group">
+        <label for="contactaddress">Contactaddress</label>
+        <input type="text" id="contactaddress" class="form-control" @bind="@UpdateContact.Contactaddress" />
+    </div>
+    <div class="form-group">
+        <label for="discript">Discript</label>
+        <input type="text" id="discript" class="form-control" @bind="@UpdateContact.Discript" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" @onclick="UpdateContactData">Update</button>
+    </div>
+</EditForm>
+
+@code {
+    List<Contact> Contacts = new List<Contact>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Contact Contact { get; set; }
+
+    Contact contact { get; set; }
+
+    protected override void OnInitialized()
+    {
+        contact = Contact;
+        SetContactForUpdate(contact);
+    }
+
+    Contact UpdateContact = new Contact();
+    private void SetContactForUpdate(Contact contact)
+    {
+        UpdateContact = contact;
+    }
+    private async Task UpdateContactData()
+    {
+        await service.updatecontactasync(UpdateContact);
+        await BlazoredModal.Close(ModalResult.Ok<Contact>(contact));
+    }
+}

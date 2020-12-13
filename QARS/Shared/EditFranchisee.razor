@@ -1,0 +1,83 @@
+﻿@inject FranchiseeServices service
+@using QARS.Data.Models
+@inject AppDbContext dbContext
+@inject AddlocationServices location_service
+
+<link href="/css/modal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateFranchisee" OnValidSubmit="UpdateFranchiseeData">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" class="form-control" @bind="@UpdateFranchisee.Email" />
+    </div>
+    <div class="form-group">
+        <label for="firstname">Firstname</label>
+        <input type="text" id="firstname" class="form-control" @bind="@UpdateFranchisee.FirstName" />
+    </div>
+    <div class="form-group">
+        <label for="lastname">Lastname</label>
+        <input type="text" id="lastname" class="form-control" @bind="@UpdateFranchisee.LastName" />
+    </div>
+    <div class="form-group">
+        <label for="phonenumber">Phone Number</label>
+        <input type="text" id="phonenumber" class="form-control" @bind="@UpdateFranchisee.PhoneNumber" />
+    </div>
+    <div class="form-group">
+        <label for="locationaddress">Address</label>
+        <input type="text" id="locationaddress" class="form-control" @bind="@UpdateFranchisee.Location.Address" />
+    </div>
+    <div class="form-group">
+        <label for="locationcity">City</label>
+        <input type="text" id="locationcity" class="form-control" @bind="@UpdateFranchisee.Location.City" />
+    </div>
+    <div class="form-group">
+        <label for="locationzip">ZipCode</label>
+        <input type="text" id="locationzip" class="form-control" @bind="@UpdateFranchisee.Location.ZipCode" />
+    </div>
+    <div class="form-group">
+        <label for="locationcountry">Country</label>
+        <input type="text" id="locationcountry" class="form-control" @bind="@UpdateFranchisee.Location.CountryCode" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" type="submit">Update</button>
+    </div>
+    <ValidationSummary />
+</EditForm>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Franchisee Franchisee { get; set; }
+
+    Franchisee franchisee { get; set; }
+
+    public string RawPassword = string.Empty;
+
+    public int locationId = 0;
+
+
+    protected override void OnInitialized()
+    {
+        franchisee = Franchisee;
+        locationId = franchisee.LocationId;
+        franchisee.Location = dbContext.Locations.FirstOrDefault(x => x.Id == locationId);
+        SetFranchiseeForUpdate(franchisee);
+    }
+
+    Franchisee UpdateFranchisee = new Franchisee()
+    {
+        Location = new Location()
+    };
+
+    private void SetFranchiseeForUpdate(Franchisee franchisee)
+    {
+        UpdateFranchisee = franchisee;
+    }
+    private async Task UpdateFranchiseeData()
+    {
+        UpdateFranchisee.LocationId = UpdateFranchisee.Location.Id;
+        await service.UpdateFranchiseeAsync(UpdateFranchisee);
+        await BlazoredModal.Close(ModalResult.Ok<Franchisee>(franchisee));
+    }
+}

@@ -1,0 +1,38 @@
+﻿@inject ContactServices service;
+@using QARS.Data.Models;
+
+
+
+
+<EditForm Model="@NewContact">
+    <div class="form-group">
+        <label for="tell">Tell</label>
+        <input type="text" id="tell" class="form-control" @bind="@NewContact.Tell" />
+    </div>
+    <div class="form-group">
+        <label for="contactaddress">Contactaddress</label>
+        <input type="text" id="contactaddress" class="form-control" @bind="@NewContact.Contactaddress" />
+    </div>
+    <div class="form-group">
+        <label for="discript">Discript</label>
+        <input type="text" id="discript" class="form-control" @bind="@NewContact.Discript" />
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-success" @onclick="AddNewContact">Add Contact</button>
+    </div>
+</EditForm>
+
+@code 
+{
+    List<Contact> Contacts = new List<Contact>();
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    public Contact NewContact { get; set; } = new Contact();
+
+    private async Task AddNewContact()
+    {
+        await service.addcontactasync(NewContact);
+        NewContact = new Data.Models.Contact();
+        await BlazoredModal.Close(ModalResult.Ok(true));
+    }
+}

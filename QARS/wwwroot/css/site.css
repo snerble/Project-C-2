@@ -1,0 +1,11 @@
+@import url('open-iconic/font/css/open-iconic-bootstrap.min.css');
+
+html, body {
+    font-family: 'Open Sans', sans-serif;
+    height: 100%;
+    margin-top: 0;
+}
+
+#mainBody {
+    background: white;
+}

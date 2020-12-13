@@ -1,0 +1,126 @@
+﻿@inject CarModelServices service
+@using QARS.Data.Models
+
+<link href="/css/carmodelmodal.css" rel="stylesheet" />
+
+<EditForm Model="@UpdateCarModel" OnValidSubmit="UpdateCarModelData">
+    <DataAnnotationsValidator />
+    <div class="form-group">
+        <label for="brand">Brand</label>
+        <input placeholder="Fill in the car brand (e.g. 'Tesla')" type="text" id="brand" class="form-control" @bind="@UpdateCarModel.Brand" />
+    </div>
+    <div class="form-group">
+        <label for="type">Type</label>
+        <input placeholder="Fill in the car type (e.g. 'Model 3')" id="type" class="form-control" @bind="@UpdateCarModel.Type" />
+    </div>
+    <div class="form-group">
+        <label for="category">Category</label><br />
+        <small>Select category</small>
+        <select class="form-control" @bind="@UpdateCarModel.Category">
+            @foreach (QARS.Data.Models.CarCategory category in Enum.GetValues(typeof(QARS.Data.Models.CarCategory)))
+            {
+                <option value="@category">@category</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="dayrate">Day Rate</label><br />
+        <small>Fill in the cost of the car per day</small>
+        <input id="dayrate" class="form-control" @bind="@UpdateCarModel.DayRate" />
+    </div>
+    <div class="form-group">
+        <label for="kmrate">Kilometer Rate</label><br />
+        <small>Fill in the cost per kilometer</small>
+        <input type="text" id="kmrate" class="form-control" @bind="@UpdateCarModel.KMRate" />
+    </div>
+    <div class="form-group">
+        <label for="freeMileage">Free Mileage</label><br />
+        <small>Fill in the amount of free kilometers</small>
+        <input type="text" id="freeMileage" class="form-control" @bind="@UpdateCarModel.FreeMileage" />
+    </div>
+    <div class="form-group">
+        <label for="description">Description</label>
+        <textarea placeholder="Write a description for the car" rows="3" type="text" id="description" class="form-control" @bind="@UpdateCarModel.Description" />
+    </div>
+    <div class="form-group">
+        <label for="doors">Doors</label><br />
+        <small>Fill in the amount of doors the car has</small>
+        <input id="doors" class="form-control" @bind="@UpdateCarModel.Doors" />
+    </div>
+    <div class="form-group">
+        <label for="efficiency">Efficiency</label><br />
+        <small>Fill in the efficiency in km/L</small>
+        <input id="efficiency" class="form-control" @bind="@UpdateCarModel.Efficiency" />
+    </div>
+    <div class="form-group">
+        <label for="emission">Emission</label><br />
+        <small>Fill in the emmission in g CO2/km</small>
+        <input type="text" id="emission" class="form-control" @bind="@UpdateCarModel.Emission" />
+    </div>
+    <div class="form-group">
+        <label for="fuelType">Fuel Type</label><br />
+        <small>Select fuel type</small>
+        <select class="form-control" @bind="UpdateCarModel.FuelType">
+            @foreach (FuelType fueltype in Enum.GetValues(typeof(FuelType)))
+            {
+                <option value="@fueltype">@fueltype</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <input type="checkbox" name="hasairconditioning" value="True" @bind="@UpdateCarModel.HasAirconditioning" />
+        <label for="hasairconditioning">Has Airconditioning</label><br />
+        <small>Check the box if the car has airconditioning</small>
+    </div>
+    <div class="form-group">
+        <label for="passenger">Passengers</label><br />
+        <small>Fill in the amount of seats in the car</small>
+        <input type="text" id="passenger" class="form-control" @bind="@UpdateCarModel.Passengers" />
+    </div>
+    <div class="form-group">
+        <label for="suitCases">Suitcases</label><br />
+        <small>Fill in the amount of suitcases able to fit in the car</small>
+        <input type="text" id="suitCases" class="form-control" @bind="@UpdateCarModel.SuitCases" />
+    </div>
+    <div class="form-group">
+        <label for="transmission">Transmission</label><br />
+        <small>Select transmission</small>
+        <select class="form-control" @bind="UpdateCarModel.Transmission">
+            @foreach (TransmissionType transmission in Enum.GetValues(typeof(TransmissionType)))
+            {
+                <option value="@transmission">@transmission</option>
+            }
+        </select>
+    </div>
+    <div class="text-center p-3 mb-3">
+        <button class="btn btn-warning" type="submit">Update</button>
+    </div>
+    <ValidationSummary />
+</EditForm>
+
+@code {
+    List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public QARS.Data.Models.CarModel CarModel { get; set; }
+
+    QARS.Data.Models.CarModel carModel { get; set; }
+
+    protected override void OnInitialized()
+    {
+        carModel = CarModel;
+        SetCarModelForUpdate(carModel);
+    }
+
+    QARS.Data.Models.CarModel UpdateCarModel = new Data.Models.CarModel();
+    private void SetCarModelForUpdate(QARS.Data.Models.CarModel carModel)
+    {
+        UpdateCarModel = carModel;
+    }
+    private async Task UpdateCarModelData()
+    {
+        await service.UpdateCarModelAsync(UpdateCarModel);
+        await BlazoredModal.Close(ModalResult.Ok<QARS.Data.Models.CarModel>(carModel));
+    }
+}

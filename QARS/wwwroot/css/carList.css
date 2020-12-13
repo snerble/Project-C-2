@@ -1,0 +1,173 @@
+.top-menu {
+    width: 100%;
+    height: 110px;
+    background: rgba(255,255,255,0.8);
+    margin-top: -30px;
+    margin-bottom: 100px;
+    border-radius: 0px 0px 20px 20px;
+    font-size: 0.8em;
+    padding: 10px;
+}
+
+.boxes {
+    color: #03254C;
+    margin-top: 5px;
+}
+
+.top-menu h6{
+    text-transform: uppercase;
+    font-size: 1.1em;
+    display: inline-block;
+    padding-left: 15px;
+}
+
+#mainBody {
+    background: url(/img/Background.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+}
+.number{
+    background: #03254C;
+    border-radius: 10px;
+    color: white;
+    padding: 1px;
+    width: 20px;
+    height: 20px;
+    line-height: 20px;
+    display: inline-block;
+}
+
+.inline-block{
+    display: inline-block;
+}
+
+.boxes p{
+    margin: 0;
+    padding: 0;
+}
+
+.box-line{
+    border-right: 1px solid #03254C;
+}
+
+.cars{
+    background: white;
+    border-radius: 20px;
+    padding: 10px;
+    margin-bottom: 30px;
+}
+
+.filters {
+    background: rgba(255,255,255,0.8);
+    border-radius: 20px;
+    padding: 10px;
+    font-family: sans-serif;
+    height: 100%;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.filters option{
+    font-size: 0.82em;
+}
+
+.filters p {
+    font-size: 0.88em;
+    border-bottom: 1px solid #03254C;
+    padding: 10px;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.filters h6 {
+    font-size: 0.88em;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.category-option{
+    margin-top: -20px;
+    margin-left: 20px;
+    font-size: 0.82em;
+}
+
+select.btn-mini {
+    height: auto;
+    line-height: 10px;
+    border: 1px solid #03254C;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 0.8em;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+
+#lastcategory{
+    margin-bottom: 15px;
+}
+
+.header {
+    border-bottom: 1px solid #03254C;
+    width: 100%;
+    padding-bottom: 25px;
+    margin-bottom: 25px;
+}
+
+.header h6 {
+    display: inline;
+    font-size: 0.88em;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.image{
+    width: 100%;
+    height: 150px;
+    background: grey;
+}
+
+.carcontent{
+    margin-bottom: 25px;
+}
+.carcontent h1{
+    font-family: sans-serif;
+    font-weight: 500;
+    font-size: 1.8em;
+    text-transform: uppercase;
+    color: #03254C;
+}
+
+.carcontent p {
+    font-family: sans-serif;
+    font-size: 0.88em;
+    color: #03254C;
+    text-transform: capitalize;
+    padding: 0;
+    margin: 0;
+}
+
+.rightcarcontent p {
+    float: right;
+}
+
+.carcontent button {
+    float: right;
+    margin-top: 10px;
+    text-transform: uppercase;
+    font-weight: 600;
+    background: #03254C;
+    border: 0;
+}
+
+.carcontent button:hover{
+    background: #03254C;
+    border: 0;
+}
+
+.allcontent{
+    padding: 10px;
+}
+

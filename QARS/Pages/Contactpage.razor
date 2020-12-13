@@ -1,0 +1,73 @@
+﻿@page "/contact"
+@inject AppDbContext dbContext;
+@inject ContactServices service;
+@*Deze razor component is aangemaakt voor het maken vna de contact pagina*@
+
+<h1>
+    Contact
+</h1>
+<p>main location: @address</p>
+<p> tel: @tell </p>
+<p>@discript</p>
+
+
+
+<style>
+    button {
+        font-size: 40px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        float: left;
+        margin-left: auto;
+    }
+
+    #container {
+        text-align: center;
+        align-items: center;
+        margin-left: auto;
+    }
+
+    #input {
+        display: block;
+        margin: auto
+    }
+
+    #mainBody {
+        background: url(/img/secondback.jpg);
+    }
+
+    #text {
+        font-size: 3040px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+    }
+</style>
+
+
+
+@code{
+    string address;
+    string tell;
+    string discript;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        Lookup();
+    }
+
+    void Lookup()
+    {
+        foreach (var contact in dbContext.Contacts)
+        {
+            address = contact.Contactaddress;
+            tell = contact.Tell;
+            discript = contact.Discript;
+        }
+    }
+
+}
+
+

@@ -1,0 +1,207 @@
+﻿@page "/searchcar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}"
+@inject AppDbContext dbContext
+@inject CarServices service
+@inject NavigationManager navManager
+@using QARS.Data.Models
+
+<link href="/css/carList.css" rel="stylesheet" />
+
+
+
+<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime"/>
+
+<div class="row">
+    <div class="col-sm-2 filters">
+        <p>Filters</p>
+
+        <h6>Sort By</h6>
+        <select class="btn btn-mini form-control" @bind="SortBy">
+            <option value="standard">Standard</option>
+            <option value="dayratelow">Day Rate (low - high)</option>
+            <option value="dayratehigh">Day Rate (high - low)</option>
+        </select><br />
+
+        <h6>Category</h6><br />
+        <div class="category-option">
+            <input type="checkbox" class="form-check-input option" @bind="CategoryMini"/>
+            <label class="form-check-label">Mini</label><br />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryCompact" />
+            <label class="form-check-label">Compact</label><br />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryEconomy" />
+            <label class="form-check-label">Economy</label><br />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryMidsize" />
+            <label class="form-check-label">Midsize</label><br />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryStandard" />
+            <label class="form-check-label">Standard</label><br />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryFullsize" />
+            <label class="form-check-label">Fullsize</label><br />
+            <input type="checkbox" class="form-check-input option" @bind="CategoryLuxury" />
+            <label id="lastcategory" class="form-check-label">Luxury</label><br />
+        </div>
+    </div>
+    <div class="col-sm-1 nothing">
+
+    </div>
+    <div class="col-sm-9 cars">
+        <div class="header">
+            <h6 class="float-right">@Cars.Count() Results</h6>
+        </div>
+        @if (Cars.Any())
+        {
+            @foreach (var car in Cars)
+            {
+                float price = (float)car.Model.DayRate;
+                float pricePerKm = (float)car.Model.KMRate;
+                int buttonNumber = car.Id;
+                @if (car.Location.City == pickupLocation)
+                {
+                    <div class="row justify-content-center allcontent">
+                        <div class="col-sm-3 image">
+
+                        </div>
+                        <div class="col-sm-8 carcontent">
+                            <h1 class="display-4">@car.Model.Brand - @car.Model.Type</h1>
+                            <div class="row">
+                                <div class="col-6 carcontentleft">
+                                    <p>Seats up to @car.Model.Passengers passengers</p>
+                                    <p>Powered by @car.Model.FuelType</p>
+                                    <p>Including @car.Model.FreeMileage.ToString("0") free kilometers</p>
+                                </div>
+                                <div class="col-6 rightcarcontent">
+                                    <p>€@price.ToString("0.00")</p><br />
+                                    <p>+€@pricePerKm.ToString("0.00") per KM</p><br />
+                                    <button type="button" class="btn btn-primary btn-lg" @onclick="@(e => GoTo(buttonNumber))">Read More</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                }
+            }
+        }
+    </div>
+</div>
+
+
+
+@code {
+    List<Car> Cars = new List<Car>();
+    List<Car> AllCars = new List<Car>();
+    List<Car> FilterCars = new List<Car>();
+    public bool CurrentValue = false;
+    protected override async Task OnInitializedAsync()
+    {
+        await RefreshCars();
+    }
+    private async Task RefreshCars()
+    {
+        Cars = await service.GetCarAsync();
+        AllCars = await service.GetCarAsync();
+    }
+
+    [Parameter]
+    public string pickupLocation { get; set; }
+
+    [Parameter]
+    public string pickupDate { get; set; }
+
+    [Parameter]
+    public string pickupTime { get; set; }
+
+    [Parameter]
+    public string dropoffLocation { get; set; }
+
+    [Parameter]
+    public string dropoffDate { get; set; }
+
+    [Parameter]
+    public string dropoffTime { get; set; }
+
+    public void GoTo(int buttonNumber)
+    {
+        navManager.NavigateTo("/car/" + buttonNumber.ToString());
+    }
+
+    public bool NothingSelected = true;
+
+    /// <summary>
+    /// Bools for all categories (mini, comapct, economy, midszie, standard, fullsize, luxury)
+    /// </summary>
+    public bool[] Categories = { false, false, false, false, false, false, false };
+
+    public bool CategoryMini { get { return Categories[0]; } set { Categories[0] = value; Filter(CategoryMini, "Mini"); } }
+    public bool CategoryCompact { get { return Categories[1]; } set { Categories[1] = value; Filter(CategoryCompact, "Compact"); } }
+    public bool CategoryEconomy { get { return Categories[2]; } set { Categories[2] = value; Filter(CategoryEconomy, "Economy"); } }
+    public bool CategoryMidsize { get { return Categories[3]; } set { Categories[3] = value; Filter(CategoryMidsize, "Midsize"); } }
+    public bool CategoryStandard { get { return Categories[4]; } set { Categories[4] = value; Filter(CategoryStandard, "Standard"); } }
+    public bool CategoryFullsize { get { return Categories[5]; } set { Categories[5] = value; Filter(CategoryFullsize, "Fullsize"); } }
+    public bool CategoryLuxury { get { return Categories[6]; } set { Categories[6] = value; Filter(CategoryLuxury, "Luxury"); } }
+
+    public string SortElement = string.Empty;
+    public string SortBy { get { return SortElement; } set { SortElement = value; Sort(); } }
+
+
+    /// <summary>
+    /// Sees if a category is true. If so, filter this category
+    /// </summary>
+    /// <param name="element"></param>
+    /// <param name="value"></param>
+    public void Filter(bool element, string value)
+    {
+        foreach (var category in Categories)
+        {
+            if (category == true)
+            {
+                NothingSelected = false;
+                break;
+            }
+            else
+            {
+                NothingSelected = true;
+            }
+        }
+
+        if (element)
+        {
+            List<Car> newCars = AllCars.FindAll(c => c.Model.Category.ToString() == value);
+            FilterCars.AddRange(newCars);
+            FilterCars = FilterCars.Distinct().ToList();
+            Cars = FilterCars;
+        }
+        else
+        {
+            var ItemsToRemove = FilterCars.Where(c => c.Model.Category.ToString() == value);
+            if (ItemsToRemove.Any())
+            {
+                foreach (var item in ItemsToRemove.ToList())
+                {
+                    Cars.Remove(item);
+                }
+            }
+        }
+        if (NothingSelected)
+        {
+            Cars = AllCars;
+        }
+    }
+
+    public void Sort()
+    {
+        if (SortElement == "dayratelow")
+        {
+            List<Car> SortedCarList = Cars.OrderBy(c => c.Model.DayRate).ToList();
+            Cars = SortedCarList;
+        }
+        else if (SortElement == "dayratehigh")
+        {
+            List<Car> SortedCarList = Cars.OrderBy(c => c.Model.DayRate).ToList();
+            SortedCarList.Reverse();
+            Cars = SortedCarList;
+        }
+        else if (SortElement == "standard")
+        {
+            List<Car> SortedCarList = Cars.OrderBy(c => c.Id).ToList();
+            Cars = SortedCarList;
+        }
+    }
+}
