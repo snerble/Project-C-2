@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Logging;
 
 using QARS.Data.Models;
 
@@ -20,15 +21,18 @@ namespace QARS.Data.Services
 		private readonly NavigationManager _navigationManager;
 		private readonly UserManager<User> _userManager;
 		private readonly EmailSender _emailSender;
+		private readonly ILogger<EmailSender> _logger;
 
 		public EmailManager(
 			NavigationManager navigationManager,
 			UserManager<User> userManager,
-			EmailSender emailSender)
+			EmailSender emailSender,
+			ILogger<EmailSender> logger)
 		{
 			_navigationManager = navigationManager;
 			_userManager = userManager;
 			_emailSender = emailSender;
+			_logger = logger;
 		}
 
 		/// <summary>
@@ -76,6 +80,8 @@ namespace QARS.Data.Services
 				Path = "Identity/Account/ConfirmEmail",
 				Query = qb.ToQueryString().ToUriComponent()
 			};
+
+			_logger.LogInformation("Sending confirmation email for user {0}", user.Id);
 
 			// Send the email using the ConfirmEmail template
 			_emailSender.SendEmail(user.Email,
