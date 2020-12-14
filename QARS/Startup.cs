@@ -84,6 +84,8 @@ namespace QARS
 			services.AddScoped<EmailSender>();
 			services.AddScoped<IEmailSender, EmailSender>();
 
+			services.AddScoped<EmailManager>();
+
 			services.AddScoped<CarModelServices>();
 			services.AddScoped<CarServices>();
 			services.AddScoped<AddlocationServices>();
