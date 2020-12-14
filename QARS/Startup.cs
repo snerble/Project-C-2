@@ -65,6 +65,7 @@ namespace QARS
 
 				config.User.RequireUniqueEmail = true;
 
+				config.SignIn.RequireConfirmedAccount = true;
 				config.SignIn.RequireConfirmedEmail = true;
 			})
 				.AddDefaultTokenProviders()
