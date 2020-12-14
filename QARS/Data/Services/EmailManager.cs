@@ -39,7 +39,22 @@ namespace QARS.Data.Services
 		/// <see cref="User.Email"/> is invalid.</exception>
 		/// <exception cref="InvalidOperationException">Thrown when the <paramref name="user"/>'s
 		/// email has already been verified.</exception>
-		public async Task SendConfirmationEmailAsync(User user)
+		public Task SendConfirmationEmailAsync(User user)
+			=> SendConfirmationEmailAsync(user, _navigationManager.BaseUri);
+
+		/// <summary>
+		/// Sends an account confirmation email to the specified <paramref name="user"/>.
+		/// </summary>
+		/// <param name="user">The user to whom a confirmation email must be sent.</param>
+		/// <param name="baseUrl">The base url of the QARS website.</param>
+		/// <exception cref="ArgumentException">Thrown when the <paramref name="user"/>'s
+		/// <see cref="User.Email"/> is invalid.</exception>
+		/// <exception cref="InvalidOperationException">Thrown when the <paramref name="user"/>'s
+		/// email has already been verified.</exception>
+		/// <remarks>
+		/// Use this method if the 'RemoteNavigationManager' has not been initialized yet.
+		/// </remarks>
+		public async Task SendConfirmationEmailAsync(User user, string baseUrl)
 		{
 			if (!new EmailAddressAttribute().IsValid(user.Email))
 				throw new ArgumentException("Invalid Email address for user.", $"{nameof(user)}.{nameof(user.Email)}");
@@ -56,7 +71,7 @@ namespace QARS.Data.Services
 				{ "userId", user.Id.ToString() },
 				{ "code", code }
 			};
-			var b = new UriBuilder(_navigationManager.BaseUri)
+			var b = new UriBuilder(baseUrl)
 			{
 				Path = "Identity/Account/ConfirmEmail",
 				Query = qb.ToQueryString().ToUriComponent()
