@@ -10,6 +10,7 @@ using Microsoft.Extensions.Logging;
 using QARS.Data.Models;
 using QARS.Data.Services;
 
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -79,7 +80,7 @@ namespace QARS.Areas.Identity.Pages.Account
 			[Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
 			public string ConfirmPassword { get; set; }
 
-			public Location Location { get; set; }
+			public Location Location { get; set; } = new Location();
 		}
 
 		public async Task OnGetAsync(string returnUrl = null)
@@ -107,7 +108,15 @@ namespace QARS.Areas.Identity.Pages.Account
 				{
 					_logger.LogInformation("User created a new account with password.");
 
-					await _emailManager.SendConfirmationEmailAsync(user);
+					var b = new UriBuilder
+					{
+						Scheme = Request.Scheme,
+						Host = Request.Host.Host
+					};
+					if (Request.Host.Port.HasValue)
+						b.Port = Request.Host.Port.Value;
+
+					await _emailManager.SendConfirmationEmailAsync(user, b.ToString());
 
 					if (_userManager.Options.SignIn.RequireConfirmedAccount)
 						return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl });
