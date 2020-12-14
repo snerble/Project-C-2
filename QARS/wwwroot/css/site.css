@@ -5,13 +5,12 @@ html, body {
 }
 
 .page {
-    background: url(/img/Background.jpg) no-repeat center center fixed;
+    background: white;
     -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
     min-height: 100vh;
-
     display: flex;
     flex-flow: column;
 }
@@ -38,12 +37,9 @@ html, body {
     z-index: 1000;
 }
 
-    #blazor-error-ui .dismiss {
-        cursor: pointer;
-        position: absolute;
-        right: 0.75rem;
-        top: 0.5rem;
-    }
-#mainBody {
-    background: white;
+#blazor-error-ui .dismiss {
+    cursor: pointer;
+    position: absolute;
+    right: 0.75rem;
+    top: 0.5rem;
 }
