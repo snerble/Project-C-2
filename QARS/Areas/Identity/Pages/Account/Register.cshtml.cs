@@ -119,7 +119,14 @@ namespace QARS.Areas.Identity.Pages.Account
 				}
 				foreach (IdentityError error in result.Errors)
 				{
-					ModelState.AddModelError(string.Empty, error.Description);
+					switch (error.Code)
+					{
+						case "DuplicateUserName": // ignore since usernames are not used
+							continue;
+						default:
+							ModelState.AddModelError(string.Empty, error.Description);
+							break;
+					}
 				}
 			}
 
