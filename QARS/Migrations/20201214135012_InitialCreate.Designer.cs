@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201213213025_InitialCreate")]
+    [Migration("20201214135012_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
