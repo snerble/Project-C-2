@@ -1,24 +1,69 @@
-﻿@page "/car/{carId:int}"
+﻿@page "/SearchCar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}/Car/{carId:int}"
 @inject AppDbContext dbContext
 @inject CarServices service
 @using QARS.Data.Models
 
-<div class="jumbotron">
-    <h3>Car Detail Page</h3>
-</div>
+<link href="/css/carDetail.css" rel="stylesheet" />
+
+<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="@carId" />
 
 
 @foreach (var car in Cars)
 {
     if (car.Id == carId)
     {
-        <div class="jumbotron">
-            <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
-            <p class="lead">Price per day: €@car.Model.DayRate</p>
-            <p class="lead">Description: @car.Model.Description</p>
+<div class="carcontent">
+    <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
+    <div class="row justify-content-around allcontent">
+        <div class="col-sm-6 image">
+
         </div>
+        <div class="col-sm-4 options">
+            <h4 class="display-4">Extra's</h4><br />
+            @foreach (var extra in dbContext.Extras)
+            {
+                <div class="option">
+                    <input type="checkbox" class="form-check-input" />
+                    <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
+                </div>
+            }
+            
+            <button class="btn btn-primary btn-lg" @onclick="GoTo">Rent Car</button><br />
+        </div>
+    </div>
+    <h4 class="display-4">Costs</h4><br />
+    <p class="lead">€@car.Model.DayRate.ToString("0.00") per day + €@car.Model.KMRate.ToString("0.00") per kilometer after @car.Model.FreeMileage.ToString("0") free kilometers</p><br />
+    <h4 class="display-4">Description</h4><br />
+    <p class="lead">@car.Model.Description</p><br />
+    <h4 class="display-4">Details</h4><br />
+    <div class="row justify-content-center">
+        <div class="col-sm-4">
+            <p class="lead">Category: @car.Model.Category.ToString()</p>
+            <p class="lead">Number of doors: @car.Model.Doors</p>
+            <p class="lead">Efficiency: @car.Model.Efficiency km/L</p>
+            <p class="lead">Emission: @car.Model.Emission gram CO2/km</p>
+            <p class="lead">Transmission: @car.Model.Transmission</p>
+        </div>
+        <div class="col-sm-4">
+            <p class="lead">Fuel Type: @car.Model.FuelType</p>
+            @if (car.Model.HasAirconditioning)
+            {
+                <p class="lead">Has airconditioning</p>
+            }
+            <p class="lead">Passengers: @car.Model.Passengers</p>
+            <p class="lead">Fits @car.Model.SuitCases suitcases</p>
+        </div>
+        <div class="col-sm-4">
+            <p class="lead">Car Location:</p>
+            <p class="lead">@car.Location.Address</p>
+            <p class="lead">@car.Location.City</p>
+            <p class="lead">@car.Location.ZipCode</p>
+            <p class="lead">@car.Location.CountryCode</p>
+        </div>
+    </div>
+</div>
     }
-}
+    }
 
 
 
@@ -35,4 +80,30 @@
 
     [Parameter]
     public int carId { get; set; }
+
+    [Parameter]
+    public string pickupLocation { get; set; }
+
+    [Parameter]
+    public string pickupDate { get; set; }
+
+    [Parameter]
+    public string pickupTime { get; set; }
+
+    [Parameter]
+    public string dropoffLocation { get; set; }
+
+    [Parameter]
+    public string dropoffDate { get; set; }
+
+    [Parameter]
+    public string dropoffTime { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public void GoTo()
+    {
+        Console.WriteLine("Boek die auto mattie");
+    }
 }
