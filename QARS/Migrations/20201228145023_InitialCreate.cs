@@ -108,7 +108,9 @@ namespace QARS.Migrations
                     LastName = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: false)
+                    Discriminator = table.Column<string>(nullable: false),
+                    FranchiseeId = table.Column<int>(nullable: true),
+                    StoreId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -379,6 +379,12 @@ namespace QARS.Migrations
                 {
                     b.HasBaseType("QARS.Data.Models.User");
 
+                    b.Property<int>("FranchiseeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("INTEGER");
+
                     b.HasDiscriminator().HasValue("Employee");
                 });
 

@@ -47,6 +47,24 @@
         <label for="locationcountry">Country</label>
         <input type="text" id="locationcountry" class="form-control" @bind="@Input.Location.CountryCode" />
     </div>
+    <div class="form-group">
+        <label for="franchiseeid">Franchisee Id</label>
+        <select class="form-control" @bind="Input.FranchiseeId">
+            @foreach (var franchisee in dbContext.Franchisees)
+            {
+                <option value="@franchisee.Id">[@franchisee.Id] @franchisee.FirstName @franchisee.LastName</option>
+            }
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="storeid">Store Id</label>
+        <select class="form-control" @bind="Input.StoreId">
+            @foreach (var store in dbContext.Stores)
+            {
+                <option value="@store.Id">[@store.Id] @store.Location.City, @store.Location.CountryCode</option>
+            }
+        </select>
+    </div>
     <div class="text-center p-3 mb-3">
         <button class="btn btn-success" type="submit">Add Employee</button>
     </div>

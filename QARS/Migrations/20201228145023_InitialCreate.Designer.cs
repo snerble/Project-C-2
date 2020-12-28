@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201214135012_InitialCreate")]
+    [Migration("20201228145023_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -380,6 +380,12 @@ namespace QARS.Migrations
             modelBuilder.Entity("QARS.Data.Models.Employee", b =>
                 {
                     b.HasBaseType("QARS.Data.Models.User");
+
+                    b.Property<int>("FranchiseeId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("StoreId")
+                        .HasColumnType("INTEGER");
 
                     b.HasDiscriminator().HasValue("Employee");
                 });
