@@ -1,72 +1,104 @@
 ﻿@page "/manageextras"
 @inject ExtraServices service
+@inject UserManager<User> UserManager
+@inject AppDbContext dbContext
 @using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
+
 
 <link rel="stylesheet" href="/css/manage.css">
 
-
-<div class="row d-flex justify-content-between">
-    <div class="col-md-3">
-        <UserDashboard />
-    </div>
-
-    <div class="col-md-9">
-        <div class="back container">
-            <div class="heading">
-                <h1 class="display-3" style="text-align: left;">Extra Manager</h1>
-                <p class="lead" style="text-align: left;">All existing extras are displayed below. Create new extras using the 'Add Extra' button. Edit and delete extras by using the action buttons displayed in the table.</p>
+<AuthorizeView Roles="Employee">
+    <Authorized>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
             </div>
 
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Name</th>
-                            <th scope="col">Cost</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Extras.Any())
-                        {
-                            @foreach (var extra in Extras)
-                            {
+            <div class="col-md-9">
+                <div class="back container">
+                    <div class="heading">
+                        <h1 class="display-3" style="text-align: left;">Extra Manager</h1>
+                        <p class="lead" style="text-align: left;">All existing extras are displayed below. Create new extras using the 'Add Extra' button. Edit and delete extras by using the action buttons displayed in the table.</p>
+                    </div>
+
+                    <div class="customtablerow row bg-light">
+                        <table class="table">
+                            <thead class="thead-light">
                                 <tr>
-                                    <td scope="col">@extra.Id</td>
-                                    <td>@extra.Name</td>
-                                    <td>@extra.Cost</td>
-                                    <td><button class="btn btn-danger" @onclick="(() => DeleteExtra(extra))">Delete</button>  <button @onclick="@(() => ShowEditExtra(extra))" class="btn btn-warning">Show & Edit</button></td>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Cost</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No extras available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Extras.Any())
+                                {
+                                    @foreach (var extra in Extras)
+                                    {
+                                        <tr>
+                                            <td scope="col">@extra.Id</td>
+                                            <td>@extra.Name</td>
+                                            <td>@extra.Cost</td>
+                                            <td><button class="btn btn-danger" @onclick="(() => DeleteExtra(extra))">Delete</button>  <button @onclick="@(() => ShowEditExtra(extra))" class="btn btn-warning">Show & Edit</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="6"><strong>No extras available</strong></td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <button @onclick="@(() => ShowAddExtra())" class="btn btn-success">Add Extra</button>
+                </div>
             </div>
-            <button @onclick="@(() => ShowAddExtra())" class="btn btn-success">Add Extra</button>
         </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     List<Extra> Extras = new List<Extra>();
+
+    public int UserId = 0;
+    public int StoreId = 0;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        await RefreshExtras();
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
+        foreach(var employee in dbContext.Employees)
+        {
+            if(employee.Id == UserId)
+            {
+                StoreId = employee.StoreId;
+            }
+        }
+
+        await RefreshExtras(StoreId);
     }
-    private async Task RefreshExtras()
+    private async Task RefreshExtras(int storeid)
     {
-        Extras = await service.GetExtraAsync();
+        Extras = await service.GetExtraAsync(storeid);
     }
 
     private async Task DeleteExtra(Extra extra)
     {
         await service.DeleteExtranAsync(extra);
-        await RefreshExtras();
+        await RefreshExtras(StoreId);
     }
     [CascadingParameter] public IModalService Modal { get; set; }
     async Task ShowEditExtra(Extra extra)

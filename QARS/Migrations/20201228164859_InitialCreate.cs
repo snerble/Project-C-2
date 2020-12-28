@@ -57,7 +57,8 @@ namespace QARS.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: false),
                     Cost = table.Column<decimal>(nullable: false),
-                    Description = table.Column<string>(maxLength: 500, nullable: true)
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
+                    StoreId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {

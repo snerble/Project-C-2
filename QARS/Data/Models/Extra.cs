@@ -30,6 +30,8 @@ namespace QARS.Data.Models
 		[StringLength(500)]
 		public string Description { get; set; }
 
+		public int StoreId { get; set; }
+
 		/// <summary>
 		/// Gets or sets a collection of <see cref="ReservationExtra"/>s associated
 		/// with this <see cref="Extra"/>.

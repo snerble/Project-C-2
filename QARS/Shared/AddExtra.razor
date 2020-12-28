@@ -1,6 +1,10 @@
 ﻿@inject ExtraServices service
+@inject UserManager<User> UserManager
+@inject AppDbContext dbContext
 
+@using Microsoft.AspNetCore.Identity
 @using QARS.Data.Models;
+
 
 <link href="/css/modal.css" rel="stylesheet" />
 
@@ -19,20 +23,40 @@
         <textarea rows="3" id="description" class="form-control" @bind="@NewExtra.Description" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-success" type="submit">Add Location</button>
+        <button class="btn btn-success" type="submit">Add Extra</button>
     </div>
     <ValidationSummary />
 </EditForm>
 
 @code {
     List<Extra> Extras = new List<Extra>();
+
+    public int UserId = 0;
+
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     public Extra NewExtra { get; set; } = new Extra();
 
     private async Task AddNewExtra()
     {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
+        foreach (var employee in dbContext.Employees)
+        {
+            if (employee.Id == UserId)
+            {
+                NewExtra.StoreId = employee.StoreId;
+            }
+        }
+
         await service.AddExtraAsync(NewExtra);
         NewExtra = new Extra();
         await BlazoredModal.Close(ModalResult.Ok(true));
