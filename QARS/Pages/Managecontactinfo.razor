@@ -4,60 +4,66 @@
 
 <link rel="searchbox stylesheet" href="/css/manage.css">
 
-
-<div class="col-12 d-flex justify-content-between">
-    <div class="col-md-3">
-        <UserDashboard />
-    </div>
-
-    <div class="col-9">
-        <div class="back container">
-            <div class="heading">
-                <h1 class="display-3" style="text-align: left;">store manager</h1>
-                <p class="lead" style="text-align: left;">all existing stores are displayed below. create new store using the 'add store' button. edit and delete stores by using the action buttons displayed in the table.</p>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="col-12 d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
             </div>
 
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">Id</th>
-                            <th scope="col">Tell</th>
-                            <th scope="col">Contactaddress</th>
-                            <th scope="col">Discript</th>
-                            <th scope="col">actions</th>
+            <div class="col-9">
+                <div class="back container">
+                    <div class="heading">
+                        <h1 class="display-3" style="text-align: left;">store manager</h1>
+                        <p class="lead" style="text-align: left;">all existing stores are displayed below. create new store using the 'add store' button. edit and delete stores by using the action buttons displayed in the table.</p>
+                    </div>
 
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (contacts.Any())
-                        {
-                            @foreach (var contact in contacts)
-                            {
+                    <div class="customtablerow row bg-light">
+                        <table class="table">
+                            <thead class="thead-light">
                                 <tr>
-                                    <td>@contact.Id</td>
-                                    <td>@contact.Tell</td>
-                                    <td>@contact.Contactaddress</td>
-                                    <td>@contact.Discript</td>
+                                    <th scope="col">Id</th>
+                                    <th scope="col">Tell</th>
+                                    <th scope="col">Contactaddress</th>
+                                    <th scope="col">Discript</th>
+                                    <th scope="col">actions</th>
 
-                                    <td><button class="btn btn-danger" @onclick="(() => deletecontact(contact))">delete</button>  <button @onclick="@(() => showeditcontact(contact))" class="btn btn-warning">show & edit</button></td>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>no contacts available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (contacts.Any())
+                                {
+                                    @foreach (var contact in contacts)
+                                    {
+                                        <tr>
+                                            <td>@contact.Id</td>
+                                            <td>@contact.Tell</td>
+                                            <td>@contact.Contactaddress</td>
+                                            <td>@contact.Discript</td>
+
+                                            <td><button class="btn btn-danger" @onclick="(() => deletecontact(contact))">delete</button>  <button @onclick="@(() => showeditcontact(contact))" class="btn btn-warning">show & edit</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="6"><strong>no contacts available</strong></td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <button class="btn btn-success" @onclick="@(() => showaddcontact())"> addcontact </button>
+                </div>
             </div>
-            <button class="btn btn-success" @onclick="@(() => showaddcontact())"> addcontact </button>
         </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 
-@code 
+@code
 {
     List<Contact> contacts = new List<Contact>();
     protected override async Task OnInitializedAsync()
