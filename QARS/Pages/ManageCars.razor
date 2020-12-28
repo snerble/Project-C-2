@@ -67,19 +67,40 @@
 
 @code {
     List<Car> Cars = new List<Car>();
+    public int UserId = new int();
+    public int StoreId = new int();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        await RefreshCars();
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
+        @foreach (var employee in dbContext.Employees)
+        {
+            if(employee.Id == UserId)
+            {
+                StoreId = employee.StoreId;
+            }
+        }
+        await RefreshCars(StoreId);
+
     }
-    private async Task RefreshCars()
+    private async Task RefreshCars(int storeid)
     {
-        Cars = await service.GetCarAsync();
+        Cars = await service.GetCarAsync(storeid);
     }
 
     private async Task DeleteCar(Car car)
     {
         await service.DeleteCarAsync(car);
-        await RefreshCars();
+        await RefreshCars(StoreId);
     }
     [CascadingParameter] public IModalService Modal { get; set; }
     async Task ShowEditCar(Car car)

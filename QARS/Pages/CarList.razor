@@ -95,8 +95,8 @@
     }
     private async Task RefreshCars()
     {
-        Cars = await service.GetCarAsync();
-        AllCars = await service.GetCarAsync();
+        Cars = await service.GetCarAsync(0);
+        AllCars = await service.GetCarAsync(0);
     }
 
     [Parameter]

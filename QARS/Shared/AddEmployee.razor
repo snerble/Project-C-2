@@ -61,7 +61,7 @@
         <select class="form-control" @bind="Input.StoreId">
             @foreach (var store in dbContext.Stores)
             {
-                <option value="@store.Id">[@store.Id] @store.Location.City, @store.Location.CountryCode</option>
+                <option value="@store.Id">[@store.Id]</option>
             }
         </select>
     </div>
