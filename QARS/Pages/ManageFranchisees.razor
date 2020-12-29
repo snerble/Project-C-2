@@ -4,57 +4,63 @@
 
 <link rel="stylesheet" href="/css/manage.css">
 
-
-<div class="row d-flex justify-content-between">
-    <div class="col-md-3">
-        <UserDashboard />
-    </div>
-
-    <div class="col-md-9">
-        <div class="back container">
-            <div class="heading">
-                <h1 class="display-3" style="text-align: left;">Franchisee Manager</h1>
-                <p class="lead" style="text-align: left;">All existing franchisees are displayed below. Create a new franchisee using the 'Add Franchisee' button. Edit and delete franchisees by using the action buttons displayed in the table.</p>
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
             </div>
 
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Email</th>
-                            <th scope="col">Firstname</th>
-                            <th scope="col">Lastname</th>
-                            <th scope="col">Phone Number</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Franchisees.Any())
-                        {
-                            @foreach (var franchisee in Franchisees)
-                            {
+            <div class="col-md-9">
+                <div class="back container">
+                    <div class="heading">
+                        <h1 class="display-3" style="text-align: left;">Franchisee Manager</h1>
+                        <p class="lead" style="text-align: left;">All existing franchisees are displayed below. Create a new franchisee using the 'Add Franchisee' button. Edit and delete franchisees by using the action buttons displayed in the table.</p>
+                    </div>
+
+                    <div class="customtablerow row bg-light">
+                        <table class="table">
+                            <thead class="thead-light">
                                 <tr>
-                                    <td scope="col">@franchisee.Id</td>
-                                    <td>@franchisee.Email</td>
-                                    <td>@franchisee.FirstName</td>
-                                    <td>@franchisee.LastName</td>
-                                    <td>@franchisee.PhoneNumber</td>
-                                    <td><button class="btn btn-danger" @onclick="(() => DeleteFranchisee(franchisee))">Delete</button>  <button @onclick="@(() => ShowEditFranchisee(franchisee))" class="btn btn-warning">Show</button></td>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Firstname</th>
+                                    <th scope="col">Lastname</th>
+                                    <th scope="col">Phone Number</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No franchisees available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Franchisees.Any())
+                                {
+                                    @foreach (var franchisee in Franchisees)
+                                    {
+                                        <tr>
+                                            <td scope="col">@franchisee.Id</td>
+                                            <td>@franchisee.Email</td>
+                                            <td>@franchisee.FirstName</td>
+                                            <td>@franchisee.LastName</td>
+                                            <td>@franchisee.PhoneNumber</td>
+                                            <td><button class="btn btn-danger" @onclick="(() => DeleteFranchisee(franchisee))">Delete</button>  <button @onclick="@(() => ShowEditFranchisee(franchisee))" class="btn btn-warning">Show</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="6"><strong>No franchisees available</strong></td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <button @onclick="@(() => ShowAddFranchisee())" class="btn btn-success">Add Franchisee</button>
+                </div>
             </div>
-            <button @onclick="@(() => ShowAddFranchisee())" class="btn btn-success">Add Franchisee</button>
         </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     List<Franchisee> Franchisees = new List<Franchisee>();

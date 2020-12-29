@@ -40,7 +40,7 @@
                                         <tr>
                                             <td scope="col">@extra.Id</td>
                                             <td>@extra.Name</td>
-                                            <td>@extra.Cost</td>
+                                            <td>€@extra.Cost.ToString("0.00")</td>
                                             <td><button class="btn btn-danger" @onclick="(() => DeleteExtra(extra))">Delete</button>  <button @onclick="@(() => ShowEditExtra(extra))" class="btn btn-warning">Show & Edit</button></td>
                                         </tr>
                                     }

@@ -26,9 +26,8 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th scope="col">ID</th>
-                                    <th scope="col">Car Model ID</th>
+                                    <th scope="col">Car Model</th>
                                     <th scope="col">LicensePlate</th>
-                                    <th scope="col">Location ID</th>
                                     <th scope="col">Available</th>
                                     <th scope="col">Actions</th>
                                 </tr>
@@ -40,9 +39,8 @@
                                     {
                                         <tr>
                                             <td scope="col">@car.Id</td>
-                                            <td>@car.Model.Id</td>
+                                            <td>@car.Model.Brand @car.Model.Type</td>
                                             <td>@car.LicensePlate</td>
-                                            <td>@car.LocationId</td>
                                             <td>@car.Available</td>
                                             <td><button class="btn btn-danger" @onclick="(() => DeleteCar(car))">Delete</button>  <button @onclick="@(() => ShowEditCar(car))" class="btn btn-warning">Show & Edit</button></td>
                                         </tr>

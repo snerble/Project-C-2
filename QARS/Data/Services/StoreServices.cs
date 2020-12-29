@@ -18,9 +18,10 @@ namespace QARS.Data.Services
 			this.dbContext = dbContext;
 		}
 
-		public async Task<List<Store>> GetStoreAsync()
+		public async Task<List<Store>> GetStoreAsync(int franchiseeid)
 		{
 			return await dbContext.Stores
+				.Where(s => s.Franchisee.Id == franchiseeid)
 				.Include(s => s.Location)
 				.Include(s => s.Franchisee)
 				.ToListAsync();
