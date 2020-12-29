@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201228164859_InitialCreate")]
+    [Migration("20201229164751_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -296,6 +296,9 @@ namespace QARS.Migrations
 
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 

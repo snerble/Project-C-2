@@ -30,7 +30,6 @@
                                     <th scope="col">Email</th>
                                     <th scope="col">Firstname</th>
                                     <th scope="col">Lastname</th>
-                                    <th scope="col">Phone Number</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -44,7 +43,6 @@
                                             <td>@employee.Email</td>
                                             <td>@employee.FirstName</td>
                                             <td>@employee.LastName</td>
-                                            <td>@employee.PhoneNumber</td>
                                             <td><button class="btn btn-danger" @onclick="(() => DeleteEmployee(employee))">Delete</button>  <button @onclick="@(() => ShowEditEmployee(employee))" class="btn btn-warning">Show</button></td>
                                         </tr>
                                     }

@@ -1,69 +1,78 @@
 ﻿@inject EmployeeServices service
 @inject AppDbContext dbContext
 
-@using QARS.Data.Models;
+@using Microsoft.AspNetCore.Identity
+@using QARS.Data.Models
 
 <link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@Input" OnValidSubmit="@CreateNewEmployee">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label for="email">Email</label>
-        <input type="text" id="email" class="form-control" @bind="@Input.Email" />
+        <label for="storeid">Store Id</label><br />
+        <small>Select the store where the employee will work</small>
+        <select class="form-control" @bind="Input.StoreId">
+            @foreach (var store in dbContext.Stores.Where(s => s.Franchisee.Id == UserId))
+            {
+                @foreach (var location in dbContext.Locations)
+                {
+                    if (store.LocationId == location.Id)
+                    {
+                        <option value="@store.Id">[@store.Id] @store.Name in @location.City, @location.CountryCode</option>
+                    }
+                }
+            }
+        </select>
     </div>
     <div class="form-group">
-        <label for="password">Password</label>
+        <label for="email">Email</label><br />
+        <small>Fill in the employees email below</small>
+        <input placeholder="e.g. employee@qars.nl" type="text" id="email" class="form-control" @bind="@Input.Email" />
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label><br />
+        <small>Fill in the employees password below</small>
         <input type="password" id="password" class="form-control" @bind="@Input.Password" />
     </div>
     <div class="form-group">
-        <label for="confirm-password">Confirm Password</label>
+        <label for="confirm-password">Confirm Password</label><br />
+        <small>Confirm password below</small>
         <input type="password" id="confirm-password" class="form-control" @bind="@Input.ConfirmPassword" />
     </div>
     <div class="form-group">
-        <label for="firstname">Firstname</label>
+        <label for="firstname">Firstname</label><br />
+        <small>Fill in the employees firstname</small>
         <input type="text" id="firstname" class="form-control" @bind="@Input.FirstName" />
     </div>
     <div class="form-group">
-        <label for="lastname">Lastname</label>
+        <label for="lastname">Lastname</label><br />
+        <small>Fill in the employees lastname</small>
         <input type="text" id="lastname" class="form-control" @bind="@Input.LastName" />
     </div>
     <div class="form-group">
-        <label for="phonenumber">Phone Number</label>
+        <label for="phonenumber">Phone Number</label><br />
+        <small>Fill in the employees phone number</small>
         <input type="text" id="phonenumber" class="form-control" @bind="@Input.PhoneNumber" />
     </div>
     <div class="form-group">
-        <label for="locationaddress">Address</label>
+        <label for="locationaddress">Address</label><br />
+        <small>Fill in the employees address including house number</small>
         <input type="text" id="locationaddress" class="form-control" @bind="@Input.Location.Address" />
     </div>
     <div class="form-group">
-        <label for="locationcity">City</label>
+        <label for="locationcity">City</label><br />
+        <small>Fill in the city</small>
         <input type="text" id="locationcity" class="form-control" @bind="@Input.Location.City" />
     </div>
     <div class="form-group">
-        <label for="locationzip">ZipCode</label>
+        <label for="locationzip">ZipCode</label><br />
+        <small>Fill in the zipcode</small>
         <input type="text" id="locationzip" class="form-control" @bind="@Input.Location.ZipCode" />
     </div>
     <div class="form-group">
-        <label for="locationcountry">Country</label>
+        <label for="locationcountry">Country</label><br />
+        <small>Fill in the country</small>
         <input type="text" id="locationcountry" class="form-control" @bind="@Input.Location.CountryCode" />
-    </div>
-    <div class="form-group">
-        <label for="franchiseeid">Franchisee Id</label>
-        <select class="form-control" @bind="Input.FranchiseeId">
-            @foreach (var franchisee in dbContext.Franchisees)
-            {
-                <option value="@franchisee.Id">[@franchisee.Id] @franchisee.FirstName @franchisee.LastName</option>
-            }
-        </select>
-    </div>
-    <div class="form-group">
-        <label for="storeid">Store Id</label>
-        <select class="form-control" @bind="Input.StoreId">
-            @foreach (var store in dbContext.Stores)
-            {
-                <option value="@store.Id">[@store.Id]</option>
-            }
-        </select>
     </div>
     <div class="text-center p-3 mb-3">
         <button class="btn btn-success" type="submit">Add Employee</button>
@@ -74,6 +83,18 @@
 @code {
     List<Employee> Employees = new List<Employee>();
 
+    public int UserId = 0;
+
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+    }
 
 }

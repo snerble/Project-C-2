@@ -12,6 +12,8 @@
     <Compile Remove="Migrations\20201214135012_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201228145023_InitialCreate.cs" />
     <Compile Remove="Migrations\20201228145023_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201228164859_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201228164859_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />

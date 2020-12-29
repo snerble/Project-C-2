@@ -130,6 +130,7 @@ namespace QARS.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true),
                     FranchiseeId = table.Column<int>(nullable: true),
                     LocationId = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 2500, nullable: true)

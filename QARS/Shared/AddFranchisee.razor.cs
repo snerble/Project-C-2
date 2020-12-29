@@ -1,3 +1,5 @@
+using Blazored.Modal.Services;
+
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
@@ -35,6 +37,8 @@ namespace QARS.Shared
 
 				await EmailManager.SendConfirmationEmailAsync(user);
 			}
+
+			await BlazoredModal.Close(ModalResult.Ok(true));
 		}
 	}
 }

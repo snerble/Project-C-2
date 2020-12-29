@@ -9,6 +9,8 @@ using QARS.Data.Services;
 using System.Threading.Tasks;
 using System;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Components.Authorization;
+using Blazored.Modal.Services;
 
 namespace QARS.Shared
 {
@@ -33,16 +35,29 @@ namespace QARS.Shared
 
 		public InputModel Input { get; set; } = new InputModel();
 
+		[CascadingParameter]
+		private Task<AuthenticationState> authenticationStateTask { get; set; }
+
 		public async Task CreateNewEmployee()
 		{
-			var user = new Employee
+
+			var authState = await authenticationStateTask;
+			int UserId = 0;
+
+			if (authState.User.Identity.IsAuthenticated)
+			{
+				var User = await UserManager.GetUserAsync(authState.User);
+				UserId = User.Id;
+			}
+
+				var user = new Employee
 			{
 				FirstName = Input.FirstName,
 				LastName = Input.LastName,
 				Email = Input.Email,
 				PhoneNumber = Input.PhoneNumber,
 				Location = Input.Location,
-				FranchiseeId = Input.FranchiseeId,
+				FranchiseeId = UserId,
 				StoreId = Input.StoreId
 			};
 			IdentityResult result = await UserManager.CreateAsync(user, Input.Password);
@@ -52,6 +67,8 @@ namespace QARS.Shared
 
 				await EmailManager.SendConfirmationEmailAsync(user);
 			}
+
+			await BlazoredModal.Close(ModalResult.Ok(true));
 		}
 	}
 }

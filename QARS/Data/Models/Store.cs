@@ -12,6 +12,8 @@ namespace QARS.Data.Models
 		/// </summary>
 		public int Id { get; set; }
 
+		public string Name { get; set; }
+
 		/// <summary>
 		/// Gets or sets the <see cref="Franchisee"/> that owns this <see cref="Store"/>.
 		/// </summary>

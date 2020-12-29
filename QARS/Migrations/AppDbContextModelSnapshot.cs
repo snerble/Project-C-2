@@ -295,6 +295,9 @@ namespace QARS.Migrations
                     b.Property<int>("LocationId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
                     b.HasKey("Id");
 
                     b.HasIndex("FranchiseeId");
