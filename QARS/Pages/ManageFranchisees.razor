@@ -15,7 +15,7 @@
                 <div class="back container">
                     <div class="heading">
                         <h1 class="display-3" style="text-align: left;">Franchisee Manager</h1>
-                        <p class="lead" style="text-align: left;">All existing franchisees are displayed below. Create a new franchisee using the 'Add Franchisee' button. Edit and delete franchisees by using the action buttons displayed in the table.</p>
+                        <p class="lead" style="text-align: left;">All existing franchisees are displayed below. Create a new franchisee using the 'Add Franchisee' button. Show more details or delete franchisees by using the action buttons displayed in the table.</p>
                     </div>
 
                     <div class="customtablerow row bg-light">
@@ -26,7 +26,6 @@
                                     <th scope="col">Email</th>
                                     <th scope="col">Firstname</th>
                                     <th scope="col">Lastname</th>
-                                    <th scope="col">Phone Number</th>
                                     <th scope="col">Actions</th>
                                 </tr>
                             </thead>
@@ -40,7 +39,6 @@
                                             <td>@franchisee.Email</td>
                                             <td>@franchisee.FirstName</td>
                                             <td>@franchisee.LastName</td>
-                                            <td>@franchisee.PhoneNumber</td>
                                             <td><button class="btn btn-danger" @onclick="(() => DeleteFranchisee(franchisee))">Delete</button>  <button @onclick="@(() => ShowEditFranchisee(franchisee))" class="btn btn-warning">Show</button></td>
                                         </tr>
                                     }
