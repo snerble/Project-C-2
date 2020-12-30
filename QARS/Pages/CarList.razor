@@ -10,8 +10,8 @@
 
 <TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="0"/>
 
-<div class="row">
-    <div class="col-sm-2 filters">
+<div class="row carlist-content justify-content-between">
+    <div class="col-md-3 filters">
         <p>Filters</p>
 
         <h6>Sort By</h6>
@@ -39,10 +39,7 @@
             <label id="lastcategory" class="form-check-label">Luxury</label><br />
         </div>
     </div>
-    <div class="col-sm-1 nothing">
-
-    </div>
-    <div class="col-sm-9 cars">
+    <div class="col-md-8 cars">
         <div class="header">
             <h6 class="float-right">@Cars.Count() Results</h6>
         </div>

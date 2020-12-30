@@ -141,7 +141,9 @@ namespace QARS.Data.Models
 				finally
 				{
 					// After returning the new reservation, mark the car as reserved.
+					Console.WriteLine("1");
 					car.Reserve();
+					Console.WriteLine("2");
 				}
 			}
 		}
