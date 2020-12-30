@@ -65,6 +65,7 @@ namespace QARS
 
 				config.User.RequireUniqueEmail = true;
 
+				config.SignIn.RequireConfirmedAccount = true;
 				config.SignIn.RequireConfirmedEmail = true;
 			})
 				.AddDefaultTokenProviders()
@@ -83,6 +84,8 @@ namespace QARS
 			#region Service Registration
 			services.AddScoped<EmailSender>();
 			services.AddScoped<IEmailSender, EmailSender>();
+
+			services.AddScoped<EmailManager>();
 
 			services.AddScoped<CarModelServices>();
 			services.AddScoped<CarServices>();

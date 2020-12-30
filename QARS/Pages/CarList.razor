@@ -1,4 +1,4 @@
-﻿@page "/searchcar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}"
+﻿@page "/SearchCar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}"
 @inject AppDbContext dbContext
 @inject CarServices service
 @inject NavigationManager navManager
@@ -8,7 +8,7 @@
 
 
 
-<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime"/>
+<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="0"/>
 
 <div class="row">
     <div class="col-sm-2 filters">
@@ -95,8 +95,8 @@
     }
     private async Task RefreshCars()
     {
-        Cars = await service.GetCarAsync();
-        AllCars = await service.GetCarAsync();
+        Cars = await service.GetCarAsync(0);
+        AllCars = await service.GetCarAsync(0);
     }
 
     [Parameter]
@@ -119,7 +119,7 @@
 
     public void GoTo(int buttonNumber)
     {
-        navManager.NavigateTo("/car/" + buttonNumber.ToString());
+        navManager.NavigateTo("/SearchCar/" + pickupLocation + "/" + pickupDate + "/" + pickupTime + "/" + dropoffLocation + "/" + dropoffDate + "/" + dropoffTime + "/Car/" + buttonNumber.ToString());
     }
 
     public bool NothingSelected = true;

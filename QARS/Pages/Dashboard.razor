@@ -1,0 +1,46 @@
+﻿@page "/dashboard"
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+
+
+<link rel="stylesheet" href="/css/manage.css" />
+
+<AuthorizeView>
+    <Authorized>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
+
+            </div>
+            <div class="col-md-9">
+                <div class="heading">
+                    <h1 class="display-3" style="text-align: left;">Dashboard</h1>
+                    <p class="lead" style="text-align: left;">Welcome @UserName</p>
+                    <p class="lead" style="text-align: left;">Use the navigation menu on the left to find the right page.</p>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+
+    public int UserId = new int();
+    public string UserName = string.Empty;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated){
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+            UserName = user.FirstName + " " + user.LastName;
+        }
+    }
+}

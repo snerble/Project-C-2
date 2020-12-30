@@ -47,7 +47,7 @@ namespace QARS.Data.Services
 
 		Task IEmailSender.SendEmailAsync(string email, string subject, string htmlMessage)
 		{
-			SendMarkdown(email, subject, htmlMessage);
+			SendEmail(email, subject, new EmailModel { Message = htmlMessage });
 			return Task.CompletedTask;
 		}
 
@@ -59,10 +59,10 @@ namespace QARS.Data.Services
 		/// <param name="markdownMessage">The message with markdown formatting.</param>
 		/// <param name="templateName">The name of the Razor email template.</param>
 		public void SendMarkdown(string email, string subject, string markdownMessage, string templateName = DefaultTemplate)
-		{
-			// ConfigureAwait(false) makes this a fire-and-forget task
-			SendEmailAsync(email, subject, _markdown.Transform(markdownMessage), templateName).ConfigureAwait(false);
-		}
+			=> SendEmail(email,
+				subject,
+				new EmailModel { Message = _markdown.Transform(markdownMessage) },
+				templateName);
 
 		/// <summary>
 		/// Sends an email containing an HTML message.
@@ -72,12 +72,27 @@ namespace QARS.Data.Services
 		/// <param name="htmlMessage">The message in HTML.</param>
 		/// <param name="templateName">The name of the Razor email template.</param>
 		public void SendEmail(string email, string subject, string htmlMessage, string templateName = DefaultTemplate)
+			=> SendEmail(email,
+				subject,
+				new EmailModel { Message = htmlMessage },
+				templateName);
+
+		/// <summary>
+		/// Sends an email with the specified <paramref name="model"/>.
+		/// </summary>
+		/// <param name="email">The email address of the recipient.</param>
+		/// <param name="subject">The subject of the email.</param>
+		/// <param name="model">The model to use when rendering the email template view.</param>
+		/// <param name="templateName">The name of the Razor email template.</param>
+		public void SendEmail<TModel>(string email, string subject, TModel model, string templateName = DefaultTemplate)
+			where TModel : EmailModel
 		{
 			// ConfigureAwait(false) makes this a fire-and-forget task
-			SendEmailAsync(email, subject, htmlMessage, templateName).ConfigureAwait(false);
+			SendEmailAsync(email, subject, model, templateName).ConfigureAwait(false);
 		}
 
-		private async Task SendEmailAsync(string email, string subject, string htmlMessage, string templateName = DefaultTemplate)
+		private async Task SendEmailAsync<TModel>(string email, string subject, TModel model, string templateName = DefaultTemplate)
+			where TModel : EmailModel
 		{
 			try
 			{
@@ -89,7 +104,7 @@ namespace QARS.Data.Services
 
 				mimeMessage.Body = new TextPart("html")
 				{
-					Text = await _razor.RenderViewToStringAsync(templateName, new EmailModel { Message = htmlMessage })
+					Text = await _razor.RenderViewToStringAsync(templateName, model)
 				};
 
 				using var client = new SmtpClient

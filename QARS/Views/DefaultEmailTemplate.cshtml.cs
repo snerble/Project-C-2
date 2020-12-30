@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace QARS.Views
 {
 	public class EmailModel
@@ -10,6 +5,6 @@ namespace QARS.Views
 		/// <summary>
 		/// Gets or sets the message for the email.
 		/// </summary>
-		public string Message { get; set; }
+		public virtual string Message { get; set; }
 	}
 }

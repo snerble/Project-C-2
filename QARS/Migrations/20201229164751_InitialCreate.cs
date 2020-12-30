@@ -57,7 +57,8 @@ namespace QARS.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Name = table.Column<string>(nullable: false),
                     Cost = table.Column<decimal>(nullable: false),
-                    Description = table.Column<string>(maxLength: 500, nullable: true)
+                    Description = table.Column<string>(maxLength: 500, nullable: true),
+                    StoreId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -108,7 +109,9 @@ namespace QARS.Migrations
                     LastName = table.Column<string>(nullable: false),
                     PhoneNumber = table.Column<string>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
-                    Discriminator = table.Column<string>(nullable: false)
+                    Discriminator = table.Column<string>(nullable: false),
+                    FranchiseeId = table.Column<int>(nullable: true),
+                    StoreId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -127,6 +130,7 @@ namespace QARS.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
+                    Name = table.Column<string>(nullable: true),
                     FranchiseeId = table.Column<int>(nullable: true),
                     LocationId = table.Column<int>(nullable: false),
                     Description = table.Column<string>(maxLength: 2500, nullable: true)

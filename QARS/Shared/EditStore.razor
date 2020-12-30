@@ -1,38 +1,41 @@
 ﻿@inject StoreServices service
 @using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 @inject AppDbContext dbContext
 
-<link href="/css/storemodal.css" rel="stylesheet" />
+<link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@UpdateStore" OnValidSubmit="UpdateStoreData">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label for="franchiseeid">Franchisee Id</label>
-        <select class="form-control" @bind="@franchiseeId">
-            @foreach (var franchisee in dbContext.Franchisees)
-            {
-                <option value="@franchisee.Id">[@franchisee.Id]   @franchisee.FirstName @franchisee.LastName</option>
-            }
-        </select>
+        <label for="name">Name</label><br />
+        <small>Fill in the name of the store</small>
+        <input type="text" id="name" class="form-control" @bind="@UpdateStore.Name" />
     </div>
     <div class="form-group">
-        <label for="locationaddress">Address</label>
+        <label for="locationaddress">Address</label><br />
+        <small>Fill in the store address including house number</small>
         <input type="text" id="locationaddress" class="form-control" @bind="@UpdateStore.Location.Address" />
     </div>
     <div class="form-group">
-        <label for="locationcity">City</label>
+        <label for="locationcity">City</label><br />
+        <small>Fill in the city</small>
         <input type="text" id="locationcity" class="form-control" @bind="@UpdateStore.Location.City" />
     </div>
     <div class="form-group">
-        <label for="locationzip">ZipCode</label>
+        <label for="locationzip">ZipCode</label><br />
+        <small>Fill in the zipcode</small>
         <input type="text" id="locationzip" class="form-control" @bind="@UpdateStore.Location.ZipCode" />
     </div>
     <div class="form-group">
-        <label for="locationcountry">Country</label>
+        <label for="locationcountry">Country</label><br />
+        <small>Fill in the country</small>
         <input type="text" id="locationcountry" class="form-control" @bind="@UpdateStore.Location.CountryCode" />
     </div>
     <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Description</label><br />
+        <small>Write a description for your store</small>
         <textarea class="form-control" id="description" rows="3" @bind="@UpdateStore.Description"></textarea>
     </div>
     <div class="text-center p-3 mb-3">
@@ -49,6 +52,20 @@
     Store store { get; set; }
     public int locationId = 0;
     public int franchiseeId = 0;
+    public int UserId = 0;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+    }
 
     protected override void OnInitialized()
     {
@@ -66,7 +83,7 @@
     }
     private async Task UpdateStoreData()
     {
-        UpdateStore.Franchisee = dbContext.Franchisees.FirstOrDefault(x => x.Id == franchiseeId);
+        UpdateStore.Franchisee = dbContext.Franchisees.FirstOrDefault(x => x.Id == UserId);
         await service.UpdateStoreAsync(UpdateStore);
         await BlazoredModal.Close(ModalResult.Ok<Store>(store));
     }

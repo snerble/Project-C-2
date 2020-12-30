@@ -20,9 +20,11 @@ namespace QARS.Data.Services
 			this.dbContext = dbContext;
 		}
 
-		public async Task<List<Extra>> GetExtraAsync()
+		public async Task<List<Extra>> GetExtraAsync(int storeid)
 		{
-			return await dbContext.Extras.ToListAsync();
+			return await dbContext.Extras
+				.Where(e => e.StoreId == storeid)
+				.ToListAsync();
 		}
 
 		public async Task<Extra> AddExtraAsync(Extra extra)

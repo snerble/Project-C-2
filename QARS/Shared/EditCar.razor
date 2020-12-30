@@ -1,55 +1,55 @@
 ﻿@inject CarServices service
 @using QARS.Data.Models 
+@using Microsoft.AspNetCore.Identity
 @inject AppDbContext dbContext
+@inject UserManager<User> UserManager
 
-<link href="/css/carmodal.css" rel="stylesheet" />
+<link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@UpdateCar" OnValidSubmit="UpdateCarData">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label for="carmodelid">Car Model Id</label>
+        <label for="carmodelid">Car Model Id</label><br />
+        <small>Select Car Model</small>
         <select class="form-control" @bind="@carModelId">
             @foreach (var carmodel in dbContext.CarModels)
             {
-                <option value="@carmodel.Id">@carmodel.Id</option>
+                <option value="@carmodel.Id">[@carmodel.Id] @carmodel.Brand @carmodel.Type</option>
             }
         </select>
     </div>
     <div class="form-group">
         <label for="licenseplate">License Plate</label>
-        <input type="text" id="licenseplate" class="form-control" @bind="@UpdateCar.LicensePlate" />
-    </div>
-    <div class="form-group">
-        <label for="storeid">Store Id</label>
-        <select class="form-control" @bind="@storeId">
-            @foreach (var store in dbContext.Stores)
-            {
-                <option value="@store.Id">@store.Id</option>
-            }
-        </select>
+        <input placeholder="Fill in the cars license plate (e.g. 1-ABC-23)" type="text" id="licenseplate" class="form-control" @bind="@UpdateCar.LicensePlate" />
     </div>
     <div class="form-group">
         <input type="checkbox" name="available" value="True" @bind="@UpdateCar.Available" />
-        <label for="available">Available</label>
+        <label for="available">Available</label><br />
+        <small>Check the box if the car is available</small>
     </div>
     <div class="form-group">
-        <label for="mileage">Mileage</label>
+        <label for="mileage">Mileage</label><br />
+        <small>Fill in the amount of kilometers on the cars odometer</small>
         <input type="text" id="mileage" class="form-control" @bind="@UpdateCar.Mileage" />
     </div>
     <div class="form-group">
-        <label for="address">Address</label>
+        <label for="address">Address</label><br />
+        <small>Fill in the address including house number</small>
         <input type="text" id="address" class="form-control" @bind="@UpdateCar.Location.Address" />
     </div>
     <div class="form-group">
-        <label for="city">City</label>
+        <label for="city">City</label><br />
+        <small>Fill in the city</small>
         <input type="text" id="city" class="form-control" @bind="@UpdateCar.Location.City" />
     </div>
     <div class="form-group">
-        <label for="zipcode">ZipCode</label>
+        <label for="zipcode">ZipCode</label><br />
+        <small>Fill in the zipcode</small>
         <input type="text" id="zipcode" class="form-control" @bind="@UpdateCar.Location.ZipCode" />
     </div>
     <div class="form-group">
-        <label for="countrycode">CountryCode</label>
+        <label for="countrycode">CountryCode</label><br />
+        <small>Fill in the name of the country</small>
         <input type="text" id="countrycode" class="form-control" @bind="@UpdateCar.Location.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
@@ -64,16 +64,38 @@
     [Parameter] public Car Car { get; set; }
 
     Car car { get; set; }
-    public int storeId = 0;
+    public int StoreId = 0;
     public int carModelId = 0;
     public int locationId = 0;
+    public int UserId = 0;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+
+            foreach (var employee in dbContext.Employees)
+            {
+                if (employee.Id == UserId)
+                {
+                    StoreId = employee.StoreId;
+                }
+            }
+        }
+    }
 
     protected override void OnInitialized()
     {
         car = Car;
         locationId = car.LocationId;
         carModelId = car.Model.Id;
-        storeId = car.Store.Id;
+        StoreId = car.Store.Id;
         car.Location = dbContext.Locations.FirstOrDefault(x => x.Id == locationId);
         SetCarForUpdate(car);
     }
@@ -86,7 +108,7 @@
     }
     private async Task UpdateCarData()
     {
-        UpdateCar.Store = dbContext.Stores.FirstOrDefault(x => x.Id == storeId);
+        UpdateCar.Store = dbContext.Stores.FirstOrDefault(x => x.Id == StoreId);
         UpdateCar.Model = dbContext.CarModels.FirstOrDefault(x => x.Id == carModelId);
         await service.UpdateCarAsync(UpdateCar);
         await BlazoredModal.Close(ModalResult.Ok<QARS.Data.Models.Car>(car));

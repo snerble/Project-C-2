@@ -1,77 +1,104 @@
 ﻿@page "/managecars"
-@inject CarServices service
 @using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject CarServices service
 @inject AppDbContext dbContext
+@inject UserManager<User> UserManager
 
-<link rel="searchbox stylesheet" href="/css/managecars.css">
+<link rel="searchbox stylesheet" href="/css/manage.css">
 
-
-<div class="col-12 d-flex justify-content-between">
-    <div class="col-3">
-        <UserDashboard />
-    </div>
-
-    <div class="col-9">
-        <div class="back container">
-            <div class="heading">
-                <h1 class="display-3" style="text-align: left;">Cars Manager</h1>
-                <p class="lead" style="text-align: left;">All existing cars are displayed below. Create new cars using the 'Add Car' button. Edit and delete cars by using the action buttons displayed in the table.</p>
+<AuthorizeView Roles="Employee">
+    <Authorized>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
             </div>
 
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Car Model ID</th>
-                            <th scope="col">LicensePlate</th>
-                            <th scope="col">Location ID</th>
-                            <th scope="col">Available</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Cars.Any())
-                        {
-                            @foreach (var car in Cars)
-                            {
+            <div class="col-md-9">
+                <div class="back container">
+                    <div class="heading">
+                        <h1 class="display-3" style="text-align: left;">Cars Manager</h1>
+                        <p class="lead" style="text-align: left;">All existing cars are displayed below. Create new cars using the 'Add Car' button. Edit and delete cars by using the action buttons displayed in the table.</p>
+                    </div>
+
+                    <div class="customtablerow row bg-light">
+                        <table class="table">
+                            <thead class="thead-light">
                                 <tr>
-                                    <td scope="col">@car.Id</td>
-                                    <td>@car.Model.Id</td>
-                                    <td>@car.LicensePlate</td>
-                                    <td>@car.LocationId</td>
-                                    <td>@car.Available</td>
-                                    <td><button class="btn btn-danger" @onclick="(() => DeleteCar(car))">Delete</button>  <button @onclick="@(() => ShowEditCar(car))" class="btn btn-warning">Show & Edit</button></td>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Car Model</th>
+                                    <th scope="col">LicensePlate</th>
+                                    <th scope="col">Available</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No cars available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Cars.Any())
+                                {
+                                    @foreach (var car in Cars)
+                                    {
+                                        <tr>
+                                            <td scope="col">@car.Id</td>
+                                            <td>@car.Model.Brand @car.Model.Type</td>
+                                            <td>@car.LicensePlate</td>
+                                            <td>@car.Available</td>
+                                            <td><button class="btn btn-danger" @onclick="(() => DeleteCar(car))">Delete</button>  <button @onclick="@(() => ShowEditCar(car))" class="btn btn-warning">Show & Edit</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="6"><strong>No cars available</strong></td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <button @onclick="@(() => ShowAddCar())" class="btn btn-success">Add Car</button>
+                </div>
             </div>
-            <button @onclick="@(() => ShowAddCar())" class="btn btn-success">Add Car</button>
         </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     List<Car> Cars = new List<Car>();
+    public int UserId = new int();
+    public int StoreId = new int();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     protected override async Task OnInitializedAsync()
     {
-        await RefreshCars();
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
+        @foreach (var employee in dbContext.Employees)
+        {
+            if(employee.Id == UserId)
+            {
+                StoreId = employee.StoreId;
+            }
+        }
+        await RefreshCars(StoreId);
+
     }
-    private async Task RefreshCars()
+    private async Task RefreshCars(int storeid)
     {
-        Cars = await service.GetCarAsync();
+        Cars = await service.GetCarAsync(storeid);
     }
 
     private async Task DeleteCar(Car car)
     {
         await service.DeleteCarAsync(car);
-        await RefreshCars();
+        await RefreshCars(StoreId);
     }
     [CascadingParameter] public IModalService Modal { get; set; }
     async Task ShowEditCar(Car car)

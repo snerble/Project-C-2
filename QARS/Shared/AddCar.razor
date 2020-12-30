@@ -1,56 +1,56 @@
 ﻿@inject CarServices service
 @inject AppDbContext dbContext
+@inject UserManager<User> UserManager
 
 @using QARS.Data.Models;
+@using Microsoft.AspNetCore.Identity
 
-<link href="/css/carmodal.css" rel="stylesheet"/>
+<link href="/css/modal.css" rel="stylesheet"/>
 
 <EditForm Model="@NewCar" OnValidSubmit="AddNewCar">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label for="carmodelid">Car Model Id</label>
+        <label for="carmodelid">Car Model Id</label><br />
+        <small>Select Car Model</small>
         <select class="form-control" @bind="@CarModelId">
             @foreach (var carmodel in dbContext.CarModels)
             {
-                <option value="@carmodel.Id">@carmodel.Id</option>
+                <option value="@carmodel.Id">[@carmodel.Id] @carmodel.Brand @carmodel.Type</option>
             }
         </select>
     </div>
     <div class="form-group">
         <label for="licenseplate">License Plate</label>
-        <input type="text" id="licenseplate" class="form-control" @bind="@NewCar.LicensePlate" />
-    </div>
-    <div class="form-group">
-        <label for="storeid">Store Id</label>
-        <select class="form-control" @bind="@StoreId">
-            @foreach (var store in dbContext.Stores)
-            {
-                <option value="@store.Id">@store.Id</option>
-            }
-        </select>
+        <input placeholder="Fill in the cars license plate (e.g. 1-ABC-23)" type="text" id="licenseplate" class="form-control" @bind="@NewCar.LicensePlate" />
     </div>
     <div class="form-group">
         <input type="checkbox" name="available" value="True" @bind="@NewCar.Available" />
-        <label for="available">Available</label>
+        <label for="available">Is Available</label><br />
+        <small>Check the box if the car is available</small>
     </div>
     <div class="form-group">
-        <label for="mileage">Mileage</label>
+        <label for="mileage">Mileage</label><br />
+        <small>Fill in the amount of kilometers on the cars odometer</small>
         <input type="text" id="mileage" class="form-control" @bind="@NewCar.Mileage" />
     </div>
     <div class="form-group">
-        <label for="address">Address</label>
+        <label for="address">Address</label><br />
+        <small>Fill in the address including house number</small>
         <input type="text" id="address" class="form-control" @bind="@NewCar.Location.Address" />
     </div>
     <div class="form-group">
-        <label for="city">City</label>
+        <label for="city">City</label><br />
+        <small>Fill in the city</small>
         <input type="text" id="city" class="form-control" @bind="@NewCar.Location.City" />
     </div>
     <div class="form-group">
-        <label for="zipcode">ZipCode</label>
+        <label for="zipcode">ZipCode</label><br />
+        <small>Fill in the zipcode</small>
         <input type="text" id="zipcode" class="form-control" @bind="@NewCar.Location.ZipCode" />
     </div>
     <div class="form-group">
-        <label for="countrycode">CountryCode</label>
+        <label for="countrycode">Country</label><br />
+        <small>Fill in the name of the country</small>
         <input type="text" id="countrycode" class="form-control" @bind="@NewCar.Location.CountryCode" />
     </div>
     <div class="text-center p-3 mb-3">
@@ -63,8 +63,9 @@
     List<Car> Cars = new List<Car>();
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    public int StoreId;
     public int CarModelId;
+    public int UserId = 0;
+    public int StoreId = 0;
 
     public Car NewCar { get; set; } = new Car()
     {
@@ -72,6 +73,27 @@
         Store = new Store(),
         Model = new CarModel()
     };
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+
+            foreach (var employee in dbContext.Employees)
+            {
+                if (employee.Id == UserId)
+                {
+                    StoreId = employee.StoreId;
+                }
+            }
+        }
+    }
 
 
     private async Task AddNewCar()
