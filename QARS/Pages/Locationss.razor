@@ -5,7 +5,7 @@
 
 @attribute [NavigationTab("Locations", Index = 0)]
 
-<h1>Locations work in progress</h1>
+<h1>the following locations are the locations of our stores</h1>
 
 
 
@@ -62,14 +62,14 @@
 						</tr>
 					</thead>
 					<tbody>
-						@if (dbContext.Locations.Any())
+						@if (dbContext.Stores.Any())
 						{
-							@foreach (var location in dbContext.Locations)
+							@foreach (var store in dbContext.Stores)
 							{
-								var locationid = location.Id;
-								<tr @onclick="@(e =>Lookup(locationid))">
-									<td>@location.City</td>
-									<td>@location.Address</td>
+								var storeid = store.Id;
+								<tr @onclick="@(e =>Lookup(storeid))">
+									<td>@store.Location.City</td>
+									<td>@store.Location.Address</td>
 								</tr>
 							}
 						}
@@ -95,15 +95,15 @@
 	string Zipcode;
 	string Country;
 
-	void Lookup(int locationid)
+	void Lookup(int storeid)
 	{
-		foreach (var location in dbContext.Locations)
+		foreach (var store in dbContext.Stores)
 		{
-			if (location.Id == locationid)
+			if (store.Id == storeid)
 			{
-				address = location.Address;
-				Country = location.CountryCode;
-				Zipcode = location.ZipCode;
+				address = store.Location.Address;
+				Country = store.Location.CountryCode;
+				Zipcode = store.Location.ZipCode;
 			}
 		}
 	}

@@ -272,11 +272,6 @@ namespace QARS.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
-            migrationBuilder.InsertData(
-                table: "CarModels",
-                columns: new[] { "Id", "Brand", "Category", "DayRate", "Description", "Doors", "Efficiency", "Emission", "FreeMileage", "FuelType", "HasAirconditioning", "KMRate", "Passengers", "SuitCases", "Transmission", "Type" },
-                values: new object[] { 1, "tesla", 4, 12.00m, "it's a car", 5, 10f, 5, 100m, 12, true, 0.19m, 5, 3, 2, "person car" });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_LocationId",
                 table: "Cars",
