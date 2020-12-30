@@ -133,26 +133,7 @@ namespace QARS.Data
 		{
 			return new List<CarModel>
 			{
-				new CarModel
-				{
-					Id = 1,
-					Brand = "tesla",
-					DayRate = 12.00m,
-					Category = CarCategory.Midsize,
-					Description = "it's a car",
-					Doors = 5,
-					Efficiency = 10.0f,
-					Emission = 5,
-					FreeMileage = 100m,
-					FuelType = FuelType.Electric,
-					HasAirconditioning = true,
-					KMRate = 0.19m,
-					Passengers = 5,
-					SuitCases = 3,
-					Transmission = TransmissionType.Automatic,
-					Type = "person car",
 
-				},
 			};
 		}
 

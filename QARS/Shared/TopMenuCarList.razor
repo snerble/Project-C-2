@@ -1,4 +1,6 @@
-﻿<div class="top-menu">
+﻿@inject AppDbContext dbContext
+
+<div class="top-menu">
     <div class="row">
         <div class="box-line boxes col-sm">
             <p class="number text-center">1</p><h6>Pick Up / Drop Off Location</h6><br />
@@ -30,10 +32,20 @@
         </div>
         <div class="boxes box-line col-sm">
             <p class="number text-center">2</p><h6>Vehicle Choice</h6><br />
-            @*if vehicle selected (by checking url)*@
-                <p></p>
-            @*else*@
+            @if (carId != 0)
+            {
+                foreach (var car in dbContext.Cars)
+                {
+                    if (car.Id == carId)
+                    {
+                        <p class="inline-block" style="margin-top: 0;">@car.Model.Brand - @car.Model.Type</p>
+                    }
+                }
+            }
+            else
+            {
                 <p class="inline-block" style="margin-top:0;">No vehicle chosen yet</p>
+            }
         </div>
         <div class="boxes box-line col-sm">
             <p class="number text-center">3</p><h6>Verification</h6><br />
@@ -62,4 +74,7 @@
 
     [Parameter]
     public string dropoffTime { get; set; }
+
+    [Parameter]
+    public int carId { get; set; }
 }

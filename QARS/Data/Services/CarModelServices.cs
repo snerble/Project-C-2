@@ -20,7 +20,8 @@ namespace QARS.Data.Services
 
 		public async Task<List<CarModel>> GetCarModelAsync()
 		{
-			return await dbContext.CarModels.ToListAsync();
+			return await dbContext.CarModels
+				.ToListAsync();
 		}
 
 		public async Task<CarModel> AddCarModelAsync(CarModel carmodel)

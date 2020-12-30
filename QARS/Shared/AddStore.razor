@@ -1,39 +1,42 @@
 ﻿@inject StoreServices service
 @inject AppDbContext dbContext
+@inject UserManager<User> UserManager
 
 @using QARS.Data.Models;
+@using Microsoft.AspNetCore.Identity
 
 <link href="/css/modal.css" rel="stylesheet"/>
 
 <EditForm Model="@NewStore" OnValidSubmit="AddNewStore">
     <DataAnnotationsValidator />
     <div class="form-group">
-        <label for="franchiseeid">Franchisee Id</label>
-        <select class="form-control" @bind="@FranchiseeId">
-            @foreach (var franchisee in dbContext.Franchisees)
-            {
-                <option value="@franchisee.Id">@franchisee.Id, @franchisee.FirstName @franchisee.LastName</option>
-            }
-        </select>
+        <label for="name">Name</label><br />
+        <small>Fill in the name of the store</small>
+        <input type="text" id="name" class="form-control" @bind="@NewStore.Name" />
     </div>
     <div class="form-group">
-        <label for="locationaddress">Address</label>
+        <label for="locationaddress">Address</label><br />
+        <small>Fill in the store address including house number</small>
         <input type="text" id="locationaddress" class="form-control" @bind="@NewStore.Location.Address" />
     </div>
     <div class="form-group">
-        <label for="locationcity">City</label>
+        <label for="locationcity">City</label><br />
+        <small>Fill in the city</small>
         <input type="text" id="locationcity" class="form-control" @bind="@NewStore.Location.City" />
     </div>
     <div class="form-group">
-        <label for="locationzip">ZipCode</label>
+        <label for="locationzip">ZipCode</label><br />
+        <small>Fill in the zipcode</small>
         <input type="text" id="locationzip" class="form-control" @bind="@NewStore.Location.ZipCode" />
     </div>
-    <div class="form-group">
+    <div class="form-group"><br />
+        <small>Fill in the country</small>
         <label for="locationcountry">Country</label>
         <input type="text" id="locationcountry" class="form-control" @bind="@NewStore.Location.CountryCode" />
     </div>
     <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Description</label><br />
+        <small>Write a description for your store</small>
         <textarea class="form-control" id="description" rows="3" @bind="@NewStore.Description"></textarea>
     </div>
     <div class="text-center p-3 mb-3">
@@ -44,20 +47,34 @@
 
 @code {
     List<Store> Stores = new List<Store>();
-    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    public int FranchiseeId;
+    public int UserId = 0;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     public Store NewStore { get; set; } = new Store()
     {
-        Location = new Location()         
+        Location = new Location()
     };
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+    }
 
 
     private async Task AddNewStore()
     {
         NewStore.LocationId = NewStore.Location.Id;
-        var franchisee = dbContext.Franchisees.FirstOrDefault(x => x.Id == FranchiseeId) ?? throw new ArgumentException("No such franchisee");
+        var franchisee = dbContext.Franchisees.FirstOrDefault(x => x.Id == UserId) ?? throw new ArgumentException("No such franchisee");
         NewStore.Franchisee = franchisee;
         await service.AddStoreAsync(NewStore);
         NewStore = new Store()

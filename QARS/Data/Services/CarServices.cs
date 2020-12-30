@@ -18,13 +18,25 @@ namespace QARS.Data.Services
 			this.dbContext = dbContext;
 		}
 
-		public async Task<List<Car>> GetCarAsync()
+		public async Task<List<Car>> GetCarAsync(int storeid)
 		{
-			return await dbContext.Cars
+			if(storeid > 0)
+			{
+				return await dbContext.Cars
+				.Where(c => c.Store.Id == storeid)
 				.Include(c => c.Location)
 				.Include(c => c.Store)
 				.Include(c => c.Model)
 				.ToListAsync();
+			}
+			else
+			{
+				return await dbContext.Cars
+				.Include(c => c.Location)
+				.Include(c => c.Store)
+				.Include(c => c.Model)
+				.ToListAsync();
+			}
 		}
 
 		public async Task<Car> AddCarAsync(Car car)

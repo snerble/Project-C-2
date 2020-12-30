@@ -21,9 +21,11 @@ namespace QARS.Data.Services
 			this.dbContext = dbContext;
 		}
 
-		public async Task<List<Employee>> GetEmployeesAsync()
+		public async Task<List<Employee>> GetEmployeesAsync(int franchiseeid)
 		{
-			return await dbContext.Employees.ToListAsync();
+			return await dbContext.Employees
+				.Where(e => e.FranchiseeId == franchiseeid)
+				.ToListAsync();
 		}
 
 		public async Task<Employee> AddEmployeeAsync(Employee employee)

@@ -122,7 +122,13 @@ namespace QARS.Data.Models
 	/// <summary>
 	/// Represents an employee working at <see cref="QARS"/>.
 	/// </summary>
-	public class Employee : User { }
+	public class Employee : User {
+
+		public int FranchiseeId { get; set; }
+
+		public int StoreId { get; set; }
+
+	}
 	/// <summary>
 	/// Represents a user with special privileges in the system.
 	/// </summary>

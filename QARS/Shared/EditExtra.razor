@@ -1,5 +1,8 @@
 ﻿@inject ExtraServices service
+@inject UserManager<User> UserManager
 @using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject AppDbContext dbContext
 
 <link href="/css/modal.css" rel="stylesheet" />
 
@@ -10,11 +13,13 @@
         <input type="text" id="name" class="form-control" @bind="@UpdateExtra.Name" />
     </div>
     <div class="form-group">
-        <label for="cost">Cost</label>
+        <label for="cost">Cost</label><br />
+        <small>Fill in the price per day in euro's</small>
         <input type="text" id="cost" class="form-control" @bind="@UpdateExtra.Cost" />
     </div>
     <div class="form-group">
-        <label for="description">Description</label>
+        <label for="description">Description</label><br />
+        <small>Write a description about the extra</small>
         <textarea rows="3" id="description" class="form-control" @bind="@UpdateExtra.Description" />
     </div>
     <div class="text-center p-3 mb-3">
@@ -26,7 +31,12 @@
 @code {
     List<Extra> Extras = new List<Extra>();
 
+    public int UserId = 0;
+
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     [Parameter] public Extra Extra { get; set; }
 
@@ -45,6 +55,20 @@
     }
     private async Task UpdateExtraData()
     {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
+        foreach (var employee in dbContext.Employees)
+        {
+            if (employee.Id == UserId)
+            {
+                UpdateExtra.StoreId = employee.StoreId;
+            }
+        }
         await service.UpdateExtraAsync(UpdateExtra);
         await BlazoredModal.Close(ModalResult.Ok<Extra>(extra));
     }

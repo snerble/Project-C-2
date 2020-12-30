@@ -1,75 +1,95 @@
 ﻿@page "/managestores"
 @inject StoreServices service
 @using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity 
 @inject AppDbContext dbContext
+@inject UserManager<User> UserManager
 
 <link rel="stylesheet" href="/css/manage.css">
 
-
-<div class="col-12 d-flex justify-content-between">
-    <div class="col-3">
-        <UserDashboard />
-    </div>
-
-    <div class="col-9">
-        <div class="back container">
-            <div class="heading">
-                <h1 class="display-3" style="text-align: left;">Store Manager</h1>
-                <p class="lead" style="text-align: left;">All existing stores are displayed below. Create new store using the 'Add Store' button. Edit and delete stores by using the action buttons displayed in the table.</p>
+<AuthorizeView Roles="Franchisee">
+    <Authorized>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
             </div>
 
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">Franchisee ID</th>
-                            <th scope="col">Location ID</th>
-                            <th scope="col">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @if (Stores.Any())
-                        {
-                            @foreach (var store in Stores)
-                            {
+            <div class="col-md-9">
+                <div class="back container">
+                    <div class="heading">
+                        <h1 class="display-3" style="text-align: left;">Store Manager</h1>
+                        <p class="lead" style="text-align: left;">All existing stores are displayed below. Create new store using the 'Add Store' button. Edit and delete stores by using the action buttons displayed in the table.</p>
+                    </div>
+
+                    <div class="customtablerow row bg-light">
+                        <table class="table">
+                            <thead class="thead-light">
                                 <tr>
-                                    <td scope="col">@store.Id</td>
-                                    <td>@store.Franchisee.Id</td>
-                                    <td>@store.Location.Address</td>
-                                    <td><button class="btn btn-danger" @onclick="(() => DeleteStore(store))">Delete</button>  <button @onclick="@(() => ShowEditStore(store))" class="btn btn-warning">Show & Edit</button></td>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Location</th>
+                                    <th scope="col">Actions</th>
                                 </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No stores available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
+                            </thead>
+                            <tbody>
+                                @if (Stores.Any())
+                                {
+                                    @foreach (var store in Stores)
+                                    {
+                                        <tr>
+                                            <td scope="col">@store.Id</td>
+                                            <td>@store.Name</td>
+                                            <td>@store.Location.City, @store.Location.CountryCode</td>
+                                            <td><button class="btn btn-danger" @onclick="(() => DeleteStore(store))">Delete</button>  <button @onclick="@(() => ShowEditStore(store))" class="btn btn-warning">Show & Edit</button></td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    <tr><td colspan="6"><strong>No stores available</strong></td></tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                    <button @onclick="@(() => ShowAddStore())" class="btn btn-success">Add Store</button>
+                </div>
             </div>
-            <button @onclick="@(() => ShowAddStore())" class="btn btn-success">Add Store</button>
         </div>
-    </div>
-</div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
     List<Store> Stores = new List<Store>();
 
+    public int UserId = 0;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        await RefreshStores();
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
+
+        await RefreshStores(UserId);
     }
-    private async Task RefreshStores()
+    private async Task RefreshStores(int franchiseeid)
     {
-        Stores = await service.GetStoreAsync();
+        Stores = await service.GetStoreAsync(franchiseeid);
     }
 
     private async Task DeleteStore(Store store)
     {
         await service.DeleteStoreAsync(store);
-        await RefreshStores();
+        await RefreshStores(UserId);
     }
     [CascadingParameter] public IModalService Modal { get; set; }
     async Task ShowEditStore(Store store)
