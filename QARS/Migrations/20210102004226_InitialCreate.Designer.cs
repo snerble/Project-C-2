@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20201229164751_InitialCreate")]
+    [Migration("20210102004226_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -114,27 +114,6 @@ namespace QARS.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CarModels");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Brand = "tesla",
-                            Category = 4,
-                            DayRate = 12.00m,
-                            Description = "it's a car",
-                            Doors = 5,
-                            Efficiency = 10f,
-                            Emission = 5,
-                            FreeMileage = 100m,
-                            FuelType = 12,
-                            HasAirconditioning = true,
-                            KMRate = 0.19m,
-                            Passengers = 5,
-                            SuitCases = 3,
-                            Transmission = 2,
-                            Type = "person car"
-                        });
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Contact", b =>
@@ -218,7 +197,7 @@ namespace QARS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CarId")
+                    b.Property<int>("CarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("CarLocationId")
@@ -435,7 +414,9 @@ namespace QARS.Migrations
                 {
                     b.HasOne("QARS.Data.Models.Car", "Car")
                         .WithMany()
-                        .HasForeignKey("CarId");
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("QARS.Data.Models.Location", "CarLocation")
                         .WithMany()

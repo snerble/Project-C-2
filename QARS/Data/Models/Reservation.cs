@@ -33,6 +33,8 @@ namespace QARS.Data.Models
 		/// Gets or sets the <see cref="Models.Car"/> that is being reserved.
 		/// </summary>
 		public Car Car { get; set; }
+
+		public int CarId { get; set; }
 		/// <summary>
 		/// Gets or sets the initial <see cref="Store"/> location if the <see cref="Car"/>
 		/// when this reservation was made.
@@ -113,6 +115,8 @@ namespace QARS.Data.Models
 		/// <returns>A new <see cref="Reservation"/> instance.</returns>
 		public static Reservation Create(Customer customer, Car car, DateTimeOffset start, DateTimeOffset end, params Extra[] extras)
 		{
+
+
 			// Get the UTC times for start and end
 			(start, end) = (start.UtcDateTime, end.UtcDateTime);
 
@@ -130,6 +134,7 @@ namespace QARS.Data.Models
 					{
 						Customer = customer,
 						Car = car,
+						CarId = car.Id,
 						CarLocation = car.Location,
 						InitialMileage = car.Mileage,
 						Start = start,
@@ -141,9 +146,7 @@ namespace QARS.Data.Models
 				finally
 				{
 					// After returning the new reservation, mark the car as reserved.
-					Console.WriteLine("1");
 					car.Reserve();
-					Console.WriteLine("2");
 				}
 			}
 		}

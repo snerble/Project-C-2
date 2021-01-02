@@ -2,6 +2,7 @@
 @inject AppDbContext dbContext
 @inject CarServices service
 @inject UserManager<User> UserManager
+@inject ReservationServices reservation_service
 @using QARS.Data.Models
 @using Microsoft.AspNetCore.Identity
 
@@ -29,7 +30,7 @@
                             <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
                         </div>
                     }
-                    <AuthorizeView Roles="Customer">
+                    <AuthorizeView Roles="Customer, Admin">
                         <Authorized>
                             <button class="btn btn-primary btn-lg" @onclick="GoTo">Rent Car</button><br />
                         </Authorized>
@@ -198,6 +199,8 @@
         Console.WriteLine(datePickup.ToString());
         Console.WriteLine(dateDropoff.ToString());
         //Reserve car
-        Reservation.Create(customer, car, pickup, dropoff, extras.ToArray());
+        var reservation = Reservation.Create(customer, car, pickup, dropoff, extras.ToArray());
+        reservation_service.AddReservationAsync(reservation);
+        Console.WriteLine("done");
     }
 }
