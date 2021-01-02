@@ -8,7 +8,7 @@
 
 <link rel="searchbox stylesheet" href="/css/manage.css">
 
-<AuthorizeView Roles="Customer">
+<AuthorizeView Roles="Customer, Employee, Franchisee">
     <Authorized>
         <div class="row d-flex justify-content-between">
             <div class="col-md-3">
@@ -76,6 +76,7 @@
     List<Reservation> Reservations = new List<Reservation>();
     List<Car> Cars = new List<Car>();
     public int UserId = new int();
+    public string Role = string.Empty;
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -87,6 +88,27 @@
         {
             var user = await UserManager.GetUserAsync(authState.User);
             UserId = user.Id;
+            foreach(var customer in dbContext.Customers)
+            {
+                if(customer.Id == UserId)
+                {
+                    Role = "Customer";
+                }
+            }
+            foreach(var franchisee in dbContext.Franchisees)
+            {
+                if(franchisee.Id == UserId)
+                {
+                    Role = "Franchisee";
+                }
+            }
+            foreach(var employee in dbContext.Employees)
+            {
+                if(employee.Id == UserId)
+                {
+                    Role = "Employee";
+                }
+            }
         }
 
         Cars = await car_service.GetCarAsync(0);
@@ -96,7 +118,22 @@
     }
     private async Task RefreshReservations(int userid)
     {
-        Reservations = await service.GetReservationAsync(userid);
+        if (Role == "Customer" || Role == "Franchisee")
+        {
+            Reservations = await service.GetReservationAsync(userid, Role);
+        }
+        else if (Role == "Employee")
+        {
+            int storeId = 0;
+            foreach(var employee in dbContext.Employees)
+            {
+                if(UserId == employee.Id)
+                {
+                    storeId = employee.StoreId;
+                }
+            }
+            Reservations = await service.GetReservationAsync(storeId, Role);
+        }
     }
 
     private async Task DeleteReservation(Reservation reservation)

@@ -18,11 +18,26 @@ namespace QARS.Data.Services
 			this.dbContext = dbContext;
 		}
 
-		public async Task<List<Reservation>> GetReservationAsync(int userid)
+		public async Task<List<Reservation>> GetReservationAsync(int userid, string role)
 		{
-			return await dbContext.Reservations
-				.Where(r => r.Customer.Id == userid)
-				.ToListAsync();
+			if (role == "Customer")
+			{
+				return await dbContext.Reservations
+					.Where(r => r.Customer.Id == userid)
+					.ToListAsync();
+			}
+			else if (role == "Franchisee")
+			{
+				return await dbContext.Reservations
+					.Where(r => r.Car.Store.Franchisee.Id == userid)
+					.ToListAsync();
+			}
+			else
+			{
+				return await dbContext.Reservations
+					.Where(r => r.Car.Store.Id == userid)
+					.ToListAsync();
+			}
 		}
 
 		public async Task<Reservation> AddReservationAsync(Reservation reservation)
