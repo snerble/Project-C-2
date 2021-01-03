@@ -22,20 +22,26 @@
 
                 </div>
                 <div class="col-sm-4 options">
-                    <h4 class="display-4">Extra's</h4><br />
-                    @foreach (var extra in dbContext.Extras)
+                    @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
                     {
-                        <div class="option">
-                            <input type="checkbox" class="form-check-input" @onchange="eventArgs => { extrasAdded(extra, eventArgs.Value); }"/>
-                            <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
+                        <div class="extras">
+                            <h4 class="display-4">Extra's</h4><br />
+                            @foreach (var extra in dbContext.Extras.Where(e => e.StoreId == car.Store.Id))
+                            {
+                                <div class="option">
+                                    <input type="checkbox" class="form-check-input" @onchange="eventArgs => { extrasAdded(extra, eventArgs.Value); }" />
+                                    <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
+                                </div>
+                            }
                         </div>
                     }
-                    <AuthorizeView Roles="Customer, Admin">
+
+                    <AuthorizeView Roles="Customer">
                         <Authorized>
-                            <button class="btn btn-primary btn-lg" @onclick="GoTo">Rent Car</button><br />
+                            <button class="btn btn-primary btn-lg" @onclick="GoTo">Continue to verification</button><br />
                         </Authorized>
                         <NotAuthorized>
-                            <a class="btn btn-primary btn-lg" href="/Identity/Account/Login">Please log in to rent this car</a><br />
+                            <a class="btn btn-primary btn-lg" href="/Identity/Account/Login">Please log in</a><br />
                         </NotAuthorized>
                     </AuthorizeView>
                 </div>
@@ -142,7 +148,7 @@
     }
 
 
-    public void GoTo()
+    public async Task GoTo()
     {
         //specifying date & time for reservation in DateTimeOffset (Utc)
         string dayPickupString = pickupDate[0].ToString() + pickupDate[1].ToString();
@@ -200,7 +206,7 @@
         Console.WriteLine(dateDropoff.ToString());
         //Reserve car
         var reservation = Reservation.Create(customer, car, pickup, dropoff, extras.ToArray());
-        reservation_service.AddReservationAsync(reservation);
+        await reservation_service.AddReservationAsync(reservation);
         Console.WriteLine("done");
     }
 }
