@@ -22,6 +22,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 
 using Blazored.Modal;
+using Tewr.Blazor.FileReader;
 
 namespace QARS
 {
@@ -41,6 +42,7 @@ namespace QARS
 			services.AddRazorPages();
 			services.AddServerSideBlazor();
 			services.AddBlazoredModal();
+			services.AddFileReaderService();
 
 			#region Database Setup
 			// When in Debug mode and EntityFramework isn't running, use the connection string specified in UseConnection. Otherwise use DefaultConnection

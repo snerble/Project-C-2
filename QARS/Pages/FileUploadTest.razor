@@ -1,0 +1,68 @@
+﻿@page "/FileUpload"
+@attribute [NavigationTab("File Upload")]
+
+@using System.IO;
+@using Tewr.Blazor.FileReader;
+@inject IFileReaderService FileReader
+
+<h3>FileUploadTest</h3>
+
+<input type="file" multiple @ref="InputElement" @oninput="RefreshFileList" /><br />
+<button @onclick="UploadFiles">Yeet</button><br />
+@foreach (var thing in Files)
+{
+	<progress value="@((int)(thing.Progress * 100))" max="100"/><br />
+}
+
+@code {
+	private const string DownloadPath = @"C:\Users\Conor\source\repos\Snerble\Project-C-2\QARS\Data\";
+
+	private ElementReference InputElement;
+
+	public class FileThing
+	{
+		public IFileReference File { get; set; }
+		public float Progress { get; set; }
+	}
+
+	private List<FileThing> Files { get; } = new List<FileThing>();
+
+	public async Task RefreshFileList()
+	{
+		Files.Clear();
+
+		foreach (var file in await FileReader.CreateReference(InputElement)
+			.EnumerateFilesAsync())
+		{
+			Files.Add(new FileThing() { File = file, Progress = 0f });
+		}
+	}
+
+	public async Task UploadFiles()
+	{
+		foreach (var file in Files)
+		{
+			await using var stream = await file.File.OpenReadAsync();
+			var info = await file.File.ReadFileInfoAsync();
+
+			int read = 0;
+			byte[] buffer = new byte[0x1000 * 8];
+
+			using var outputFile = File.OpenWrite(Path.Join(
+				DownloadPath,
+				info.Name
+			));
+			do
+			{
+				read = await stream.ReadAsync(buffer);
+				file.Progress = stream.Position / (float)info.Size;
+
+				await outputFile.WriteAsync(buffer, 0, read);
+				await outputFile.FlushAsync();
+
+				await InvokeAsync(StateHasChanged);
+			}
+			while (read == buffer.Length);
+		}
+	}
+}
