@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210103164313_InitialCreate")]
+    [Migration("20210104215647_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,9 @@ namespace QARS.Migrations
 
                     b.Property<bool>("HasAirconditioning")
                         .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("BLOB");
 
                     b.Property<decimal>("KMRate")
                         .HasColumnType("TEXT");
@@ -197,7 +200,7 @@ namespace QARS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int?>("CarId")
+                    b.Property<int>("CarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("CarLocationId")
@@ -375,6 +378,12 @@ namespace QARS.Migrations
                 {
                     b.HasBaseType("QARS.Data.Models.User");
 
+                    b.Property<byte[]>("DriversLicenseBack")
+                        .HasColumnType("BLOB");
+
+                    b.Property<byte[]>("DriversLicenseFront")
+                        .HasColumnType("BLOB");
+
                     b.HasDiscriminator().HasValue("Customer");
                 });
 
@@ -430,7 +439,9 @@ namespace QARS.Migrations
                 {
                     b.HasOne("QARS.Data.Models.Car", "Car")
                         .WithMany()
-                        .HasForeignKey("CarId");
+                        .HasForeignKey("CarId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("QARS.Data.Models.Location", "CarLocation")
                         .WithMany()

@@ -1,5 +1,113 @@
-﻿<h3>Verification</h3>
+﻿@page "/SearchCar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}/Car/{carId:int}/Verification"
+@inject AppDbContext dbContext
+@inject UserManager<User> UserManager
+@inject CustomerServices service
+@using Microsoft.AspNetCore.Identity
+@inject IFileReaderService FileReader
+@using QARS.Data.Models
+@using System.IO;
+@using Tewr.Blazor.FileReader;
+
+
+<link href="/css/verification.css" rel="stylesheet" />
+
+<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="@carId" />
+
+<AuthorizeView Roles="Customer">
+    <Authorized>
+        <div class="row verification justify-content-center">
+            <div class="col-md-6 driverslicense">
+                <h1 class="display-4">Drivers License</h1><br />
+                <p>You are almost done. Please upload your drivers license and press 'continue'.</p><br />
+                <div class="form-group">
+                    <label for="front">Front of Drivers License</label><br />
+                    <small>Please upload a clear picture of the front of your drivers license</small>
+                    <FileSelector @ref="FileSelectorFront" /><br />
+                    <button class="btn btn-primary" @onclick="UploadFront">Upload Front</button>
+                </div>
+                <div class="form-group">
+                    <label for="back">Back of Drivers License</label><br />
+                    <small>Please upload a clear picture of the back of your drivers license</small>
+                    <FileSelector @ref="FileSelectorBack" /><br />
+                    <button class="btn btn-primary" @onclick="UploadBack">Upload Back</button>
+                </div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="verification">
+            <p>You do not have permission to access this page. Please log in and try again.</p>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
 
 @code {
+    [Parameter]
+    public int carId { get; set; }
 
+    [Parameter]
+    public string pickupLocation { get; set; }
+
+    [Parameter]
+    public string pickupDate { get; set; }
+
+    [Parameter]
+    public string pickupTime { get; set; }
+
+    [Parameter]
+    public string dropoffLocation { get; set; }
+
+    [Parameter]
+    public string dropoffDate { get; set; }
+
+    [Parameter]
+    public string dropoffTime { get; set; }
+
+    public int UserId = 0;
+
+    Customer customer { get; set; }
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+            foreach(var Customer in dbContext.Customers)
+            {
+                if(UserId == Customer.Id)
+                {
+                    customer = Customer;
+                }
+            }
+        }
+    }
+
+    private FileSelector FileSelectorFront;
+
+    private async Task UploadFront()
+    {
+        FileDownloadResult result = await FileSelectorFront.DonwloadSingleAsync();
+
+        var upload = result.Data;
+
+        customer.DriversLicenseFront = upload;
+        await service.UpdateCustomerAsync(customer);
+    }
+
+    private FileSelector FileSelectorBack;
+
+    private async Task UploadBack()
+    {
+        FileDownloadResult result = await FileSelectorBack.DonwloadSingleAsync();
+
+        var upload = result.Data;
+
+        customer.DriversLicenseBack = upload;
+        await service.UpdateCustomerAsync(customer);
+    }
 }

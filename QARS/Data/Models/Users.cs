@@ -114,7 +114,13 @@ namespace QARS.Data.Models
 	/// <summary>
 	/// Represents a customer at <see cref="QARS"/>.
 	/// </summary>
-	public class Customer : User { }
+	public class Customer : User {
+
+		public byte[] DriversLicenseFront { get; set; }
+
+		public byte[] DriversLicenseBack { get; set; }
+
+	}
 	/// <summary>
 	/// Represents a franchise owner.
 	/// </summary>

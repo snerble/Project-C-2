@@ -3,6 +3,7 @@
 @inject CarServices service
 @inject UserManager<User> UserManager
 @inject ReservationServices reservation_service
+@inject NavigationManager navManager
 @using QARS.Data.Models
 @using Microsoft.AspNetCore.Identity
 
@@ -19,12 +20,14 @@
         <div class="carcontent">
             <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
             <div class="row justify-content-around allcontent">
-                <div class="col-sm-6 image justify-content-center">
+                <div class="col-md-6 image justify-content-center">
                     <img src="data:image;base64,@System.Convert.ToBase64String(Image)">
                 </div>
-                <div class="col-sm-4 options">
-                    <div class="extras">
-                        <h4 class="display-4">Extra's</h4><br />
+                <div class="col-md-5 options">
+                    <div class="extras form-group">
+                        <h4 class="display-4">Rent Car</h4><br />
+                        <label for="extras">Extras</label><br />
+                        <small>Select the extras you'd want to add</small>
 
                         @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
                         {
@@ -44,6 +47,20 @@
 
                     <AuthorizeView Roles="Customer">
                         <Authorized>
+                            <div class="form-group">
+                                <label for="dropoffstore">Dropoff Store</label><br />
+                                <small>Select at which store in @pickupLocation you'd want to drop the car off</small>
+                                <select class="form-control">
+                                    @foreach (var store in dbContext.Stores)
+                                    {
+                                        @foreach (var location in dbContext.Locations.Where(l => l.Id == store.LocationId).Where(l => l.City == pickupLocation))
+                                        {
+                                            <option>@store.Name - @store.Location.City, @store.Location.CountryCode</option>
+                                        }
+
+                                    }
+                                </select>
+                            </div>
                             <button class="btn btn-primary btn-lg" @onclick="GoTo">Continue to verification</button><br />
                         </Authorized>
                         <NotAuthorized>
@@ -85,7 +102,7 @@
             </div>
         </div>
     }
- }
+}
 
 
 
@@ -154,6 +171,10 @@
         }
     }
 
+    public void GoToVerification()
+    {
+        navManager.NavigateTo("/SearchCar/" + pickupLocation + "/" + pickupDate + "/" + pickupTime + "/" + dropoffLocation + "/" + dropoffDate + "/" + dropoffTime + "/Car/" + carId + "/verification");
+    }
 
     public async Task GoTo()
     {
@@ -192,7 +213,7 @@
 
         foreach (var user in dbContext.Customers)
         {
-            if(user.Id == UserId)
+            if (user.Id == UserId)
             {
                 customer = user;
             }
@@ -204,7 +225,7 @@
 
         foreach (var targetCar in dbContext.Cars)
         {
-            if(carId == targetCar.Id)
+            if (carId == targetCar.Id)
             {
                 car = targetCar;
             }

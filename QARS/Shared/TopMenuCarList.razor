@@ -1,4 +1,5 @@
 ﻿@inject AppDbContext dbContext
+@inject CarServices service
 
 <link rel="stylesheet" href="/css/topmenu.css" />
 
@@ -36,7 +37,7 @@
             <p id="two" class="number text-center">2</p><h6>Vehicle Choice</h6><br />
             @if (carId != 0)
             {
-                foreach (var car in dbContext.Cars)
+                foreach (var car in Cars)
                 {
                     if (car.Id == carId)
                     {
@@ -59,6 +60,13 @@
 </div>
 
 @code{
+    List<Car> Cars = new List<Car>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cars = await service.GetCarAsync(0);
+    }
+
     [Parameter]
     public string pickupLocation { get; set; }
 

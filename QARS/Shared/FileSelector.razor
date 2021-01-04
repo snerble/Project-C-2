@@ -6,142 +6,144 @@
     <div>
         <input type="file" @ref="InputElement" @oninput="RefreshFileList" />
     </div><br />
+
     @foreach (var upload in Files)
     {
         <div class="progress">
-            <div class="progress-bar" role="progressbar" value="@upload.Progress" max="1"></div>
+            <div class="progress-bar" role="progressbar" style="@($"width: {(upload.Progress*100)}%")" aria-valuenow="@(upload.Progress*100)" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
     }
 </div>
 
 @code {
-	/// <summary>
-	/// Represents a file selected by an input component that can be
-	/// downloaded to the server.
-	/// </summary>
-	private class FileDownload
-	{
-		private FileDownload(IFileReference file, IFileInfo info)
-		{
-			File = file;
-			Info = info;
-		}
 
-		/// <summary>
-		/// Gets or sets the file that will be downloaded.
-		/// </summary>
-		public IFileReference File { get; }
+    /// <summary>
+    /// Represents a file selected by an input component that can be
+    /// downloaded to the server.
+    /// </summary>
+    private class FileDownload
+    {
+        private FileDownload(IFileReference file, IFileInfo info)
+        {
+            File = file;
+            Info = info;
+        }
 
-		/// <summary>
-		/// Gets the metadata for the file.
-		/// </summary>
-		public IFileInfo Info { get; }
+        /// <summary>
+        /// Gets or sets the file that will be downloaded.
+        /// </summary>
+        public IFileReference File { get; }
 
-		/// <summary>
-		/// Gets the progress of the file download.
-		/// </summary>
-		public float Progress { get; set; } = 0f;
+        /// <summary>
+        /// Gets the metadata for the file.
+        /// </summary>
+        public IFileInfo Info { get; }
 
-		/// <summary>
-		/// Asynchronously creates an instance of <see cref="FileDownload"/>.
-		/// </summary>
-		/// <param name="file">The file to create a <see cref="FileDownload"/> for.</param>
-		/// <returns>The newly created <see cref="FileDownload"/> instance.</returns>
-		public static async Task<FileDownload> CreateAsync(IFileReference file)
-			=> new FileDownload(file, await file.ReadFileInfoAsync());
-	}
+        /// <summary>
+        /// Gets the progress of the file download.
+        /// </summary>
+        public float Progress { get; set; } = 0f;
 
-	/// <summary>
-	/// A reference to the element that selects the files.
-	/// </summary>
-	private ElementReference InputElement;
+        /// <summary>
+        /// Asynchronously creates an instance of <see cref="FileDownload"/>.
+        /// </summary>
+        /// <param name="file">The file to create a <see cref="FileDownload"/> for.</param>
+        /// <returns>The newly created <see cref="FileDownload"/> instance.</returns>
+        public static async Task<FileDownload> CreateAsync(IFileReference file)
+            => new FileDownload(file, await file.ReadFileInfoAsync());
+    }
 
-	/// <summary>
-	/// Gets the collection of files that are currently
-	/// selected and may be getting uploaded.
-	/// </summary>
-	private List<FileDownload> Files { get; } = new List<FileDownload>();
+    /// <summary>
+    /// A reference to the element that selects the files.
+    /// </summary>
+    private ElementReference InputElement;
 
-	/// <summary>
-	/// Refreshes the file list with the current selection from <see cref="InputElement"/>.
-	/// </summary>
-	private async Task RefreshFileList()
-	{
-		// Clear the previous selection
-		Files.Clear();
+    /// <summary>
+    /// Gets the collection of files that are currently
+    /// selected and may be getting uploaded.
+    /// </summary>
+    private List<FileDownload> Files { get; } = new List<FileDownload>();
 
-		// Enumerate through the files that are selected by InputElement
-		// and add them to the files list.
-		foreach (var file in await FileReader
-			.CreateReference(InputElement)
-			.EnumerateFilesAsync())
-		{
-			Files.Add(await FileDownload.CreateAsync(file));
-		}
-	}
+    /// <summary>
+    /// Refreshes the file list with the current selection from <see cref="InputElement"/>.
+    /// </summary>
+    private async Task RefreshFileList()
+    {
+        // Clear the previous selection
+        Files.Clear();
 
-	/// <summary>
-	/// Downloads every file asynchronously and returns it's data.
-	/// </summary>
-	private async IAsyncEnumerable<FileDownloadResult> DownloadFiles()
-	{
-		foreach (var file in Files)
-		{
-			// Open a readable stream to the file that is selected
-			await using var stream = await file.File.OpenReadAsync();
-			// Obtain the file info (used to get the filename and to calculate upload progress)
-			var info = await file.File.ReadFileInfoAsync();
+        // Enumerate through the files that are selected by InputElement
+        // and add them to the files list.
+        foreach (var file in await FileReader
+            .CreateReference(InputElement)
+            .EnumerateFilesAsync())
+        {
+            Files.Add(await FileDownload.CreateAsync(file));
+        }
+    }
 
-			// Prepare the read bytes value and the stream read buffer
-			int read = 0;
-			byte[] buffer = new byte[(int)Math.Max(1, Math.Ceiling(info.Size * 0.01))]; // 1 percent the size of the input file.
+    /// <summary>
+    /// Downloads every file asynchronously and returns it's data.
+    /// </summary>
+    private async IAsyncEnumerable<FileDownloadResult> DownloadFiles()
+    {
+        foreach (var file in Files)
+        {
+            // Open a readable stream to the file that is selected
+            await using var stream = await file.File.OpenReadAsync();
+            // Obtain the file info (used to get the filename and to calculate upload progress)
+            var info = await file.File.ReadFileInfoAsync();
 
-			// Create a memory stream to write the file to
-			using var memoryStream = new MemoryStream();
+            // Prepare the read bytes value and the stream read buffer
+            int read = 0;
+            byte[] buffer = new byte[(int)Math.Max(1, Math.Ceiling(info.Size * 0.01))]; // 1 percent the size of the input file.
 
-			do
-			{
-				// Copy a section from the stream onto buffer and return how many bytes were actually read
-				read = await stream.ReadAsync(buffer);
-				// Calculate progress as a 0 to 1 value
-				file.Progress = stream.Position / (float)info.Size;
+            // Create a memory stream to write the file to
+            using var memoryStream = new MemoryStream();
 
-				// Write all the bytes that were written to the buffer onto the output filestream
-				await memoryStream.WriteAsync(buffer, 0, read);
-				// Flushing clears the internal buffers used by the filestream and (probably) saves on memory usage
-				await memoryStream.FlushAsync();
+            do
+            {
+                // Copy a section from the stream onto buffer and return how many bytes were actually read
+                read = await stream.ReadAsync(buffer);
+                // Calculate progress as a 0 to 1 value
+                file.Progress = stream.Position / (float)info.Size;
 
-				// Inform the UI of a state change.
-				//  Normally the UI only updates after an action has been performed,
-				//  so this just manually tells the UI to update.
-				await InvokeAsync(StateHasChanged);
-			}
-			// Read untill the buffer could not be fully filled (means the stream has reached the end)
-			while (read == buffer.Length);
+                // Write all the bytes that were written to the buffer onto the output filestream
+                await memoryStream.WriteAsync(buffer, 0, read);
+                // Flushing clears the internal buffers used by the filestream and (probably) saves on memory usage
+                await memoryStream.FlushAsync();
 
-			// Yield the final results in a special data struct
-			yield return new FileDownloadResult(info, memoryStream.ToArray());
-		}
-	}
+                // Inform the UI of a state change.
+                //  Normally the UI only updates after an action has been performed,
+                //  so this just manually tells the UI to update.
+                await InvokeAsync(StateHasChanged);
+            }
+            // Read untill the buffer could not be fully filled (means the stream has reached the end)
+            while (read == buffer.Length);
 
-	/// <summary>
-	/// Downloads multiple selected files asynchronously.
-	/// </summary>
-	/// <returns>A collection of download results.</returns>
-	public async IAsyncEnumerable<FileDownloadResult> DownloadMultipleAsync()
-	{
-		await foreach (FileDownloadResult result in DownloadFiles())
-			yield return result;
-	}
+            // Yield the final results in a special data struct
+            yield return new FileDownloadResult(info, memoryStream.ToArray());
+        }
+    }
 
-	/// <summary>
-	/// Downloads a single selected file asynchronously.
-	/// </summary>
-	/// <returns>The download result.</returns>
-	public async Task<FileDownloadResult> DonwloadSingleAsync()
-	{
-		await foreach (FileDownloadResult result in DownloadMultipleAsync())
-			return result;
-		throw new InvalidOperationException("No file is selected.");
-	}
+    /// <summary>
+    /// Downloads multiple selected files asynchronously.
+    /// </summary>
+    /// <returns>A collection of download results.</returns>
+    public async IAsyncEnumerable<FileDownloadResult> DownloadMultipleAsync()
+    {
+        await foreach (FileDownloadResult result in DownloadFiles())
+            yield return result;
+    }
+
+    /// <summary>
+    /// Downloads a single selected file asynchronously.
+    /// </summary>
+    /// <returns>The download result.</returns>
+    public async Task<FileDownloadResult> DonwloadSingleAsync()
+    {
+        await foreach (FileDownloadResult result in DownloadMultipleAsync())
+            return result;
+        throw new InvalidOperationException("No file is selected.");
+    }
 }

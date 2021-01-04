@@ -15,6 +15,7 @@ namespace QARS.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Brand = table.Column<string>(maxLength: 50, nullable: false),
                     Type = table.Column<string>(maxLength: 50, nullable: false),
+                    Image = table.Column<byte[]>(nullable: true),
                     Category = table.Column<int>(nullable: false),
                     FuelType = table.Column<int>(nullable: false),
                     DayRate = table.Column<decimal>(nullable: false),
@@ -110,6 +111,8 @@ namespace QARS.Migrations
                     PhoneNumber = table.Column<string>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
+                    DriversLicenseFront = table.Column<byte[]>(nullable: true),
+                    DriversLicenseBack = table.Column<byte[]>(nullable: true),
                     FranchiseeId = table.Column<int>(nullable: true),
                     StoreId = table.Column<int>(nullable: true)
                 },
@@ -219,7 +222,7 @@ namespace QARS.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CustomerId = table.Column<int>(nullable: true),
-                    CarId = table.Column<int>(nullable: true),
+                    CarId = table.Column<int>(nullable: false),
                     CarLocationId = table.Column<int>(nullable: true),
                     InitialMileage = table.Column<decimal>(nullable: false),
                     Start = table.Column<DateTimeOffset>(nullable: false),
@@ -233,7 +236,7 @@ namespace QARS.Migrations
                         column: x => x.CarId,
                         principalTable: "Cars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reservations_Locations_CarLocationId",
                         column: x => x.CarLocationId,

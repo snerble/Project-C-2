@@ -18,6 +18,10 @@
     <Compile Remove="Migrations\20201229164751_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20210102004226_InitialCreate.cs" />
     <Compile Remove="Migrations\20210102004226_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20210103164313_InitialCreate.cs" />
+    <Compile Remove="Migrations\20210103164313_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20210104215100_InitialCreate.cs" />
+    <Compile Remove="Migrations\20210104215100_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />
@@ -39,6 +43,5 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Downloads\" />
-    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>
