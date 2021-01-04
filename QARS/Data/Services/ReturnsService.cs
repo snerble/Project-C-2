@@ -1,72 +1,68 @@
 using Microsoft.EntityFrameworkCore;
-using QARS.Data;
+using Microsoft.Extensions.Logging;
+
 using QARS.Data.Models;
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
-
-
 
 namespace QARS.Data.Services
 {
 	public class ReturnsServices
 	{
-		private AppDbContext dbContext;
+		private readonly AppDbContext _dbContext;
+		private readonly ILogger<ReturnsServices> _logger;
 
-		public ReturnsServices(AppDbContext dbcontext)
+		public ReturnsServices(
+			AppDbContext dbContext,
+			ILogger<ReturnsServices> logger)
 		{
-			this.dbContext = dbcontext;
+			_dbContext = dbContext;
+			_logger = logger;
 		}
 
-		public async Task<List<Return>> getReturnasync()
-		{
-			return await dbContext.Returns.ToListAsync();
-		}
+		public async Task<List<Return>> GetReturnAsync() => await _dbContext.Returns.ToListAsync();
 
-		public async Task<Return> addreturnasync(Return returns)
+		public async Task AddReturnAsync(Return returns)
 		{
 			try
 			{
-				dbContext.Returns.Add(returns);
-				await dbContext.SaveChangesAsync();
+				_dbContext.Add(returns);
+				await _dbContext.SaveChangesAsync();
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				throw;
+				_logger.LogError(e, "Error while adding reservation return.");
 			}
-			return returns;
 		}
 
-		public async Task<Return> updatereturnasync(Return returns)
+		public async Task UpdateReturnAsync(Return returns)
 		{
 			try
 			{
-				var returnexist = dbContext.Returns.FirstOrDefault(p => p.Id == returns.Id);
-				if (returnexist != null)
+				if (await _dbContext.Returns.FirstOrDefaultAsync(p => p.Id == returns.Id) is { })
 				{
-					dbContext.Update(returns);
-					await dbContext.SaveChangesAsync();
+					_dbContext.Update(returns);
+					await _dbContext.SaveChangesAsync();
 				}
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				throw;
+				_logger.LogError(e, "Error while updating reservation return.");
 			}
-			return returns;
 		}
 
-		public async Task Deletereturnssasync(Return returns)
+		public async Task DeleteReturnAsync(Return returns)
 		{
 			try
 			{
-				dbContext.Returns.Remove(returns);
-				await dbContext.SaveChangesAsync();
+				_dbContext.Remove(returns);
+				await _dbContext.SaveChangesAsync();
 			}
-			catch (Exception)
+			catch (Exception e)
 			{
-				throw;
+				_logger.LogError(e, "Error while deleting reservation return.");
 			}
 		}
 	}
