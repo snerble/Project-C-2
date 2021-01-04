@@ -75,7 +75,7 @@ select.btn-mini {
 }
 
 .image img {
-    max-width: 200px;
+    max-width: 100%;
     height: auto;
     margin-left: 0;
 }

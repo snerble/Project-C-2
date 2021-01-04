@@ -92,9 +92,6 @@ namespace QARS.Migrations
                     b.Property<bool>("HasAirconditioning")
                         .HasColumnType("INTEGER");
 
-                    b.Property<byte[]>("Image")
-                        .HasColumnType("BLOB");
-
                     b.Property<decimal>("KMRate")
                         .HasColumnType("TEXT");
 
@@ -198,7 +195,7 @@ namespace QARS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<int>("CarId")
+                    b.Property<int?>("CarId")
                         .HasColumnType("INTEGER");
 
                     b.Property<int?>("CarLocationId")
@@ -431,9 +428,7 @@ namespace QARS.Migrations
                 {
                     b.HasOne("QARS.Data.Models.Car", "Car")
                         .WithMany()
-                        .HasForeignKey("CarId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CarId");
 
                     b.HasOne("QARS.Data.Models.Location", "CarLocation")
                         .WithMany()

@@ -44,7 +44,7 @@
     </div>
     <div class="form-group">
         <label for="description">Image</label>
-        <input type="file" multiple @ref="InputElement" @oninput="RefreshFileList" />
+        <FileSelector @ref="FileSelector" />
     </div>
     <div class="form-group">
         <label for="description">Description</label>
@@ -110,107 +110,14 @@
     List<QARS.Data.Models.CarModel> CarModels = new List<QARS.Data.Models.CarModel>();
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
-    private ElementReference InputElement;
-
-    private class FileUpload
-    {
-        /// <summary>
-        /// Gets or sets the file that is being uploaded.
-        /// </summary>
-        public IFileReference File { get; set; }
-        /// <summary>
-        /// Gets or sets the progress of the file upload.
-        /// </summary>
-        public float Progress { get; set; } = 0f;
-    }
-
-    /// <summary>
-    /// Gets the collection of files that are currently
-    /// selected and may be getting uploaded.
-    /// </summary>
-    private List<FileUpload> Files { get; } = new List<FileUpload>();
-
-    private const string DownloadPath = @"Downloads";
-
-
-    /// <summary>
-    /// Refreshes the file list with the current selection from <see cref="InputElement"/>.
-    /// </summary>
-    private async Task RefreshFileList()
-    {
-        // Clear the previous selection
-        Files.Clear();
-
-        // Enumerate through the files that are selected by InputElement
-        // and add them to the files list.
-        foreach (var file in await FileReader
-            .CreateReference(InputElement)
-            .EnumerateFilesAsync())
-        {
-            Files.Add(new FileUpload { File = file });
-        }
-    }
-
-    public static byte[] ReadFully(Stream input)
-    {
-        byte[] buffer = new byte[16 * 1024];
-        using (MemoryStream ms = new MemoryStream())
-        {
-            int read;
-            while ((read = input.Read(buffer, 0, buffer.Length)) > 0)
-            {
-                ms.Write(buffer, 0, read);
-            }
-            return ms.ToArray();
-        }
-    }
-
-    public byte[] upload;
+    private FileSelector FileSelector;
 
     public QARS.Data.Models.CarModel NewCarModel { get; set; } = new Data.Models.CarModel();
     private async Task AddNewCarModel()
     {
-  
-        foreach (var file in Files)
-        {
-            // Ensure the download folder is created
-            Directory.CreateDirectory(DownloadPath);
+        FileDownloadResult result = await FileSelector.DonwloadSingleAsync();
 
-            // Open a readably stream to the file that is selected
-            await using var stream = await file.File.OpenReadAsync();
-            // Obtain the file info (used to get the filename and to calculate upload progress)
-            var info = await file.File.ReadFileInfoAsync();
-
-            // Prepare the read bytes value and the stream read buffer
-            int read = 0;
-            byte[] buffer = new byte[0x1000 * 8]; // 8KiB
-
-            using var outputFile = new MemoryStream();
-
-            do
-            {
-                // Copy a section from the stream onto buffer and return how many bytes were actually read
-                read = await stream.ReadAsync(buffer);
-
-                // Calculate progress as a 0 to 1 value
-                file.Progress = stream.Position / (float)info.Size;
-
-                // Write all the bytes that were written to the buffer onto the output filestream
-                await outputFile.WriteAsync(buffer, 0, read);
-                // Flushing clears the internal buffers used by the filestream and (probably) saves on memory usage
-                await outputFile.FlushAsync();
-
-                // Inform the UI of a state change.
-                //  Normally the UI only updates after an action has been performed,
-                //  so this just manually tells the UI to update.
-                await InvokeAsync(StateHasChanged);
-            }
-
-            // Read untill the buffer could not be fully filled (means the stream has reached the end)
-            while (read == buffer.Length);
-
-            upload = outputFile.ToArray();
-        }
+        var upload = result.Data;
 
         NewCarModel.Image = upload;
         await service.AddCarModelAsync(NewCarModel);

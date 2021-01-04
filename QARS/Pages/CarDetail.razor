@@ -23,10 +23,11 @@
                     <img src="data:image;base64,@System.Convert.ToBase64String(Image)">
                 </div>
                 <div class="col-sm-4 options">
-                    @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
-                    {
-                        <div class="extras">
-                            <h4 class="display-4">Extra's</h4><br />
+                    <div class="extras">
+                        <h4 class="display-4">Extra's</h4><br />
+
+                        @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
+                        {
                             @foreach (var extra in dbContext.Extras.Where(e => e.StoreId == car.Store.Id))
                             {
                                 <div class="option">
@@ -34,14 +35,19 @@
                                     <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
                                 </div>
                             }
-                        </div>
-                    }
+                        }
+                        else
+                        {
+                            <p>There are no extra's available for this car</p>
+                        }
+                    </div>
 
                     <AuthorizeView Roles="Customer">
                         <Authorized>
                             <button class="btn btn-primary btn-lg" @onclick="GoTo">Continue to verification</button><br />
                         </Authorized>
                         <NotAuthorized>
+                            <p>You cannot rent a car if you are not logged in.</p>
                             <a class="btn btn-primary btn-lg" href="/Identity/Account/Login">Please log in</a><br />
                         </NotAuthorized>
                     </AuthorizeView>

@@ -2,18 +2,16 @@
 @using Tewr.Blazor.FileReader;
 @inject IFileReaderService FileReader
 
-<h3>FileSelector</h3>
-
-<p>TODO: Make pretty ¯\_(ツ)_/¯</p>
-
 <div>
-	<div>
-		<input type="file" @ref="InputElement" @oninput="RefreshFileList" />
-	</div>
-	@foreach (var upload in Files)
-	{
-		<progress value="@upload.Progress" max="1" />
-	}
+    <div>
+        <input type="file" @ref="InputElement" @oninput="RefreshFileList" />
+    </div><br />
+    @foreach (var upload in Files)
+    {
+        <div class="progress">
+            <div class="progress-bar" role="progressbar" value="@upload.Progress" max="1"></div>
+        </div>
+    }
 </div>
 
 @code {
