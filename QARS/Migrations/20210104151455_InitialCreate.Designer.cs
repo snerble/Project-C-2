@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QARS.Data;
 
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20210104151455_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,22 +244,6 @@ namespace QARS.Migrations
                     b.ToTable("ReservationExtras");
                 });
 
-            modelBuilder.Entity("QARS.Data.Models.Return", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ReservationsId")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ReservationsId");
-
-                    b.ToTable("Returns");
-                });
-
             modelBuilder.Entity("QARS.Data.Models.Role", b =>
                 {
                     b.Property<int?>("Id")
@@ -457,13 +443,6 @@ namespace QARS.Migrations
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("QARS.Data.Models.Return", b =>
-                {
-                    b.HasOne("QARS.Data.Models.Reservation", "Reservations")
-                        .WithMany()
-                        .HasForeignKey("ReservationsId");
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Store", b =>

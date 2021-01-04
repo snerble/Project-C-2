@@ -1,9 +1,11 @@
+
 ﻿@page "/FileUpload"
 @attribute [NavigationTab("File Upload")]
 
 @using System.IO
 @using Tewr.Blazor.FileReader
 @using Microsoft.Extensions.Logging
+
 @inject IFileReaderService FileReader
 
 <h3>FileUploadTest</h3>
@@ -57,4 +59,5 @@
 
 		StateHasChanged();
 	}
+
 }

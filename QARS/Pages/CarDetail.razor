@@ -1,7 +1,10 @@
 ﻿@page "/SearchCar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}/Car/{carId:int}"
 @inject AppDbContext dbContext
 @inject CarServices service
+@inject UserManager<User> UserManager
+@inject ReservationServices reservation_service
 @using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
 
 <link href="/css/carDetail.css" rel="stylesheet" />
 
@@ -12,65 +15,91 @@
 {
     if (car.Id == carId)
     {
-<div class="carcontent">
-    <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
-    <div class="row justify-content-around allcontent">
-        <div class="col-sm-6 image">
-
-        </div>
-        <div class="col-sm-4 options">
-            <h4 class="display-4">Extra's</h4><br />
-            @foreach (var extra in dbContext.Extras)
-            {
-                <div class="option">
-                    <input type="checkbox" class="form-check-input" />
-                    <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
+        var Image = car.Model.Image;
+        <div class="carcontent">
+            <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
+            <div class="row justify-content-around allcontent">
+                <div class="col-sm-6 image justify-content-center">
+                    <img src="data:image;base64,@System.Convert.ToBase64String(Image)">
                 </div>
-            }
-            
-            <button class="btn btn-primary btn-lg" @onclick="GoTo">Rent Car</button><br />
+                <div class="col-sm-4 options">
+                    @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
+                    {
+                        <div class="extras">
+                            <h4 class="display-4">Extra's</h4><br />
+                            @foreach (var extra in dbContext.Extras.Where(e => e.StoreId == car.Store.Id))
+                            {
+                                <div class="option">
+                                    <input type="checkbox" class="form-check-input" @onchange="eventArgs => { extrasAdded(extra, eventArgs.Value); }" />
+                                    <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
+                                </div>
+                            }
+                        </div>
+                    }
+
+                    <AuthorizeView Roles="Customer">
+                        <Authorized>
+                            <button class="btn btn-primary btn-lg" @onclick="GoTo">Continue to verification</button><br />
+                        </Authorized>
+                        <NotAuthorized>
+                            <a class="btn btn-primary btn-lg" href="/Identity/Account/Login">Please log in</a><br />
+                        </NotAuthorized>
+                    </AuthorizeView>
+                </div>
+            </div>
+            <h4 class="display-4">Costs</h4><br />
+            <p class="lead">€@car.Model.DayRate.ToString("0.00") per day + €@car.Model.KMRate.ToString("0.00") per kilometer after @car.Model.FreeMileage.ToString("0") free kilometers</p><br />
+            <h4 class="display-4">Description</h4><br />
+            <p class="lead">@car.Model.Description</p><br />
+            <h4 class="display-4">Details</h4><br />
+            <div class="row justify-content-center">
+                <div class="col-sm-4">
+                    <p class="lead">Category: @car.Model.Category.ToString()</p>
+                    <p class="lead">Number of doors: @car.Model.Doors</p>
+                    <p class="lead">Efficiency: @car.Model.Efficiency km/L</p>
+                    <p class="lead">Emission: @car.Model.Emission gram CO2/km</p>
+                    <p class="lead">Transmission: @car.Model.Transmission</p>
+                </div>
+                <div class="col-sm-4">
+                    <p class="lead">Fuel Type: @car.Model.FuelType</p>
+                    @if (car.Model.HasAirconditioning)
+                    {
+                        <p class="lead">Has airconditioning</p>
+                    }
+                    <p class="lead">Passengers: @car.Model.Passengers</p>
+                    <p class="lead">Fits @car.Model.SuitCases suitcases</p>
+                </div>
+                <div class="col-sm-4">
+                    <p class="lead">Car Location:</p>
+                    <p class="lead">@car.Location.Address</p>
+                    <p class="lead">@car.Location.City</p>
+                    <p class="lead">@car.Location.ZipCode</p>
+                    <p class="lead">@car.Location.CountryCode</p>
+                </div>
+            </div>
         </div>
-    </div>
-    <h4 class="display-4">Costs</h4><br />
-    <p class="lead">€@car.Model.DayRate.ToString("0.00") per day + €@car.Model.KMRate.ToString("0.00") per kilometer after @car.Model.FreeMileage.ToString("0") free kilometers</p><br />
-    <h4 class="display-4">Description</h4><br />
-    <p class="lead">@car.Model.Description</p><br />
-    <h4 class="display-4">Details</h4><br />
-    <div class="row justify-content-center">
-        <div class="col-sm-4">
-            <p class="lead">Category: @car.Model.Category.ToString()</p>
-            <p class="lead">Number of doors: @car.Model.Doors</p>
-            <p class="lead">Efficiency: @car.Model.Efficiency km/L</p>
-            <p class="lead">Emission: @car.Model.Emission gram CO2/km</p>
-            <p class="lead">Transmission: @car.Model.Transmission</p>
-        </div>
-        <div class="col-sm-4">
-            <p class="lead">Fuel Type: @car.Model.FuelType</p>
-            @if (car.Model.HasAirconditioning)
-            {
-                <p class="lead">Has airconditioning</p>
-            }
-            <p class="lead">Passengers: @car.Model.Passengers</p>
-            <p class="lead">Fits @car.Model.SuitCases suitcases</p>
-        </div>
-        <div class="col-sm-4">
-            <p class="lead">Car Location:</p>
-            <p class="lead">@car.Location.Address</p>
-            <p class="lead">@car.Location.City</p>
-            <p class="lead">@car.Location.ZipCode</p>
-            <p class="lead">@car.Location.CountryCode</p>
-        </div>
-    </div>
-</div>
     }
-    }
+ }
 
 
 
 @code {
     List<Car> Cars = new List<Car>();
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    public int UserId = 0;
+
     protected override async Task OnInitializedAsync()
     {
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+        }
+
         await RefreshCars();
     }
     private async Task RefreshCars()
@@ -99,11 +128,86 @@
     [Parameter]
     public string dropoffTime { get; set; }
 
-    [CascadingParameter]
-    private Task<AuthenticationState> authenticationStateTask { get; set; }
+    List<Extra> extras = new List<Extra>();
 
-    public void GoTo()
+    public void extrasAdded(Extra extra, object checkedValue)
     {
-        Console.WriteLine("Boek die auto mattie");
+        if ((bool)checkedValue)
+        {
+            if (!extras.Contains(extra))
+            {
+                extras.Add(extra);
+            }
+        }
+        else
+        {
+            if (extras.Contains(extra))
+            {
+                extras.Remove(extra);
+            }
+        }
+    }
+
+
+    public async Task GoTo()
+    {
+        //specifying date & time for reservation in DateTimeOffset (Utc)
+        string dayPickupString = pickupDate[0].ToString() + pickupDate[1].ToString();
+        int dayPickup = Int32.Parse(dayPickupString);
+        string monthPickupString = pickupDate[2].ToString() + pickupDate[3].ToString();
+        int monthPickup = Int32.Parse(monthPickupString);
+        string yearPickupString = pickupDate[4].ToString() + pickupDate[5].ToString() + pickupDate[6].ToString() + pickupDate[7].ToString();
+        int yearPickup = Int32.Parse(yearPickupString);
+
+        string timePickupString = pickupTime[0].ToString() + pickupTime[1].ToString();
+        int timePickup = Int32.Parse(timePickupString);
+
+        string dayDropoffString = dropoffDate[0].ToString() + dropoffDate[1].ToString();
+        int dayDropoff = Int32.Parse(dayDropoffString);
+        string monthDropoffString = dropoffDate[2].ToString() + dropoffDate[3].ToString();
+        int monthDropoff = Int32.Parse(monthDropoffString);
+        string yearDropoffString = dropoffDate[4].ToString() + dropoffDate[5].ToString() + dropoffDate[6].ToString() + dropoffDate[7].ToString();
+        int yearDropoff = Int32.Parse(yearDropoffString);
+
+        string timeDropoffString = dropoffTime[0].ToString() + dropoffTime[1].ToString();
+        int timeDropoff = Int32.Parse(timeDropoffString);
+
+        DateTime datePickup = new DateTime(yearPickup, monthPickup, dayPickup, timePickup, 0, 0);
+
+        DateTimeOffset pickup = DateTime.SpecifyKind(datePickup, DateTimeKind.Utc);
+
+        DateTime dateDropoff = new DateTime(yearDropoff, monthDropoff, dayDropoff, timeDropoff, 0, 0);
+
+        DateTimeOffset dropoff = DateTime.SpecifyKind(dateDropoff, DateTimeKind.Utc);
+
+        //Specifying the customer who makes reservation
+
+        Customer customer = new Customer();
+
+        foreach (var user in dbContext.Customers)
+        {
+            if(user.Id == UserId)
+            {
+                customer = user;
+            }
+        }
+
+        //Specifying car to be reservated
+
+        Car car = new Car();
+
+        foreach (var targetCar in dbContext.Cars)
+        {
+            if(carId == targetCar.Id)
+            {
+                car = targetCar;
+            }
+        }
+        Console.WriteLine(datePickup.ToString());
+        Console.WriteLine(dateDropoff.ToString());
+        //Reserve car
+        var reservation = Reservation.Create(customer, car, pickup, dropoff, extras.ToArray());
+        await reservation_service.AddReservationAsync(reservation);
+        Console.WriteLine("done");
     }
 }

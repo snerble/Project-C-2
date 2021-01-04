@@ -3,9 +3,9 @@
 @inject UserManager<User> UserManager
 
 @using QARS.Data.Models;
-@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Identity;
 
-<link href="/css/modal.css" rel="stylesheet"/>
+<link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@NewCar" OnValidSubmit="AddNewCar">
     <DataAnnotationsValidator />

@@ -8,16 +8,16 @@
   <ItemGroup>
     <Compile Remove="Migrations\20201213211225_InitialCreate.cs" />
     <Compile Remove="Migrations\20201213211225_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201214135012_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201214135012_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201228145023_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201228145023_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201228164859_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201228164859_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201229164751_InitialCreate.cs" />
     <Compile Remove="Migrations\20201229164751_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201230172352_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201230172352_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201230185614_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201230185614_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20201230185642_InitialCreate.cs" />
-    <Compile Remove="Migrations\20201230185642_InitialCreate.Designer.cs" />
-    <Compile Remove="Migrations\20210103113326_InitialCreate.cs" />
-    <Compile Remove="Migrations\20210103113326_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20210102004226_InitialCreate.cs" />
+    <Compile Remove="Migrations\20210102004226_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />
@@ -36,5 +36,9 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="3.1.4" />
     <PackageReference Include="MimeKit" Version="2.10.0" />
     <PackageReference Include="Tewr.Blazor.FileReader" Version="3.0.0.20340" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Downloads\" />
+    <Folder Include="Migrations\" />
   </ItemGroup>
 </Project>
