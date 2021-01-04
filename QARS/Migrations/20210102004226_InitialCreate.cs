@@ -219,7 +219,7 @@ namespace QARS.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CustomerId = table.Column<int>(nullable: true),
-                    CarId = table.Column<int>(nullable: true),
+                    CarId = table.Column<int>(nullable: false),
                     CarLocationId = table.Column<int>(nullable: true),
                     InitialMileage = table.Column<decimal>(nullable: false),
                     Start = table.Column<DateTimeOffset>(nullable: false),
@@ -233,7 +233,7 @@ namespace QARS.Migrations
                         column: x => x.CarId,
                         principalTable: "Cars",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Reservations_Locations_CarLocationId",
                         column: x => x.CarLocationId,
@@ -271,11 +271,6 @@ namespace QARS.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
-
-            migrationBuilder.InsertData(
-                table: "CarModels",
-                columns: new[] { "Id", "Brand", "Category", "DayRate", "Description", "Doors", "Efficiency", "Emission", "FreeMileage", "FuelType", "HasAirconditioning", "KMRate", "Passengers", "SuitCases", "Transmission", "Type" },
-                values: new object[] { 1, "tesla", 4, 12.00m, "it's a car", 5, 10f, 5, 100m, 12, true, 0.19m, 5, 3, 2, "person car" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_LocationId",

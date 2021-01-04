@@ -1,0 +1,122 @@
+﻿@inject ReservationServices service
+@using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject AppDbContext dbContext
+@inject UserManager<User> UserManager
+@inject CarServices car_service
+
+<link href="/css/modal.css" rel="stylesheet" />
+
+<EditForm Model="@ShowReservation" OnValidSubmit="doNothing">
+    <div class="form-group">
+        <label for="reservationid">Reservation Id</label><br />
+        <small>The Reservation Id is the reference number for you car reservation</small>
+        <input disabled type="text" class="form-control" id="reservationid" @bind="@ShowReservation.Id" />
+    </div><br />
+    @foreach (var car in Cars)
+    {
+        if (carId == car.Id)
+        {
+            <div class="form-group">
+                <label for="storename">Store Name</label><br />
+                <small>The store name of the car rental location</small>
+                <input disabled type="text" class="form-control" id="storename" @bind="@car.Store.Name" />
+            </div><br />
+            <div class="form-group">
+                <label for="carbrand">Car</label><br />
+                <small>The brand of the car you rented</small>
+                <input disabled type="text" class="form-control" id="carbrand" @bind="@car.Model.Brand" />
+                <small>The type of the car you rented</small>
+                <input disabled type="text" class="form-control" id="cartype" @bind="@car.Model.Type" />
+            </div><br />
+        }
+    }
+    <div class="form-group">
+        <label for="pickup">Pickup Date</label><br />
+        <small>The pickup date and time</small>
+        <input disabled type="text" class="form-control" id="pickup" @bind="@pickup" />
+    </div>
+    <div class="form-group">
+        <label for="pickuplocation">Pickup Location</label><br />
+        @foreach (var car in Cars)
+        {
+            if (carId == car.Id)
+            {
+                @foreach (var location in dbContext.Locations)
+                {
+                    if (car.LocationId == location.Id)
+                    {
+                        <small>Address</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.Address" />
+                        <small>Zipcode</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.ZipCode" />
+                        <small>City</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.City" />
+                        <small>Country</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.CountryCode" />
+                    }
+                }
+            }
+        }
+    </div><br />
+    <div class="form-group">
+        <label for="dropoff">Dropoff date</label><br />
+        <small>The dropoff date and time</small>
+        <input disabled type="text" class="form-control" id="dropoff" @bind="@dropoff" />
+    </div>
+    @**Dropoff location is nu nog gelijk aan pickup, maar dat komt nog*@
+    <div class="form-group">
+        <label for="pickuplocation">Dropoff Location</label><br />
+        @foreach (var car in Cars)
+        {
+            if (carId == car.Id)
+            {
+                @foreach (var location in dbContext.Locations)
+                {
+                    if (car.LocationId == location.Id)
+                    {
+                        <small>Address</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.Address" />
+                        <small>Zipcode</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.ZipCode" />
+                        <small>City</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.City" />
+                        <small>Country</small>
+                        <input disabled type="text" class="form-control" id="pickuplocation" @bind="@location.CountryCode" />
+                    }
+                }
+            }
+        }
+    </div>
+</EditForm>
+
+@code {
+    [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
+    [Parameter] public Reservation Reservation { get; set; }
+
+    Reservation ShowReservation = new Reservation();
+
+    Reservation reservation { get; set; }
+
+    public int carId;
+    public string pickup = string.Empty;
+    public string dropoff = string.Empty;
+
+    List<Car> Cars = new List<Car>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cars = await car_service.GetCarAsync(0);
+        reservation = Reservation;
+        ShowReservation = reservation;
+        carId = reservation.CarId;
+        pickup = reservation.Start.ToString("dd-MM-yyyy HH:00");
+        dropoff = reservation.End.ToString("dd-MM-yyyy HH:00");
+    }
+
+    public void doNothing()
+    {
+
+    }
+}

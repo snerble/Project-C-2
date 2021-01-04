@@ -1,11 +1,13 @@
 ﻿@inject AppDbContext dbContext
 
+<link rel="stylesheet" href="/css/topmenu.css" />
+
 <div class="top-menu">
     <div class="row">
-        <div class="box-line boxes col-sm">
-            <p class="number text-center">1</p><h6>Pick Up / Drop Off Location</h6><br />
+        <div class="box-line boxes col-lg-3 col-md-6">
+            <p id="one" class="number text-center">1</p><h6>Pick Up / Drop Off Location</h6><br />
             <div class="row">
-                <div class="col-sm">
+                <div class="col-6">
                     <p class="inline-block">@pickupLocation</p><br />
                     <p class="inline-block">@pickupDate[0]@pickupDate[1]/@pickupDate[2]@pickupDate[3]/@pickupDate[4]@pickupDate[5]@pickupDate[6]@pickupDate[7]</p><br />
                     @if (Int32.Parse(pickupTime) >= 12)
@@ -16,7 +18,7 @@
                         <p class="inline-block">@pickupTime:00 am</p>
                     }
                 </div>
-                <div class="col-sm">
+                <div class="col-6">
                     <p class="inline-block">@dropoffLocation</p><br />
                     <p class="inline-block">@dropoffDate[0]@dropoffDate[1]/@dropoffDate[2]@dropoffDate[3]/@dropoffDate[4]@dropoffDate[5]@dropoffDate[6]@dropoffDate[7]</p><br />
                     @if (Int32.Parse(dropoffTime) >= 12)
@@ -30,8 +32,8 @@
                 </div>
             </div>
         </div>
-        <div class="boxes box-line col-sm">
-            <p class="number text-center">2</p><h6>Vehicle Choice</h6><br />
+        <div class="boxes box-line col-lg-3 col-md-6">
+            <p id="two" class="number text-center">2</p><h6>Vehicle Choice</h6><br />
             @if (carId != 0)
             {
                 foreach (var car in dbContext.Cars)
@@ -47,11 +49,11 @@
                 <p class="inline-block" style="margin-top:0;">No vehicle chosen yet</p>
             }
         </div>
-        <div class="boxes box-line col-sm">
-            <p class="number text-center">3</p><h6>Verification</h6><br />
+        <div class="boxes box-line col-lg-3 col-md-6">
+            <p id="three" class="number text-center">3</p><h6>Verification</h6><br />
         </div>
-        <div class="boxes col-sm">
-            <p class="number text-center">4</p><h6>Overview & Payment</h6><br />
+        <div class="boxes col-lg-3 col-md-6">
+            <p id="four" class="four number text-center">4</p><h6>Overview & Payment</h6><br />
         </div>
     </div>
 </div>

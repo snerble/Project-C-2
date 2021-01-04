@@ -96,6 +96,7 @@ namespace QARS
 			services.AddScoped<EmployeeServices>();
 			services.AddScoped<ExtraServices>();
 			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<User>>();
+			services.AddScoped<ReservationServices>();
 
 			services.AddTransient<IRazorViewToStringRenderer, RazorViewRenderer>();
 			services.AddTransient(sp => new Markdown(sp.GetService<IOptions<MarkdownOptions>>().Value));
