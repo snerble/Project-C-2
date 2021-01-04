@@ -95,6 +95,7 @@ namespace QARS
 			services.AddScoped<ContactServices>();
 			services.AddScoped<EmployeeServices>();
 			services.AddScoped<ExtraServices>();
+			services.AddScoped<ReturnsServices>();
 			services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<User>>();
 
 			services.AddTransient<IRazorViewToStringRenderer, RazorViewRenderer>();

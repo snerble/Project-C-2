@@ -10,6 +10,14 @@
     <Compile Remove="Migrations\20201213211225_InitialCreate.Designer.cs" />
     <Compile Remove="Migrations\20201229164751_InitialCreate.cs" />
     <Compile Remove="Migrations\20201229164751_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201230172352_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201230172352_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201230185614_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201230185614_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20201230185642_InitialCreate.cs" />
+    <Compile Remove="Migrations\20201230185642_InitialCreate.Designer.cs" />
+    <Compile Remove="Migrations\20210103113326_InitialCreate.cs" />
+    <Compile Remove="Migrations\20210103113326_InitialCreate.Designer.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Blazored.Modal" Version="5.1.0" />

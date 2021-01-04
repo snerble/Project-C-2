@@ -128,6 +128,7 @@ namespace QARS.Data
 		public DbSet<Administrator> Admins { get; set; }
 
 		public DbSet<Contact> Contacts { get; set; }
+		public DbSet<Return> Returns { get; set; }
 
 		private List<CarModel> GetCarModels()
 		{

@@ -239,6 +239,22 @@ namespace QARS.Migrations
                     b.ToTable("ReservationExtras");
                 });
 
+            modelBuilder.Entity("QARS.Data.Models.Return", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReservationsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReservationsId");
+
+                    b.ToTable("Returns");
+                });
+
             modelBuilder.Entity("QARS.Data.Models.Role", b =>
                 {
                     b.Property<int?>("Id")
@@ -436,6 +452,13 @@ namespace QARS.Migrations
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("QARS.Data.Models.Return", b =>
+                {
+                    b.HasOne("QARS.Data.Models.Reservation", "Reservations")
+                        .WithMany()
+                        .HasForeignKey("ReservationsId");
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Store", b =>

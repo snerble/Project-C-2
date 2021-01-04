@@ -272,6 +272,25 @@ namespace QARS.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Returns",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ReservationsId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Returns", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Returns_Reservations_ReservationsId",
+                        column: x => x.ReservationsId,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_LocationId",
                 table: "Cars",
@@ -308,6 +327,11 @@ namespace QARS.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Returns_ReservationsId",
+                table: "Returns",
+                column: "ReservationsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stores_FranchiseeId",
                 table: "Stores",
                 column: "FranchiseeId");
@@ -341,6 +365,9 @@ namespace QARS.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReservationExtras");
+
+            migrationBuilder.DropTable(
+                name: "Returns");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");
