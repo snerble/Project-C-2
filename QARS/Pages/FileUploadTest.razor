@@ -1,35 +1,27 @@
 ﻿@page "/FileUpload"
 @attribute [NavigationTab("File Upload")]
 
-@using System.IO;
-@using Tewr.Blazor.FileReader;
+@using System.IO
+@using Tewr.Blazor.FileReader
+@using Microsoft.Extensions.Logging
 @inject IFileReaderService FileReader
 
 <h3>FileUploadTest</h3>
 
-<input type="file" multiple @ref="InputElement" @oninput="RefreshFileList" /><br />
-<button @onclick="UploadFiles">Yeet</button><br />
-@foreach (var upload in Files)
-{
-	<progress value="@upload.Progress" max="1"/><br />
-}
+<div>
+	<div>
+		<FileSelector @ref="FileSelector"/>
+	</div>
+	<button @onclick="DownloadFiles">Start Download</button>
+	<div>
+		@foreach (var line in Logger.ToString().Split('\n'))
+		{
+			<span>@line</span><br />
+		}
+	</div>
+</div>
 
 @code {
-	/// <summary>
-	/// Represents a file upload for a specific file with a upload progress value.
-	/// </summary>
-	private class FileUpload
-	{
-		/// <summary>
-		/// Gets or sets the file that is being uploaded.
-		/// </summary>
-		public IFileReference File { get; set; }
-		/// <summary>
-		/// Gets or sets the progress of the file upload.
-		/// </summary>
-		public float Progress { get; set; } = 0f;
-	}
-
 	/// <summary>
 	/// The path to the folder which contains the uploaded files.
 	/// </summary>
@@ -38,76 +30,31 @@
 	/// <summary>
 	/// A reference to the element that selects the files.
 	/// </summary>
-	private ElementReference InputElement;
+	private FileSelector FileSelector;
 
-	/// <summary>
-	/// Gets the collection of files that are currently
-	/// selected and may be getting uploaded.
-	/// </summary>
-	private List<FileUpload> Files { get; } = new List<FileUpload>();
+	private System.Text.StringBuilder Logger { get; } = new System.Text.StringBuilder();
 
-	/// <summary>
-	/// Refreshes the file list with the current selection from <see cref="InputElement"/>.
-	/// </summary>
-	private async Task RefreshFileList()
+	private async Task DownloadFiles()
 	{
-		// Clear the previous selection
-		Files.Clear();
+		Log("Started download...");
+		FileDownloadResult result = await FileSelector.DonwloadSingleAsync();
+		Log("Finished download.");
 
-		// Enumerate through the files that are selected by InputElement
-		// and add them to the files list.
-		foreach (var file in await FileReader
-			.CreateReference(InputElement)
-			.EnumerateFilesAsync())
-		{
-			Files.Add(new FileUpload { File = file });
-		}
+		Log("Downloaded file name: {0}", result.File.Name);
+		Log("Downloaded file content type: {0}", result.ContentType);
+
+		using var fileStream = File.OpenWrite(Path.Join(DownloadPath, result.File.Name));
+		await fileStream.WriteAsync(result.Data);
+
+		Log("Finished writing file.");
+		Log();
 	}
 
-	/// <summary>
-	/// Uploads all files into the <see cref="DownloadPath"/> folder.
-	/// </summary>
-	private async Task UploadFiles()
+	private void Log(string format = "", params object[] args)
 	{
-		foreach (var file in Files)
-		{
-			// Ensure the download folder is created
-			Directory.CreateDirectory(DownloadPath);
+		Logger.AppendFormat(format, args);
+		Logger.AppendLine();
 
-			// Open a readably stream to the file that is selected
-			await using var stream = await file.File.OpenReadAsync();
-			// Obtain the file info (used to get the filename and to calculate upload progress)
-			var info = await file.File.ReadFileInfoAsync();
-
-			// Prepare the read bytes value and the stream read buffer
-			int read = 0;
-			byte[] buffer = new byte[0x1000 * 8]; // 8KiB
-
-			// Open a writable filestream to a file in the download path
-			using var outputFile = File.OpenWrite(Path.Join(
-				DownloadPath,
-				info.Name
-			));
-
-			do
-			{
-				// Copy a section from the stream onto buffer and return how many bytes were actually read
-				read = await stream.ReadAsync(buffer);
-				// Calculate progress as a 0 to 1 value
-				file.Progress = stream.Position / (float)info.Size;
-
-				// Write all the bytes that were written to the buffer onto the output filestream
-				await outputFile.WriteAsync(buffer, 0, read);
-				// Flushing clears the internal buffers used by the filestream and (probably) saves on memory usage
-				await outputFile.FlushAsync();
-
-				// Inform the UI of a state change.
-				//  Normally the UI only updates after an action has been performed,
-				//  so this just manually tells the UI to update.
-				await InvokeAsync(StateHasChanged);
-			}
-			// Read untill the buffer could not be fully filled (means the stream has reached the end)
-			while (read == buffer.Length);
-		}
+		StateHasChanged();
 	}
 }
