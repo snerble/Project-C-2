@@ -1,0 +1,73 @@
+﻿@page "/ManageReturns"
+@inject ReturnsServices service
+@inject AppDbContext dbContext
+@using QARS.Data.Models
+
+<link rel="stylesheet" href="/css/manage.css">
+
+<AuthorizeView Roles="Admin">
+    <Authorized>
+        <div class="row d-flex justify-content-between">
+            <div class="col-md-3">
+                <UserDashboard />
+            </div>
+
+            <div class="col-md-9">
+				<div class="back container">
+					@if (dbContext.Returns.Any())
+					{
+						<div class="customtablerow row bg-light">
+							<table class="table">
+								<thead class="thead-light">
+									<tr>
+										<th scope="col">ID</th>
+
+									</tr>
+								</thead>
+								<tbody>
+									@foreach (var _return in Returns)
+									{
+										<tr>
+											<td scope="col">@_return.Id</td>
+											<td>@_return.Reservations.Start</td>
+											<td>@_return.Reservations.End</td>
+											<td></td>
+											<td><button class="btn btn-danger" @onclick="(() => DeleteReturns(_return))">Delete</button></td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					}
+					else
+					{
+						<div class="row">
+							<h2>There are no returns right now.</h2>
+						</div>
+					}
+				</div>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <p>You do not have permission to access this page. Please log in and try again.</p>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+	List<Return> Returns = new List<Return>();
+	protected override async Task OnInitializedAsync()
+	{
+		await RefreshReturns();
+	}
+	private async Task RefreshReturns()
+	{
+		Returns = await service.GetReturnAsync();
+	}
+
+	private async Task DeleteReturns(Return Return)
+	{
+		await service.DeleteReturnAsync(Return);
+		await RefreshReturns();
+	}
+}
