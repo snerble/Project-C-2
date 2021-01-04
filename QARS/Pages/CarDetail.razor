@@ -15,11 +15,12 @@
 {
     if (car.Id == carId)
     {
+        var Image = car.Model.Image;
         <div class="carcontent">
             <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
             <div class="row justify-content-around allcontent">
-                <div class="col-sm-6 image">
-
+                <div class="col-sm-6 image justify-content-center">
+                    <img src="data:image;base64,@System.Convert.ToBase64String(Image)">
                 </div>
                 <div class="col-sm-4 options">
                     @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())

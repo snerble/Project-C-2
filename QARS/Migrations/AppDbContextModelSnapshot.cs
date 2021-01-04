@@ -92,6 +92,9 @@ namespace QARS.Migrations
                     b.Property<bool>("HasAirconditioning")
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("BLOB");
+
                     b.Property<decimal>("KMRate")
                         .HasColumnType("TEXT");
 

@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210102004226_InitialCreate")]
+    [Migration("20210104151455_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,9 @@ namespace QARS.Migrations
 
                     b.Property<bool>("HasAirconditioning")
                         .HasColumnType("INTEGER");
+
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("BLOB");
 
                     b.Property<decimal>("KMRate")
                         .HasColumnType("TEXT");

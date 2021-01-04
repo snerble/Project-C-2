@@ -15,6 +15,7 @@ namespace QARS.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Brand = table.Column<string>(maxLength: 50, nullable: false),
                     Type = table.Column<string>(maxLength: 50, nullable: false),
+                    Image = table.Column<byte[]>(nullable: true),
                     Category = table.Column<int>(nullable: false),
                     FuelType = table.Column<int>(nullable: false),
                     DayRate = table.Column<decimal>(nullable: false),
