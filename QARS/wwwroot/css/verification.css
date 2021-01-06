@@ -5,6 +5,22 @@
     margin-bottom: 40px;
 }
 
+.buttons{
+    padding-top: 50px;
+    text-align: center;
+}
+
+.upload button {
+    background-color: #03254c;
+    border: 0px;
+    text-transform: uppercase;
+    font-weight: 800;
+}
+
+.check:hover {
+    background-color: #f0ad4e;
+}
+
 #three {
     background: rgba(255,255,255,0);
     border: 1px solid #03254C;

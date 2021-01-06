@@ -1,4 +1,5 @@
-﻿@page "/SearchCar/{pickupLocation}/{pickupDate}/{pickupTime}/{dropoffLocation}/{dropoffDate}/{dropoffTime}/Car/{carId:int}/Verification"
+﻿@page "/Verification/{pickupId}/{pickupDate}/{pickupTime}/{dropoffId}/{dropoffDate}/{dropoffTime}/{carId:int}"
+@page "/Verification/{pickupId}/{pickupDate}/{pickupTime}/{dropoffId}/{dropoffDate}/{dropoffTime}/{carId:int}/{extras}"
 @inject AppDbContext dbContext
 @inject UserManager<User> UserManager
 @inject CustomerServices service
@@ -7,29 +8,55 @@
 @using QARS.Data.Models
 @using System.IO;
 @using Tewr.Blazor.FileReader;
+@inject NavigationManager navManager
 
 
 <link href="/css/verification.css" rel="stylesheet" />
 
-<TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="@carId" />
-
 <AuthorizeView Roles="Customer">
     <Authorized>
-        <div class="row verification justify-content-center">
-            <div class="col-md-6 driverslicense">
-                <h1 class="display-4">Drivers License</h1><br />
-                <p>You are almost done. Please upload your drivers license and press 'continue'.</p><br />
-                <div class="form-group">
-                    <label for="front">Front of Drivers License</label><br />
-                    <small>Please upload a clear picture of the front of your drivers license</small>
-                    <FileSelector @ref="FileSelectorFront" /><br />
-                    <button class="btn btn-primary" @onclick="UploadFront">Upload Front</button>
+        <TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="@carId" />
+
+        <div class="verification">
+            <div class="row justify-content-center">
+                <div class="col-md-6 driverslicense">
+                    <h1 class="display-4">Drivers License</h1><br />
+                    <p>You are almost done. Please upload your drivers license and press 'continue'.</p><br />
                 </div>
-                <div class="form-group">
-                    <label for="back">Back of Drivers License</label><br />
-                    <small>Please upload a clear picture of the back of your drivers license</small>
-                    <FileSelector @ref="FileSelectorBack" /><br />
-                    <button class="btn btn-primary" @onclick="UploadBack">Upload Back</button>
+            </div>
+            <div class="row justify-content-around upload">
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="front">Front of Drivers License</label><br />
+                        <small>Please upload a clear picture of the front of your drivers license</small>
+                        <FileSelector @ref="FileSelectorFront" /><br />
+                        <button class="btn btn-primary" @onclick="UploadFront">Upload Front</button>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="form-group">
+                        <label for="back">Back of Drivers License</label><br />
+                        <small>Please upload a clear picture of the back of your drivers license</small>
+                        <FileSelector @ref="FileSelectorBack" /><br />
+                        <button class="btn btn-primary" @onclick="UploadBack">Upload Back</button>
+                    </div>
+                </div>
+                <div class="col-md-6 buttons">
+                    <div class="form-group">
+                        @if (displayError == true)
+                        {
+                            <p>There was an error in examining your drivers license. Please try again.</p>
+                        }
+                        @if (displayContinueButton)
+                        {
+                            <p>We savely received your drivers license. Please hit 'continue' to finish your reservation.</p>
+                        }
+                        <button class="btn btn-primary check" @onclick="CheckLicense">Check Drivers License</button>
+                        @if (displayContinueButton == true)
+                        {
+                            <br /><br /><button class="btn btn-success" @onclick="GoToPayment">Continue</button>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
@@ -46,7 +73,7 @@
     public int carId { get; set; }
 
     [Parameter]
-    public string pickupLocation { get; set; }
+    public string pickupId { get; set; }
 
     [Parameter]
     public string pickupDate { get; set; }
@@ -55,13 +82,19 @@
     public string pickupTime { get; set; }
 
     [Parameter]
-    public string dropoffLocation { get; set; }
+    public string dropoffId { get; set; }
 
     [Parameter]
     public string dropoffDate { get; set; }
 
     [Parameter]
     public string dropoffTime { get; set; }
+
+    [Parameter]
+    public string extras { get; set; }
+
+    public string pickupLocation = string.Empty;
+    public string dropoffLocation = string.Empty;
 
     public int UserId = 0;
 
@@ -72,14 +105,30 @@
 
     protected override async Task OnInitializedAsync()
     {
+        foreach (var location in dbContext.Locations)
+        {
+            if (location.Id == Int32.Parse(pickupId))
+            {
+                pickupLocation = location.City;
+            }
+        }
+
+        foreach (var location in dbContext.Locations)
+        {
+            if (location.Id == Int32.Parse(dropoffId))
+            {
+                dropoffLocation = location.City;
+            }
+        }
+
         var authState = await authenticationStateTask;
         if (authState.User.Identity.IsAuthenticated)
         {
             var user = await UserManager.GetUserAsync(authState.User);
             UserId = user.Id;
-            foreach(var Customer in dbContext.Customers)
+            foreach (var Customer in dbContext.Customers)
             {
-                if(UserId == Customer.Id)
+                if (UserId == Customer.Id)
                 {
                     customer = Customer;
                 }
@@ -109,5 +158,35 @@
 
         customer.DriversLicenseBack = upload;
         await service.UpdateCustomerAsync(customer);
+    }
+
+    public bool displayError = false;
+    public bool displayContinueButton = false;
+
+    public void CheckLicense()
+    {
+        foreach (var customer in dbContext.Customers)
+        {
+            if (customer.Id == UserId)
+            {
+                if (customer.DriversLicenseFront is null || customer.DriversLicenseBack is null)
+                {
+                    displayError = true;
+                }
+                else
+                {
+                    displayContinueButton = true;
+                }
+            }
+        }
+    }
+
+    public void GoToPayment()
+    {
+        string urlExtension = string.Empty;
+
+        urlExtension += "/" + pickupId + "/" + pickupDate + "/" + pickupTime + "/" + dropoffId + "/" + dropoffDate + "/" + pickupTime + "/" + carId + "/" + extras;
+
+        navManager.NavigateTo("/Payment" + urlExtension);
     }
 }

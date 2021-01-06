@@ -146,7 +146,8 @@ namespace QARS.Data.Models
 				finally
 				{
 					// After returning the new reservation, mark the car as reserved.
-					car.Reserve();
+					// Changed this to reserved if reservation is added to database. See CarServices.
+					// car.Reserve();
 				}
 			}
 		}

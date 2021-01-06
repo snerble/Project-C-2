@@ -52,6 +52,14 @@
         </div>
         <div class="boxes box-line col-lg-3 col-md-6">
             <p id="three" class="number text-center">3</p><h6>Verification</h6><br />
+            @if (isVerified)
+            {
+        <p class="inline-block" style="margin-top:0;">Drivers license verified</p>
+            }
+            else
+            {
+                <p class="inline-block" style="margin-top:0;">Not verified yet</p>
+            }
         </div>
         <div class="boxes col-lg-3 col-md-6">
             <p id="four" class="four number text-center">4</p><h6>Overview & Payment</h6><br />
@@ -87,4 +95,7 @@
 
     [Parameter]
     public int carId { get; set; }
+
+    [Parameter]
+    public bool isVerified { get; set; } = false;
 }

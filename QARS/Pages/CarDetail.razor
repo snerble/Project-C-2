@@ -17,87 +17,89 @@
     if (car.Id == carId)
     {
         var Image = car.Model.Image;
-        <div class="carcontent">
-            <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
-            <div class="row justify-content-around allcontent">
-                <div class="col-md-6 image justify-content-center">
-                    <img src="data:image;base64,@System.Convert.ToBase64String(Image)">
-                </div>
-                <div class="col-md-5 options">
-                    <div class="extras form-group">
-                        <h4 class="display-4">Rent Car</h4><br />
-                        <label for="extras">Extras</label><br />
-                        <small>Select the extras you'd want to add</small>
-
-                        @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
-                        {
-                            @foreach (var extra in dbContext.Extras.Where(e => e.StoreId == car.Store.Id))
-                            {
-                                <div class="option">
-                                    <input type="checkbox" class="form-check-input" @onchange="eventArgs => { extrasAdded(extra, eventArgs.Value); }" />
-                                    <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
-                                </div>
-                            }
-                        }
-                        else
-                        {
-                            <p>There are no extra's available for this car</p>
-                        }
+        <div class="row">
+            <div class="carcontent">
+                <h1 class="display-4">@car.Model.Brand, @car.Model.Type</h1>
+                <div class="row justify-content-around allcontent">
+                    <div class="col-md-6 image justify-content-center">
+                        <img src="data:image;base64,@System.Convert.ToBase64String(Image)">
                     </div>
+                    <div class="col-md-5 options">
+                        <div class="extras form-group">
+                            <h4 class="display-4">Rent Car</h4><br />
+                            <label for="extras">Extras</label><br />
+                            <small>Select the extras you'd want to add</small>
 
-                    <AuthorizeView Roles="Customer">
-                        <Authorized>
-                            <div class="form-group">
-                                <label for="dropoffstore">Dropoff Store</label><br />
-                                <small>Select at which store in @pickupLocation you'd want to drop the car off</small>
-                                <select class="form-control">
-                                    @foreach (var store in dbContext.Stores)
-                                    {
-                                        @foreach (var location in dbContext.Locations.Where(l => l.Id == store.LocationId).Where(l => l.City == pickupLocation))
+                            @if (dbContext.Extras.Where(e => e.StoreId == car.Store.Id).Any())
+                            {
+                                @foreach (var extra in dbContext.Extras.Where(e => e.StoreId == car.Store.Id))
+                                {
+                                    <div class="option">
+                                        <input type="checkbox" class="form-check-input" @onchange="eventArgs => { extrasAdded(extra, eventArgs.Value); }" />
+                                        <label class="form-check-label">@extra.Name - €@extra.Cost.ToString("0.00")</label><br />
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <p>There are no extra's available for this car</p>
+                            }
+                        </div>
+
+                        <AuthorizeView Roles="Customer">
+                            <Authorized>
+                                <div class="form-group">
+                                    <label for="dropoffstore">Dropoff Store</label><br />
+                                    <small>Select at which store in @pickupLocation you'd want to drop the car off</small>
+                                    <select class="form-control" @bind="dropoffLocationId">
+                                        @foreach (var store in dbContext.Stores)
                                         {
-                                            <option>@store.Name - @store.Location.City, @store.Location.CountryCode</option>
-                                        }
+                                            @foreach (var location in dbContext.Locations.Where(l => l.Id == store.LocationId).Where(l => l.City == pickupLocation))
+                                            {
+                                                <option value="@store.LocationId">@store.Name - @store.Location.City, @store.Location.CountryCode</option>
+                                            }
 
-                                    }
-                                </select>
-                            </div>
-                            <button class="btn btn-primary btn-lg" @onclick="GoTo">Continue to verification</button><br />
-                        </Authorized>
-                        <NotAuthorized>
-                            <p>You cannot rent a car if you are not logged in.</p>
-                            <a class="btn btn-primary btn-lg" href="/Identity/Account/Login">Please log in</a><br />
-                        </NotAuthorized>
-                    </AuthorizeView>
+                                        }
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary btn-lg" @onclick="GoToVerification">Continue to verification</button><br />
+                            </Authorized>
+                            <NotAuthorized>
+                                <p>You cannot rent a car if you are not logged in.</p>
+                                <a class="btn btn-primary btn-lg" href="/Identity/Account/Login">Please log in</a><br />
+                            </NotAuthorized>
+                        </AuthorizeView>
+                    </div>
                 </div>
-            </div>
-            <h4 class="display-4">Costs</h4><br />
-            <p class="lead">€@car.Model.DayRate.ToString("0.00") per day + €@car.Model.KMRate.ToString("0.00") per kilometer after @car.Model.FreeMileage.ToString("0") free kilometers</p><br />
-            <h4 class="display-4">Description</h4><br />
-            <p class="lead">@car.Model.Description</p><br />
-            <h4 class="display-4">Details</h4><br />
-            <div class="row justify-content-center">
-                <div class="col-sm-4">
-                    <p class="lead">Category: @car.Model.Category.ToString()</p>
-                    <p class="lead">Number of doors: @car.Model.Doors</p>
-                    <p class="lead">Efficiency: @car.Model.Efficiency km/L</p>
-                    <p class="lead">Emission: @car.Model.Emission gram CO2/km</p>
-                    <p class="lead">Transmission: @car.Model.Transmission</p>
-                </div>
-                <div class="col-sm-4">
-                    <p class="lead">Fuel Type: @car.Model.FuelType</p>
-                    @if (car.Model.HasAirconditioning)
-                    {
-                        <p class="lead">Has airconditioning</p>
-                    }
-                    <p class="lead">Passengers: @car.Model.Passengers</p>
-                    <p class="lead">Fits @car.Model.SuitCases suitcases</p>
-                </div>
-                <div class="col-sm-4">
-                    <p class="lead">Car Location:</p>
-                    <p class="lead">@car.Location.Address</p>
-                    <p class="lead">@car.Location.City</p>
-                    <p class="lead">@car.Location.ZipCode</p>
-                    <p class="lead">@car.Location.CountryCode</p>
+                <h4 class="display-4">Costs</h4><br />
+                <p class="lead">€@car.Model.DayRate.ToString("0.00") per day + €@car.Model.KMRate.ToString("0.00") per kilometer after @car.Model.FreeMileage.ToString("0") free kilometers</p><br />
+                <h4 class="display-4">Description</h4><br />
+                <p class="lead">@car.Model.Description</p><br />
+                <h4 class="display-4">Details</h4><br />
+                <div class="row justify-content-center">
+                    <div class="col-sm-4">
+                        <p class="lead">Category: @car.Model.Category.ToString()</p>
+                        <p class="lead">Number of doors: @car.Model.Doors</p>
+                        <p class="lead">Efficiency: @car.Model.Efficiency km/L</p>
+                        <p class="lead">Emission: @car.Model.Emission gram CO2/km</p>
+                        <p class="lead">Transmission: @car.Model.Transmission</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p class="lead">Fuel Type: @car.Model.FuelType</p>
+                        @if (car.Model.HasAirconditioning)
+                        {
+                            <p class="lead">Has airconditioning</p>
+                        }
+                        <p class="lead">Passengers: @car.Model.Passengers</p>
+                        <p class="lead">Fits @car.Model.SuitCases suitcases</p>
+                    </div>
+                    <div class="col-sm-4">
+                        <p class="lead">Car Location:</p>
+                        <p class="lead">@car.Location.Address</p>
+                        <p class="lead">@car.Location.City</p>
+                        <p class="lead">@car.Location.ZipCode</p>
+                        <p class="lead">@car.Location.CountryCode</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -113,6 +115,8 @@
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     public int UserId = 0;
+
+    public int dropoffLocationId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -173,7 +177,29 @@
 
     public void GoToVerification()
     {
-        navManager.NavigateTo("/SearchCar/" + pickupLocation + "/" + pickupDate + "/" + pickupTime + "/" + dropoffLocation + "/" + dropoffDate + "/" + dropoffTime + "/Car/" + carId + "/verification");
+        int pickupLocationId = 0;
+        foreach (var car in Cars)
+        {
+            if (car.Id == carId)
+            {
+                pickupLocationId = car.LocationId;
+            }
+        }
+
+        string urlExtension = string.Empty;
+
+        urlExtension += "/" + pickupLocationId + "/" + pickupDate + "/" + pickupTime + "/" + dropoffLocationId + "/" + dropoffDate + "/" + pickupTime + "/" + carId;
+
+        if (extras.Any())
+        {
+            urlExtension += "/";
+            foreach (var extra in extras)
+            {
+                urlExtension += extra.Id.ToString();
+            }
+        }
+
+        navManager.NavigateTo("/Verification" + urlExtension);
     }
 
     public async Task GoTo()

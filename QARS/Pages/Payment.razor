@@ -1,0 +1,180 @@
+﻿@page "/Payment/{pickupId}/{pickupDate}/{pickupTime}/{dropoffId}/{dropoffDate}/{dropoffTime}/{carId:int}"
+@page "/Payment/{pickupId}/{pickupDate}/{pickupTime}/{dropoffId}/{dropoffDate}/{dropoffTime}/{carId:int}/{extras}"
+@inject AppDbContext dbContext
+@inject UserManager<User> UserManager
+@inject CustomerServices service
+@using Microsoft.AspNetCore.Identity
+@inject IFileReaderService FileReader
+@using QARS.Data.Models
+@using System.IO;
+@using Tewr.Blazor.FileReader;
+@inject ReservationServices reservation_service
+@inject CarServices car_service
+
+
+<link href="/css/payment.css" rel="stylesheet" />
+
+<AuthorizeView Roles="Customer">
+    <Authorized>
+        <TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="@carId" isVerified="true"/>
+        <div class="row payment justify-content-around">
+            <div class="col-md-12">
+                <h1 class="display-4">Overview & Payment</h1>
+            </div>
+            <div class="col-md-12 credentials">
+                <p>Choose your desired payment method below and finish your reservation.</p>
+                <h5>Payment of @TotalCost (Klopt voor geen reet, maar fix ik nog wel).</h5>
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="payment">
+            <p>You do not have permission to access this page. Please log in and try again.</p>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public int carId { get; set; }
+
+    [Parameter]
+    public string pickupId { get; set; }
+
+    [Parameter]
+    public string pickupDate { get; set; }
+
+    [Parameter]
+    public string pickupTime { get; set; }
+
+    [Parameter]
+    public string dropoffId { get; set; }
+
+    [Parameter]
+    public string dropoffDate { get; set; }
+
+    [Parameter]
+    public string dropoffTime { get; set; }
+
+    [Parameter]
+    public string extras { get; set; }
+
+    public string pickupLocation = string.Empty;
+    public string dropoffLocation = string.Empty;
+
+    public int UserId = 0;
+    public decimal TotalCost = 0;
+
+    public Reservation reservationToAdd = new Reservation();
+
+    Customer customer { get; set; }
+    List<Car> Cars = new List<Car>(); 
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        Cars = await car_service.GetCarAsync(0);
+
+        foreach (var location in dbContext.Locations)
+        {
+            if (location.Id == Int32.Parse(pickupId))
+            {
+                pickupLocation = location.City;
+            }
+        }
+
+        foreach (var location in dbContext.Locations)
+        {
+            if (location.Id == Int32.Parse(dropoffId))
+            {
+                dropoffLocation = location.City;
+            }
+        }
+
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+            foreach (var Customer in dbContext.Customers)
+            {
+                if (UserId == Customer.Id)
+                {
+                    customer = Customer;
+                }
+            }
+        }
+
+        //specifying date & time for reservation in DateTimeOffset (Utc)
+        string dayPickupString = pickupDate[0].ToString() + pickupDate[1].ToString();
+        int dayPickup = Int32.Parse(dayPickupString);
+        string monthPickupString = pickupDate[2].ToString() + pickupDate[3].ToString();
+        int monthPickup = Int32.Parse(monthPickupString);
+        string yearPickupString = pickupDate[4].ToString() + pickupDate[5].ToString() + pickupDate[6].ToString() + pickupDate[7].ToString();
+        int yearPickup = Int32.Parse(yearPickupString);
+
+        string timePickupString = pickupTime[0].ToString() + pickupTime[1].ToString();
+        int timePickup = Int32.Parse(timePickupString);
+
+        string dayDropoffString = dropoffDate[0].ToString() + dropoffDate[1].ToString();
+        int dayDropoff = Int32.Parse(dayDropoffString);
+        string monthDropoffString = dropoffDate[2].ToString() + dropoffDate[3].ToString();
+        int monthDropoff = Int32.Parse(monthDropoffString);
+        string yearDropoffString = dropoffDate[4].ToString() + dropoffDate[5].ToString() + dropoffDate[6].ToString() + dropoffDate[7].ToString();
+        int yearDropoff = Int32.Parse(yearDropoffString);
+
+        string timeDropoffString = dropoffTime[0].ToString() + dropoffTime[1].ToString();
+        int timeDropoff = Int32.Parse(timeDropoffString);
+
+        DateTime datePickup = new DateTime(yearPickup, monthPickup, dayPickup, timePickup, 0, 0);
+
+        DateTimeOffset pickup = DateTime.SpecifyKind(datePickup, DateTimeKind.Utc);
+
+        DateTime dateDropoff = new DateTime(yearDropoff, monthDropoff, dayDropoff, timeDropoff, 0, 0);
+
+        DateTimeOffset dropoff = DateTime.SpecifyKind(dateDropoff, DateTimeKind.Utc);
+
+        //Specifying the customer who makes reservation
+
+        //Specifying car to be reservated
+
+        List<int> extraIds = new List<int>();
+        Car car = new Car();
+        List<Extra> extraList = new List<Extra>();
+
+        if (!(extras is null))
+        {
+            foreach (char extra in extras)
+            {
+                int extraToAdd = Int32.Parse(extra.ToString());
+                extraIds.Add(extraToAdd);
+            }
+
+            foreach (var extra in dbContext.Extras)
+            {
+                foreach (int extraId in extraIds)
+                {
+                    if (extra.Id == extraId)
+                    {
+                        extraList.Add(extra);
+                    }
+                }
+            }
+        }
+
+        foreach (var targetCar in Cars)
+        {
+            if (carId == targetCar.Id)
+            {
+                car = targetCar;
+            }
+        }
+        Console.WriteLine(datePickup.ToString());
+        Console.WriteLine(dateDropoff.ToString());
+        //Car to reserver
+        reservationToAdd = Reservation.Create(customer, car, pickup, dropoff, extraList.ToArray());
+        TotalCost = reservationToAdd.CalculateCost();
+    }
+}
