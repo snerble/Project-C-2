@@ -17,16 +17,147 @@
 <AuthorizeView Roles="Customer">
     <Authorized>
         <TopMenuCarList pickupLocation="@pickupLocation" pickupDate="@pickupDate" pickupTime="@pickupTime" dropoffLocation="@dropoffLocation" dropoffDate="@dropoffDate" dropoffTime="@dropoffTime" carId="@carId" isVerified="true"/>
-        <div class="row payment justify-content-around">
-            <div class="col-md-12">
-                <h1 class="display-4">Overview & Payment</h1>
-            </div>
-            <div class="col-md-12 credentials">
-                <p>Choose your desired payment method below and finish your reservation.</p>
-                <h5>Payment of @TotalCost (Klopt voor geen reet, maar fix ik nog wel).</h5>
+        <div class="container payment">
+            <div class="row justify-content-around">
+                <div class="col-md-5 orderdetails">
+                    <h3>Overview</h3><br />
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h4>Pick Up</h4><br />
+                            @foreach (var car in Cars)
+                            {
+                                if (car.Id == carId)
+                                {
+                                    <p>@car.Store.Name</p>
+                                }
+                            }
+                            @foreach (var location in dbContext.Locations)
+                            {
+                                if (location.Id == Int32.Parse(pickupId))
+                                {
+                                    <p>@location.City, @location.CountryCode</p>
+                                }
+                            }
+                            <p>@pickupDate[0]@pickupDate[1]/@pickupDate[2]@pickupDate[3]/@pickupDate[4]@pickupDate[5]@pickupDate[6]@pickupDate[7]</p>
+                            <p>@pickupTime[0]@pickupDate[1]:00</p>
+                        </div>
+                        <div class="col-md-6">
+                            <h4>Drop Off</h4><br />
+
+                            @foreach (var store in dbContext.Stores.Where(s => s.LocationId == Int32.Parse(dropoffId)))
+                            {
+                                <p>@store.Name</p>
+                            }
+
+                            @foreach (var location in dbContext.Locations)
+                            {
+                                if (location.Id == Int32.Parse(dropoffId))
+                                {
+                                    <p>@location.City, @location.CountryCode</p>
+                                }
+                            }
+                            <p>@dropoffDate[0]@dropoffDate[1]/@dropoffDate[2]@dropoffDate[3]/@dropoffDate[4]@dropoffDate[5]@dropoffDate[6]@dropoffDate[7]</p>
+                            <p>@dropoffDate[0]@dropoffDate[1]:00</p>
+                        </div>
+                    </div><br />
+                    <h4>Vehicle</h4><br />
+                    <p>Car:</p>
+                    @foreach (var car in Cars)
+                    {
+                        if (car.Id == carId)
+                        {
+                            <p>@car.Model.Brand @car.Model.Type - @car.Model.FuelType</p><br />
+                        }
+                    }
+                    <br /><p>Extras:</p>
+                    @foreach (var extra in extraList)
+                    {
+                        <p>@extra.Name</p>
+                    }
+
+                    <br /><h4>Price Calculations</h4><br />
+
+                    @foreach (var car in Cars)
+                    {
+                        if (car.Id == carId)
+                        {
+                            <p>Car:</p>
+                            <p>€@totalCarCost.ToString("0.00") + €@car.Model.KMRate.ToString("0.00") / km after @car.Model.FreeMileage.ToString("0") free miles</p><br />
+                        }
+                    }
+                    @if (extraList.Any())
+                    {
+                        <p>Extras:</p>
+                        foreach (var extra in extraList)
+                        {
+                            <p>@extra.Name - €@extra.Cost.ToString("0.00")</p>
+                        }
+                        <p>Total - €@totalExtraCost.ToString("0.00")</p><br />
+
+                        <p>Total:</p>
+                        <p>€@totalCost.ToString("0.00")</p><br />
+                    }
+                </div>
+                <div class="col-md-5 customerdetails">
+                    <h3>Payment</h3><br />
+                    <h4>Customer Details</h4><br />
+
+                    @foreach (var customer in dbContext.Customers)
+                    {
+                        if (customer.Id == UserId)
+                        {
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <small>Fill in your first and lastname</small>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" id="name" placeholder="Firstname" value="@customer.FirstName">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <input type="text" class="form-control" id="name" placeholder="Lastname" value="@customer.LastName" />
+                                    </div>
+                                </div>
+                            </div>
+                            @foreach (var location in dbContext.Locations)
+                            {
+                                if (location.Id == customer.LocationId)
+                                {
+                                    <div class="form-group">
+                                        <label for="locationaddress">Address</label><br />
+                                        <small>Fill in your address including house number</small>
+                                        <input type="text" id="locationaddress" class="form-control" value="@location.Address" />
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationcity">City</label><br />
+                                        <small>Fill in the city</small>
+                                        <input type="text" id="locationcity" class="form-control" value="@location.City"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationzip">ZipCode</label><br />
+                                        <small>Fill in the zipcode</small>
+                                        <input type="text" id="locationzip" class="form-control" value="@location.ZipCode"/>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="locationcountry">Country</label><br />
+                                        <small>Fill in the country</small>
+                                        <input type="text" id="locationcountry" class="form-control" value="@location.CountryCode"/>
+                                    </div>
+                                }
+                            }
+                            <div class="form-group">
+                                <label for="birthdate">Date of Birth</label>
+                                <small>Fill in your date of birth</small>
+                                <input class="form-control" type="date" id="birthdate">
+                            </div>
+                        }
+                    }
+
+                    <p>Choose your desired payment method below and finish your reservation.</p>
+                    <p>Payment of €@totalCost.ToString("00.00")</p>
+                </div>
             </div>
         </div>
-    </Authorized>
+    </Authorized>                   
     <NotAuthorized>
         <div class="payment">
             <p>You do not have permission to access this page. Please log in and try again.</p>
@@ -35,6 +166,10 @@
 </AuthorizeView>
 
 @code {
+    public decimal totalCost;
+    public decimal totalExtraCost;
+    public decimal totalCarCost;
+
     [Parameter]
     public int carId { get; set; }
 
@@ -63,12 +198,12 @@
     public string dropoffLocation = string.Empty;
 
     public int UserId = 0;
-    public decimal TotalCost = 0;
 
     public Reservation reservationToAdd = new Reservation();
 
     Customer customer { get; set; }
-    List<Car> Cars = new List<Car>(); 
+    List<Car> Cars = new List<Car>();
+    List<Extra> extraList = new List<Extra>();
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -142,7 +277,6 @@
 
         List<int> extraIds = new List<int>();
         Car car = new Car();
-        List<Extra> extraList = new List<Extra>();
 
         if (!(extras is null))
         {
@@ -171,10 +305,21 @@
                 car = targetCar;
             }
         }
-        Console.WriteLine(datePickup.ToString());
-        Console.WriteLine(dateDropoff.ToString());
         //Car to reserver
         reservationToAdd = Reservation.Create(customer, car, pickup, dropoff, extraList.ToArray());
-        TotalCost = reservationToAdd.CalculateCost();
+
+        //Calculate cost of reservation
+        decimal totalHours = Convert.ToDecimal((dropoff - pickup).TotalHours);
+        var hourlyRate = car.Model.DayRate / 24;
+        totalCost = totalHours * hourlyRate;
+        totalCarCost = totalCost;
+        //Including extras
+        foreach(var extra in extraList)
+        {
+            totalCost += (extra.Cost/24) * totalHours;
+            totalExtraCost += (extra.Cost / 24) * totalHours;
+        }
+
+        await reservation_service.AddReservationAsync(reservationToAdd);
     }
 }
