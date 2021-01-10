@@ -43,10 +43,9 @@ namespace QARS.Data.Services
 		public async Task<Reservation> AddReservationAsync(Reservation reservation)
 		{
 			try
-			{
+			{ 
 				dbContext.Reservations.Add(reservation);
 				await dbContext.SaveChangesAsync();
-				reservation.Car.Reserve();
 			}
 			catch (Exception)
 			{
