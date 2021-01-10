@@ -35,5 +35,6 @@ namespace QARS.Data.Models
 		[Required]
 		[Display(Name = "Country")]
 		public string CountryCode { get; set; }
+
 	}
 }

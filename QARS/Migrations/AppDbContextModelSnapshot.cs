@@ -123,6 +123,10 @@ namespace QARS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Contactaddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -130,6 +134,10 @@ namespace QARS.Migrations
                     b.Property<string>("Discript")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
 
                     b.Property<string>("Tell")
                         .IsRequired()

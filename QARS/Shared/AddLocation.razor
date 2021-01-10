@@ -22,7 +22,9 @@
     <div class="form-group">
         <label for="countrycode">CountryCode</label>
         <input type="text" id="countrycode" class="form-control" @bind="@NewLocation.CountryCode" />
+
     </div>
+
     <div class="text-center p-3 mb-3">
         <button class="btn btn-success" type="submit">Add Location</button>
     </div>
@@ -36,8 +38,12 @@
 
     public Location NewLocation { get; set; } = new Location();
 
+
+
     private async Task AddNewLocation()
     {
+
+
         await service.AddLocationsAsync(NewLocation);
         NewLocation = new Data.Models.Location();
         await BlazoredModal.Close(ModalResult.Ok(true));

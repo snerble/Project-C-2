@@ -42,8 +42,10 @@ namespace QARS.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Tell = table.Column<string>(nullable: false),
+                    City = table.Column<string>(nullable: false),
                     Contactaddress = table.Column<string>(nullable: false),
-                    Discript = table.Column<string>(nullable: false)
+                    Discript = table.Column<string>(nullable: false),
+                    Image = table.Column<byte[]>(nullable: false)
                 },
                 constraints: table =>
                 {

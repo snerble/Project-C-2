@@ -2,10 +2,12 @@
 @inject AppDbContext dbContext
 @inject UserManager<User> UserManager
 
+
 @using QARS.Data.Models;
 @using Microsoft.AspNetCore.Identity
 
-<link href="/css/modal.css" rel="stylesheet"/>
+
+<link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@NewStore" OnValidSubmit="AddNewStore">
     <DataAnnotationsValidator />
@@ -39,6 +41,7 @@
         <small>Write a description for your store</small>
         <textarea class="form-control" id="description" rows="3" @bind="@NewStore.Description"></textarea>
     </div>
+
     <div class="text-center p-3 mb-3">
         <button class="btn btn-success" type="submit">Add Store</button>
     </div>
@@ -54,6 +57,7 @@
     private Task<AuthenticationState> authenticationStateTask { get; set; }
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
+
 
     public Store NewStore { get; set; } = new Store()
     {
@@ -73,6 +77,8 @@
 
     private async Task AddNewStore()
     {
+
+
         NewStore.LocationId = NewStore.Location.Id;
         var franchisee = dbContext.Franchisees.FirstOrDefault(x => x.Id == UserId) ?? throw new ArgumentException("No such franchisee");
         NewStore.Franchisee = franchisee;

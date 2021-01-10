@@ -7,8 +7,6 @@
 
 <h1>the following locations are the locations of our stores</h1>
 
-
-
 <style>
 	button {
 		font-size: 40px;
@@ -41,9 +39,6 @@
 		margin: 10px;
 	}
 </style>
-
-
-
 
 
 <div class="col-12 d-flex justify-content-between">
@@ -89,7 +84,6 @@
 <p>country: @Country</p>
 
 
-
 @code{
 	string address;
 	string Zipcode;
@@ -104,6 +98,7 @@
 				address = store.Location.Address;
 				Country = store.Location.CountryCode;
 				Zipcode = store.Location.ZipCode;
+
 			}
 		}
 	}
