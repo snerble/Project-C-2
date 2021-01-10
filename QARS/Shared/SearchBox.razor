@@ -8,6 +8,10 @@
 <div class="container flex-content">
 	<div class="searchBox flex-fill d-flex flex-row justify-content-center align-items-center">
 		<div class="searchBoxContent">
+            @if (locationSelectedError)
+            {
+                <p style="color:red;">Please choose your pickup and dropoff location</p>
+            }
             <form method="get">
                 <div class="pickup form-row">
                     <div class="form-group col-md-5">
@@ -82,7 +86,7 @@
     // TODO: Support multiple timezones by using UTC time on the server
 
     // Store the date string so the same value is reused until the page is refreshed
-    string minimumDate = DateTime.Now.ToString("yyyy-MM-dd");
+    string minimumDate = DateTime.Now.AddDays(1).ToString("yyyy-MM-dd");
 
     string pickupLocation = new string("");
     string dropoffLocation = new string("");
@@ -102,13 +106,30 @@
     string dropoffDate = string.Empty;
     string dropoffTime = string.Empty;
 
+    public bool locationSelectedError = false;
+
+    protected override void OnInitialized()
+    {
+        pickupdate = DateTime.Now.AddDays(1);
+        dropoffdate = DateTime.Now.AddDays(2);
+        pickuptime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
+        dropofftime = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 9, 0, 0);
+    }
+
     void searchCar()
     {
         pickupDate = pickupdate.ToString("ddMMyyyy");
         pickupTime = pickuptime.ToString("HH");
         dropoffDate = dropoffdate.ToString("ddMMyyyy");
         dropoffTime = dropofftime.ToString("HH");
-        navManager.NavigateTo("/SearchCar/"+pickupLocation+"/"+pickupDate+"/"+pickupTime+"/"+dropoffLocation+"/"+dropoffDate+"/"+dropoffTime+"");
+        if(!(pickupLocation == "" ) && !(dropoffLocation == ""))
+        {
+            navManager.NavigateTo("/SearchCar/" + pickupLocation + "/" + pickupDate + "/" + pickupTime + "/" + dropoffLocation + "/" + dropoffDate + "/" + dropoffTime + "");
+        }
+        else
+        {
+            locationSelectedError = true;
+        }
     }
 
 }

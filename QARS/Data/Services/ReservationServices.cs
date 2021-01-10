@@ -46,6 +46,7 @@ namespace QARS.Data.Services
 			{
 				dbContext.Reservations.Add(reservation);
 				await dbContext.SaveChangesAsync();
+				reservation.Car.Reserve();
 			}
 			catch (Exception)
 			{

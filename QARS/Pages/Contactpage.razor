@@ -6,69 +6,103 @@
 @attribute [NavigationTab("Contact", Index = 0)]
 
 <h1>
-	Contact
+    Contact
 </h1>
 <p>main location: @address</p>
 <p> tel: @tell </p>
 <p>@discript</p>
 
-
+<img src="data:image;base64,@System.Convert.ToBase64String(img)" style="width: 300px"/>
 
 <style>
-	button {
-		font-size: 40px;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 10px;
-		float: left;
-		margin-left: auto;
-	}
+    button {
+        font-size: 40px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        float: left;
+        margin-left: auto;
+    }
 
-	#container {
-		text-align: center;
-		align-items: center;
-		margin-left: auto;
-	}
+    #container {
+        text-align: center;
+        align-items: center;
+        margin-left: auto;
+    }
 
-	#input {
-		display: block;
-		margin: auto
-	}
+    #input {
+        display: block;
+        margin: auto
+    }
 
-	#mainBody {
-		background: url(/img/secondback.jpg);
-	}
+    #mainBody {
+        background: url(/img/secondback.jpg);
+    }
 
-	#text {
-		font-size: 3040px;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 10px;
-	}
+    #text {
+        font-size: 3040px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+    }
 </style>
 
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-9">
+        <div class="back container">
+
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+
+                            <th scope="col">City</th>
+                            <th scope="col">Address</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (dbContext.Contacts.Any())
+                        {
+                            @foreach (var contact in dbContext.Contacts)
+                            {
+                                var contactid = contact.Id;
+                                <tr @onclick="@(e =>Lookup(contactid))">
+                                    <td>@contact.City</td>
+                                    <td>@contact.Contactaddress</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No locations available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 @code{
-	string address;
-	string tell;
-	string discript;
+    string address;
+    string tell;
+    string discript;
+    byte[] img = new byte[0];
 
 
-	protected override async Task OnInitializedAsync()
-	{
-		Lookup();
-	}
-
-	void Lookup()
-	{
-		foreach (var contact in dbContext.Contacts)
-		{
-			address = contact.Contactaddress;
-			tell = contact.Tell;
-			discript = contact.Discript;
-		}
-	}
+    void Lookup(int contactid)
+    {
+        if (dbContext.Contacts.Find(contactid) is { } contact)
+        {
+                address = contact.Contactaddress;
+                tell = contact.Tell;
+                discript = contact.Discript;
+                img = contact.Image;
+        }
+    }
 
 }
 

@@ -1,0 +1,44 @@
+.payment {
+    background: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 40px;
+}
+
+.pay-button{
+    background-color: #03254c;
+    border: 0px;
+    text-transform: uppercase;
+    font-weight: 800;
+    font-size: 1.3em;
+    width: 150px;
+    height: 50px;
+    margin-bottom: 30px;
+}
+
+.customerdetails p{
+    font-size: 0.9em;
+}
+
+.dates p {
+    font-size: 0.9em;
+    padding: 0;
+    margin: 0;
+}
+
+.vehicle img{
+    width: 100%;
+    height: auto;
+}
+
+.vehicle p{
+    font-size: 0.9em;
+    padding: 0;
+    margin: 0;
+}
+
+#four {
+    background: rgba(255,255,255,0);
+    border: 1px solid #03254C;
+    color: #03254C;
+}

@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210102004226_InitialCreate")]
+    [Migration("20210110174739_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -94,6 +94,9 @@ namespace QARS.Migrations
                     b.Property<bool>("HasAirconditioning")
                         .HasColumnType("INTEGER");
 
+                    b.Property<byte[]>("Image")
+                        .HasColumnType("BLOB");
+
                     b.Property<decimal>("KMRate")
                         .HasColumnType("TEXT");
 
@@ -122,6 +125,10 @@ namespace QARS.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Contactaddress")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -129,6 +136,10 @@ namespace QARS.Migrations
                     b.Property<string>("Discript")
                         .IsRequired()
                         .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("Image")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
 
                     b.Property<string>("Tell")
                         .IsRequired()
@@ -239,6 +250,22 @@ namespace QARS.Migrations
                     b.HasIndex("ExtraId");
 
                     b.ToTable("ReservationExtras");
+                });
+
+            modelBuilder.Entity("QARS.Data.Models.Return", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ReservationsId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReservationsId");
+
+                    b.ToTable("Returns");
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Role", b =>
@@ -359,6 +386,12 @@ namespace QARS.Migrations
                 {
                     b.HasBaseType("QARS.Data.Models.User");
 
+                    b.Property<byte[]>("DriversLicenseBack")
+                        .HasColumnType("BLOB");
+
+                    b.Property<byte[]>("DriversLicenseFront")
+                        .HasColumnType("BLOB");
+
                     b.HasDiscriminator().HasValue("Customer");
                 });
 
@@ -440,6 +473,13 @@ namespace QARS.Migrations
                         .HasForeignKey("ReservationId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("QARS.Data.Models.Return", b =>
+                {
+                    b.HasOne("QARS.Data.Models.Reservation", "Reservations")
+                        .WithMany()
+                        .HasForeignKey("ReservationsId");
                 });
 
             modelBuilder.Entity("QARS.Data.Models.Store", b =>

@@ -24,6 +24,8 @@ namespace QARS.Data.Models
 		[Required, StringLength(50)]
 		public string Type { get; set; }
 
+		public byte[] Image { get; set; }
+
 		/// <summary>
 		/// Gets or sets the <see cref="CarCategory"/> of this <see cref="CarModel"/>.
 		/// </summary>

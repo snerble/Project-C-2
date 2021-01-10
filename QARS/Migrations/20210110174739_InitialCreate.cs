@@ -15,6 +15,7 @@ namespace QARS.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     Brand = table.Column<string>(maxLength: 50, nullable: false),
                     Type = table.Column<string>(maxLength: 50, nullable: false),
+                    Image = table.Column<byte[]>(nullable: true),
                     Category = table.Column<int>(nullable: false),
                     FuelType = table.Column<int>(nullable: false),
                     DayRate = table.Column<decimal>(nullable: false),
@@ -41,8 +42,10 @@ namespace QARS.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     Tell = table.Column<string>(nullable: false),
+                    City = table.Column<string>(nullable: false),
                     Contactaddress = table.Column<string>(nullable: false),
-                    Discript = table.Column<string>(nullable: false)
+                    Discript = table.Column<string>(nullable: false),
+                    Image = table.Column<byte[]>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -110,6 +113,8 @@ namespace QARS.Migrations
                     PhoneNumber = table.Column<string>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
+                    DriversLicenseFront = table.Column<byte[]>(nullable: true),
+                    DriversLicenseBack = table.Column<byte[]>(nullable: true),
                     FranchiseeId = table.Column<int>(nullable: true),
                     StoreId = table.Column<int>(nullable: true)
                 },
@@ -272,6 +277,25 @@ namespace QARS.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Returns",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("Sqlite:Autoincrement", true),
+                    ReservationsId = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Returns", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Returns_Reservations_ReservationsId",
+                        column: x => x.ReservationsId,
+                        principalTable: "Reservations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Cars_LocationId",
                 table: "Cars",
@@ -308,6 +332,11 @@ namespace QARS.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Returns_ReservationsId",
+                table: "Returns",
+                column: "ReservationsId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stores_FranchiseeId",
                 table: "Stores",
                 column: "FranchiseeId");
@@ -341,6 +370,9 @@ namespace QARS.Migrations
 
             migrationBuilder.DropTable(
                 name: "ReservationExtras");
+
+            migrationBuilder.DropTable(
+                name: "Returns");
 
             migrationBuilder.DropTable(
                 name: "UserRoles");

@@ -1,5 +1,9 @@
 ﻿@inject CarModelServices service
+@inject IFileReaderService FileReader
+
 @using QARS.Data.Models
+@using System.IO;
+@using Tewr.Blazor.FileReader;
 
 <link href="/css/modal.css" rel="stylesheet" />
 
@@ -37,6 +41,10 @@
         <label for="freeMileage">Free Mileage</label><br />
         <small>Fill in the amount of free kilometers</small>
         <input type="text" id="freeMileage" class="form-control" @bind="@UpdateCarModel.FreeMileage" />
+    </div>
+    <div class="form-group">
+        <label for="description">Image</label>
+        <FileSelector @ref="FileSelector" />
     </div>
     <div class="form-group">
         <label for="description">Description</label>
@@ -105,6 +113,8 @@
 
     [Parameter] public QARS.Data.Models.CarModel CarModel { get; set; }
 
+    private FileSelector FileSelector;
+
     QARS.Data.Models.CarModel carModel { get; set; }
 
     protected override void OnInitialized()
@@ -120,6 +130,11 @@
     }
     private async Task UpdateCarModelData()
     {
+        FileDownloadResult result = await FileSelector.DonwloadSingleAsync();
+
+        var upload = result.Data;
+
+        UpdateCarModel.Image = upload;
         await service.UpdateCarModelAsync(UpdateCarModel);
         await BlazoredModal.Close(ModalResult.Ok<QARS.Data.Models.CarModel>(carModel));
     }

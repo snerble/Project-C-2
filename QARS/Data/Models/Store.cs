@@ -33,5 +33,7 @@ namespace QARS.Data.Models
 		/// </summary>
 		[StringLength(2500)]
 		public string Description { get; set; }
+
+
 	}
 }
