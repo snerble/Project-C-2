@@ -6,46 +6,45 @@
 @attribute [NavigationTab("Contact", Index = 0)]
 
 <h1>
-	Contact
+    Contact
 </h1>
 <p>main location: @address</p>
 <p> tel: @tell </p>
 <p>@discript</p>
 
-<img src="/Images/watch.jpg" asp-append-version="true" width="300px" />
-
+<img src="data:image;base64,@System.Convert.ToBase64String(img)" style="width: 300px"/>
 
 <style>
-	button {
-		font-size: 40px;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 10px;
-		float: left;
-		margin-left: auto;
-	}
+    button {
+        font-size: 40px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        float: left;
+        margin-left: auto;
+    }
 
-	#container {
-		text-align: center;
-		align-items: center;
-		margin-left: auto;
-	}
+    #container {
+        text-align: center;
+        align-items: center;
+        margin-left: auto;
+    }
 
-	#input {
-		display: block;
-		margin: auto
-	}
+    #input {
+        display: block;
+        margin: auto
+    }
 
-	#mainBody {
-		background: url(/img/secondback.jpg);
-	}
+    #mainBody {
+        background: url(/img/secondback.jpg);
+    }
 
-	#text {
-		font-size: 3040px;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 10px;
-	}
+    #text {
+        font-size: 3040px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+    }
 </style>
 
 <div class="col-12 d-flex justify-content-between">
@@ -88,24 +87,20 @@
 
 
 @code{
-        string address;
-        string tell;
-        string discript;
-        
+    string address;
+    string tell;
+    string discript;
+    byte[] img = new byte[0];
 
 
     void Lookup(int contactid)
     {
-        foreach (var contact in dbContext.Contacts)
+        if (dbContext.Contacts.Find(contactid) is { } contact)
         {
-            if (contact.Id == contactid)
-            {
                 address = contact.Contactaddress;
                 tell = contact.Tell;
                 discript = contact.Discript;
-                var img = contact.Image;
-            }
-
+                img = contact.Image;
         }
     }
 
