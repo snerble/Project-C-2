@@ -1,9 +1,13 @@
 ﻿@inject ContactServices service
+@inject IFileReaderService FileReader
+
+@using Tewr.Blazor.FileReader
 @using QARS.Data.Models
 
 <link href="/css/modal.css" rel="stylesheet" />
 
-<EditForm Model="@UpdateContact">
+<EditForm Model="@UpdateContact" OnValidSubmit="UpdateContactData">
+    @* creates a form for contacts so a update data object can be created. every input field is bound to a attribute within the data table this way data is put in the database *@
     <div class="form-group">
         <label for="tell">Tell</label>
         <input type="text" id="tell" class="form-control" @bind="@UpdateContact.Tell" />
@@ -13,20 +17,32 @@
         <input type="text" id="contactaddress" class="form-control" @bind="@UpdateContact.Contactaddress" />
     </div>
     <div class="form-group">
+        <label for="contactaddress">Countrycode</label>
+        <input type="text" id="countrycode" class="form-control" @bind="@UpdateContact.Countrycode" />
+    </div>
+    <div class="form-group">
+        <label for="description">Image</label>
+        <FileSelector @ref="FileSelector" />
+    </div>
+    <div class="form-group">
         <label for="discript">Discript</label>
         <input type="text" id="discript" class="form-control" @bind="@UpdateContact.Discript" />
     </div>
     <div class="text-center p-3 mb-3">
         <button class="btn btn-warning" @onclick="UpdateContactData">Update</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code {
+    @* the functionalities to actualy edit data within COntacts.*@
     List<Contact> Contacts = new List<Contact>();
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }
 
     [Parameter] public Contact Contact { get; set; }
+
+    private FileSelector FileSelector;
 
     Contact contact { get; set; }
 
@@ -43,6 +59,12 @@
     }
     private async Task UpdateContactData()
     {
+        FileDownloadResult result = await FileSelector.DonwloadSingleAsync();
+
+        var upload = result.Data;
+
+        UpdateContact.Image = upload;
+
         await service.updatecontactasync(UpdateContact);
         await BlazoredModal.Close(ModalResult.Ok<Contact>(contact));
     }

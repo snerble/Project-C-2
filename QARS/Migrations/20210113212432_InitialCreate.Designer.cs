@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210110174739_InitialCreate")]
+    [Migration("20210113212432_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -133,12 +133,15 @@ namespace QARS.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Countrycode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Discript")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Image")
-                        .IsRequired()
                         .HasColumnType("BLOB");
 
                     b.Property<string>("Tell")

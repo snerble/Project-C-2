@@ -4,6 +4,7 @@
 <link href="/css/modal.css" rel="stylesheet" />
 
 <EditForm Model="@UpdateLocation" OnValidSubmit="UpdateLocationData">
+    @* creates a form for Location so a update data object can be created. every input field is bound to a attribute within the data table this way data is put in the database *@
     <DataAnnotationsValidator />
     <div class="form-group">
         <label for="address">Address</label>
@@ -28,6 +29,7 @@
 </EditForm>
 
 @code {
+    @* the functionalities to actualy edit data within Location.*@
     List<Location> Locations = new List<Location>();
 
     [CascadingParameter] BlazoredModalInstance BlazoredModal { get; set; }

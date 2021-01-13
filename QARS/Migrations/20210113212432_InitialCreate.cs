@@ -44,8 +44,9 @@ namespace QARS.Migrations
                     Tell = table.Column<string>(nullable: false),
                     City = table.Column<string>(nullable: false),
                     Contactaddress = table.Column<string>(nullable: false),
+                    Countrycode = table.Column<string>(nullable: false),
                     Discript = table.Column<string>(nullable: false),
-                    Image = table.Column<byte[]>(nullable: false)
+                    Image = table.Column<byte[]>(nullable: true)
                 },
                 constraints: table =>
                 {

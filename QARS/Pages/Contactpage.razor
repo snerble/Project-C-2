@@ -6,9 +6,10 @@
 @attribute [NavigationTab("Contact", Index = 0)]
 
 <h1>
-    Contact
+    Contactinformation from headquarters, please click on the location you want to see te information of.
 </h1>
 <p>main location: @address</p>
+<p>country: @country</p>
 <p> tel: @tell </p>
 <p>@discript</p>
 
@@ -56,13 +57,16 @@
                 <table class="table">
                     <thead class="thead-light">
                         <tr>
-
+                            @* names the columns *@
                             <th scope="col">City</th>
                             <th scope="col">Address</th>
+                            <th scope="col"> Country</th>
 
                         </tr>
                     </thead>
                     <tbody>
+                        @* loop through the database to show the options.
+                            makes the button press possible.  *@
                         @if (dbContext.Contacts.Any())
                         {
                             @foreach (var contact in dbContext.Contacts)
@@ -71,6 +75,7 @@
                                 <tr @onclick="@(e =>Lookup(contactid))">
                                     <td>@contact.City</td>
                                     <td>@contact.Contactaddress</td>
+                                    <td>@contact.Countrycode</td>
                                 </tr>
                             }
                         }
@@ -90,17 +95,20 @@
     string address;
     string tell;
     string discript;
+    string country;
     byte[] img = new byte[0];
 
 
     void Lookup(int contactid)
     {
+        @* searches the Contacts until the id is found to connect data to the variables. *@
         if (dbContext.Contacts.Find(contactid) is { } contact)
         {
-                address = contact.Contactaddress;
-                tell = contact.Tell;
-                discript = contact.Discript;
-                img = contact.Image;
+            address = contact.Contactaddress;
+            tell = contact.Tell;
+            discript = contact.Discript;
+            country = contact.Countrycode;
+            img = contact.Image;
         }
     }
 
