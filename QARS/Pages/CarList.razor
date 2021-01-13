@@ -73,10 +73,10 @@
                             </div>
                         </div>
                     </div>
+                 }
 
-                }
-            }
-        }
+             }
+         }
     </div>
 </div>
 
@@ -87,15 +87,6 @@
     List<Car> AllCars = new List<Car>();
     List<Car> FilterCars = new List<Car>();
     public bool CurrentValue = false;
-    protected override async Task OnInitializedAsync()
-    {
-        await RefreshCars();
-    }
-    private async Task RefreshCars()
-    {
-        Cars = await service.GetCarAsync(0);
-        AllCars = await service.GetCarAsync(0);
-    }
 
     [Parameter]
     public string pickupLocation { get; set; }
@@ -114,6 +105,73 @@
 
     [Parameter]
     public string dropoffTime { get; set; }
+
+    DateTimeOffset pickup;
+    DateTimeOffset dropoff;
+
+    protected override async Task OnInitializedAsync()
+    {
+        //specifying date & time for reservation in DateTimeOffset (Utc)
+        string dayPickupString = pickupDate[0].ToString() + pickupDate[1].ToString();
+        int dayPickup = Int32.Parse(dayPickupString);
+        string monthPickupString = pickupDate[2].ToString() + pickupDate[3].ToString();
+        int monthPickup = Int32.Parse(monthPickupString);
+        string yearPickupString = pickupDate[4].ToString() + pickupDate[5].ToString() + pickupDate[6].ToString() + pickupDate[7].ToString();
+        int yearPickup = Int32.Parse(yearPickupString);
+
+        string timePickupString = pickupTime[0].ToString() + pickupTime[1].ToString();
+        int timePickup = Int32.Parse(timePickupString);
+
+        string dayDropoffString = dropoffDate[0].ToString() + dropoffDate[1].ToString();
+        int dayDropoff = Int32.Parse(dayDropoffString);
+        string monthDropoffString = dropoffDate[2].ToString() + dropoffDate[3].ToString();
+        int monthDropoff = Int32.Parse(monthDropoffString);
+        string yearDropoffString = dropoffDate[4].ToString() + dropoffDate[5].ToString() + dropoffDate[6].ToString() + dropoffDate[7].ToString();
+        int yearDropoff = Int32.Parse(yearDropoffString);
+
+        string timeDropoffString = dropoffTime[0].ToString() + dropoffTime[1].ToString();
+        int timeDropoff = Int32.Parse(timeDropoffString);
+
+        DateTime datePickup = new DateTime(yearPickup, monthPickup, dayPickup, timePickup, 0, 0);
+
+        pickup = DateTime.SpecifyKind(datePickup, DateTimeKind.Utc);
+
+        DateTime dateDropoff = new DateTime(yearDropoff, monthDropoff, dayDropoff, timeDropoff, 0, 0);
+
+        dropoff = DateTime.SpecifyKind(dateDropoff, DateTimeKind.Utc);
+
+        await RefreshCars();
+    }
+    private async Task RefreshCars()
+    {
+        Cars = await service.GetCarAsync(0);
+        AllCars = await service.GetCarAsync(0);
+
+        List<Car> CarsToRemove = new List<Car>();
+
+        //Check if car not already reserved
+        foreach (var car in dbContext.Cars)
+        {
+            foreach (var reservation in dbContext.Reservations.Where(r => r.Car == car))
+            {
+                if (!((pickup < reservation.Start && dropoff < reservation.Start) || (pickup > reservation.End && dropoff > reservation.End)))
+                {
+                    CarsToRemove.Add(car);
+
+                    Console.WriteLine("Already reserved");
+                }
+                else
+                {
+                    Console.WriteLine("Not reserved");
+                }
+            }
+        }
+        foreach (var car in CarsToRemove)
+        {
+            Cars.Remove(car);
+            AllCars.Remove(car);
+        }
+    }
 
     public void GoTo(int buttonNumber)
     {

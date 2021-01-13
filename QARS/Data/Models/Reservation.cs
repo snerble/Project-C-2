@@ -59,6 +59,8 @@ namespace QARS.Data.Models
 		/// </summary>
 		public DateTimeOffset End { get; set; }
 
+		public ReservationState Status { get; set; }
+
 		/// <summary>
 		/// Gets the duration of this <see cref="Reservation"/>.
 		/// </summary>
@@ -159,7 +161,7 @@ namespace QARS.Data.Models
 		/// <summary>
 		/// The reservation has not yet started.
 		/// </summary>
-		Planned,
+		Planned = default,
 		/// <summary>
 		/// The reservation is currently in effect.
 		/// </summary>
