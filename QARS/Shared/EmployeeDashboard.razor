@@ -1,0 +1,184 @@
+﻿@using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
+@inject ReservationServices service
+@inject CarServices car_service
+@inject AppDbContext dbContext
+@inject UserManager<User> UserManager
+
+<link rel="stylesheet" href="/css/employeedash.css">
+
+<AuthorizeView Roles="Employee">
+    <Authorized>
+        <div class="pickups">
+            <h1>Todays Pick Ups</h1>
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">License Plate</th>
+                            <th scope="col">Pickup date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Reservations.Where(r => r.Start.ToString("dd-MM-yyyy") == DateTimeOffset.Now.ToString("dd-MM-yyyy")).Where(r => r.Status.ToString() == "Planned").Any())
+                        {
+                            @foreach (var reservation in Reservations.Where(r => r.Start.ToString("dd-MM-yyyy") == DateTimeOffset.Now.ToString("dd-MM-yyyy")).Where(r => r.Status.ToString() == "Planned"))
+                            {
+                                <tr>
+                                    <td scope="col">@reservation.Id</td>
+                                    @foreach (var car in Cars)
+                                    {
+                                        if (car.Id == reservation.CarId)
+                                        {
+                                            <td>@car.LicensePlate</td>
+                                        }
+                                    }
+
+                                    <td>@reservation.Start.ToString("dd-MM-yyyy - HH:mm")</td>
+                                    <td>
+                                        <select class="form-control" @bind="state">
+                                            @foreach (var status in Enum.GetValues(typeof(ReservationState)))
+                                            {
+                                                <option value="@status">@status.ToString()</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td><button class="btn btn-warning" @onclick="(() => UpdateReservation(reservation))">Update</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No pickups for today</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="dropoffs">
+            <h1>Todays Drop Offs</h1>
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">License Plate</th>
+                            <th scope="col">Dropoff date</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Update</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Reservations.Where(r => r.End.ToString("dd-MM-yyyy") == DateTimeOffset.Now.ToString("dd-MM-yyyy")).Where(r => r.Status.ToString() == "InProgress").Any())
+                        {
+                            @foreach (var reservation in Reservations.Where(r => r.End.ToString("dd-MM-yyyy") == DateTimeOffset.Now.ToString("dd-MM-yyyy")).Where(r => r.Status.ToString() == "InProgress"))
+                            {
+                                <tr>
+                                    <td scope="col">@reservation.Id</td>
+                                    @foreach (var car in Cars)
+                                    {
+                                        if (car.Id == reservation.CarId)
+                                        {
+                                            <td>@car.LicensePlate</td>
+                                        }
+                                    }
+
+                                    <td>@reservation.End.ToString("dd-MM-yyyy - HH:mm")</td>
+                                    <td>
+                                        <select class="form-control" @bind="state">
+                                            @foreach (var status in Enum.GetValues(typeof(ReservationState)))
+                                            {
+                                                <option value="@status">@status.ToString()</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td><button class="btn btn-warning" @onclick="(() => UpdateReservation(reservation))">Update</button></td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No dropoffs for today</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
+@code {
+    List<Reservation> Reservations = new List<Reservation>();
+    List<Car> Cars = new List<Car>();
+    public int UserId = new int();
+    public string Role = string.Empty;
+    public ReservationState state;
+
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //Define user and role
+        var authState = await authenticationStateTask;
+        if (authState.User.Identity.IsAuthenticated)
+        {
+            var user = await UserManager.GetUserAsync(authState.User);
+            UserId = user.Id;
+            foreach (var customer in dbContext.Customers)
+            {
+                if (customer.Id == UserId)
+                {
+                    Role = "Customer";
+                }
+            }
+            foreach (var franchisee in dbContext.Franchisees)
+            {
+                if (franchisee.Id == UserId)
+                {
+                    Role = "Franchisee";
+                }
+            }
+            foreach (var employee in dbContext.Employees)
+            {
+                if (employee.Id == UserId)
+                {
+                    Role = "Employee";
+                }
+            }
+        }
+
+        Cars = await car_service.GetCarAsync(0);
+
+        await RefreshReservations(UserId);
+
+    }
+    private async Task RefreshReservations(int userid)
+    {
+        //Get reservations based on userid and role
+        if (Role == "Customer" || Role == "Franchisee")
+        {
+            Reservations = await service.GetReservationAsync(userid, Role);
+        }
+        else if (Role == "Employee")
+        {
+            int storeId = 0;
+            foreach (var employee in dbContext.Employees)
+            {
+                if (UserId == employee.Id)
+                {
+                    storeId = employee.StoreId;
+                }
+            }
+            Reservations = await service.GetReservationAsync(storeId, Role);
+        }
+    }
+    private async Task UpdateReservation(Reservation reservation)
+    {
+        reservation.Status = state;
+        await service.UpdateReservationAsync(reservation);
+    }
+}

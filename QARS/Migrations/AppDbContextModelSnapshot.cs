@@ -224,6 +224,9 @@ namespace QARS.Migrations
                     b.Property<DateTimeOffset>("Start")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("CarId");

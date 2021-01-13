@@ -54,6 +54,25 @@ namespace QARS.Data.Services
 			return reservation;
 		}
 
+		public async Task<Reservation> UpdateReservationAsync(Reservation reservation)
+		{
+			try
+			{
+				var reservationExist = dbContext.Reservations.FirstOrDefault(p => p.Id == reservation.Id);
+				if (reservationExist != null)
+				{
+					dbContext.Update(reservation);
+					await dbContext.SaveChangesAsync();
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+			return reservation;
+		}
+
+
 		public async Task DeleteReservationAsync(Reservation reservation)
 		{
 			try

@@ -228,7 +228,8 @@ namespace QARS.Migrations
                     CarLocationId = table.Column<int>(nullable: true),
                     InitialMileage = table.Column<decimal>(nullable: false),
                     Start = table.Column<DateTimeOffset>(nullable: false),
-                    End = table.Column<DateTimeOffset>(nullable: false)
+                    End = table.Column<DateTimeOffset>(nullable: false),
+                    Status = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
