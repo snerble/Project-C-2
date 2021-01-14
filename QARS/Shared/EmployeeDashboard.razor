@@ -27,32 +27,53 @@
                         {
                             @foreach (var reservation in Reservations.Where(r => r.Start.ToString("dd-MM-yyyy") == DateTimeOffset.Now.ToString("dd-MM-yyyy")).Where(r => r.Status.ToString() == "Planned"))
                             {
-                                <tr>
-                                    <td scope="col">@reservation.Id</td>
-                                    @foreach (var car in Cars)
+                                string cityReservation = string.Empty;
+                                string addressReservation = string.Empty;
+                                string countryReservation = string.Empty;
+                                string cityStore = string.Empty;
+                                string addressStore = string.Empty;
+                                string countryStore = string.Empty;
+                                foreach (var location in dbContext.Locations)
+                                {
+                                    if (location.Id == reservation.pickupLocation)
                                     {
-                                        if (car.Id == reservation.CarId)
-                                        {
-                                            <td>@car.LicensePlate</td>
-                                        }
+                                        cityReservation = location.City;
+                                        addressReservation = location.Address;
+                                        countryReservation = location.CountryCode;
                                     }
+                                    if (location.Id == storeLocationId)
+                                    {
+                                        cityStore = location.City;
+                                        addressStore = location.Address;
+                                        countryStore = location.CountryCode;
+                                    }
+                                }
 
-                                    <td>@reservation.Start.ToString("dd-MM-yyyy - HH:mm")</td>
-                                    <td>
-                                        <select class="form-control" @bind="state">
-                                            @foreach (var status in Enum.GetValues(typeof(ReservationState)))
+                                if (cityReservation == cityStore && addressReservation == addressStore && countryReservation == countryStore)
+                                {
+                                    <tr>
+                                        <td scope="col">@reservation.Id</td>
+                                        @foreach (var car in Cars)
+                                        {
+                                            if (car.Id == reservation.CarId)
                                             {
-                                                <option value="@status">@status.ToString()</option>
+                                                <td>@car.LicensePlate</td>
                                             }
-                                        </select>
-                                    </td>
-                                    <td><button class="btn btn-warning" @onclick="(() => UpdateReservation(reservation))">Update</button></td>
-                                </tr>
+                                        }
+
+                                        <td>@reservation.Start.ToString("dd-MM-yyyy - HH:mm")</td>
+                                        <td>
+                                            <select class="form-control" @bind="state">
+                                                @foreach (var status in Enum.GetValues(typeof(ReservationState)))
+                                                {
+                                                    <option value="@status">@status.ToString()</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><button class="btn btn-warning" @onclick="(() => UpdateReservation(reservation))">Update</button></td>
+                                    </tr>
+                                }
                             }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No pickups for today</strong></td></tr>
                         }
                     </tbody>
                 </table>
@@ -76,37 +97,183 @@
                         {
                             @foreach (var reservation in Reservations.Where(r => r.End.ToString("dd-MM-yyyy") == DateTimeOffset.Now.ToString("dd-MM-yyyy")).Where(r => r.Status.ToString() == "InProgress"))
                             {
-                                <tr>
-                                    <td scope="col">@reservation.Id</td>
-                                    @foreach (var car in Cars)
+                                string cityReservation = string.Empty;
+                                string addressReservation = string.Empty;
+                                string countryReservation = string.Empty;
+                                string cityStore = string.Empty;
+                                string addressStore = string.Empty;
+                                string countryStore = string.Empty;
+                                foreach (var location in dbContext.Locations)
+                                {
+                                    if (location.Id == reservation.dropoffLocation)
                                     {
-                                        if (car.Id == reservation.CarId)
-                                        {
-                                            <td>@car.LicensePlate</td>
-                                        }
+                                        cityReservation = location.City;
+                                        addressReservation = location.Address;
+                                        countryReservation = location.CountryCode;
                                     }
+                                    if (location.Id == storeLocationId)
+                                    {
+                                        cityStore = location.City;
+                                        addressStore = location.Address;
+                                        countryStore = location.CountryCode;
+                                    }
+                                }
 
-                                    <td>@reservation.End.ToString("dd-MM-yyyy - HH:mm")</td>
-                                    <td>
-                                        <select class="form-control" @bind="state">
-                                            @foreach (var status in Enum.GetValues(typeof(ReservationState)))
+                                if (cityReservation == cityStore && addressReservation == addressStore && countryReservation == countryStore)
+                                {
+                                    <tr>
+                                        <td scope="col">@reservation.Id</td>
+                                        @foreach (var car in Cars)
+                                        {
+                                            if (car.Id == reservation.CarId)
                                             {
-                                                <option value="@status">@status.ToString()</option>
+                                                <td>@car.LicensePlate</td>
                                             }
-                                        </select>
-                                    </td>
-                                    <td><button class="btn btn-warning" @onclick="(() => UpdateReservation(reservation))">Update</button></td>
-                                </tr>
+                                        }
+
+                                        <td>@reservation.End.ToString("dd-MM-yyyy - HH:mm")</td>
+                                        <td>
+                                            <select class="form-control" @bind="state">
+                                                @foreach (var status in Enum.GetValues(typeof(ReservationState)))
+                                                {
+                                                    <option value="@status">@status.ToString()</option>
+                                                }
+                                            </select>
+                                        </td>
+                                        <td><button class="btn btn-warning" @onclick="(() => UpdateReservation(reservation))">Update</button></td>
+                                    </tr>
+                                }
+
                             }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No dropoffs for today</strong></td></tr>
                         }
                     </tbody>
                 </table>
             </div>
         </div>
+        @*
+        <div class="requestcars">
+            <h1>Request car back</h1>
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">License Plate</th>
+                            <th scope="col">Location</th>
+                            <th scope="col">Request Car</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Cars.Where(c => c.Store.Id == storeId).Any())
+                        {
+                            foreach (var car in Cars.Where(c => c.Store.Id == storeId))
+                            {
+                                foreach (var store in dbContext.Stores.Where(s => s.Id == storeId))
+                                {
+                                    string cityCar = string.Empty;
+                                    string addressCar = string.Empty;
+                                    string countryCar = string.Empty;
+                                    string cityStore = string.Empty;
+                                    string addressStore = string.Empty;
+                                    string countryStore = string.Empty;
+                                    foreach (var _car in Cars)
+                                    {
+                                        cityCar = _car.Location.City;
+                                        addressCar = _car.Location.Address;
+                                        countryCar = _car.Location.CountryCode;
+                                        foreach (var location in dbContext.Locations)
+                                        {
+                                            if (location.Id == store.LocationId)
+                                            {
+                                                cityStore = location.City;
+                                                addressStore = location.Address;
+                                                countryStore = location.CountryCode;
+                                            }
+                                        }
+                                        if (cityCar == cityStore && addressCar == addressStore && countryCar == countryStore)
+                                        {
+
+                                        }
+                                        else
+                                        {
+                                            if (!(car.Requested))
+                                            {
+                                                <tr>
+                                                    <td>@car.Id</td>
+                                                    <td>@car.LicensePlate</td>
+                                                    <td>@car.Location.City, @car.Location.CountryCode</td>
+                                                    <td><button class="btn btn-warning" @onclick="(() => RequestCar(car))">Request Car</button></td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="requestedcars">
+            <h1>Requested cars</h1>
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">ID</th>
+                            <th scope="col">License Plate</th>
+                            <th scope="col">Store Name</th>
+                            <th scope="col">Request Car</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Cars.Any())
+                        {
+                            foreach (var car in Cars)
+                            {
+                                foreach (var store in dbContext.Stores.Where(s => s.Id == storeId))
+                                {
+                                    string cityCar = string.Empty;
+                                    string addressCar = string.Empty;
+                                    string countryCar = string.Empty;
+                                    string cityStore = string.Empty;
+                                    string addressStore = string.Empty;
+                                    string countryStore = string.Empty;
+                                    foreach (var _car in Cars)
+                                    {
+                                        cityCar = _car.Location.City;
+                                        addressCar = _car.Location.Address;
+                                        countryCar = _car.Location.CountryCode;
+                                        foreach (var location in dbContext.Locations)
+                                        {
+                                            if (location.Id == store.LocationId)
+                                            {
+                                                cityStore = location.City;
+                                                addressStore = location.Address;
+                                                countryStore = location.CountryCode;
+                                            }
+                                        }
+                                        if (cityCar == cityStore && addressCar == addressStore && countryCar == countryStore)
+                                        {
+                                            if (car.Requested)
+                                            {
+                                                <tr>
+                                                    <td>@car.Id</td>
+                                                    <td>@car.LicensePlate</td>
+                                                    <td>@car.Store.Name</td>
+                                                    <td><button class="btn btn-warning" @onclick="(() => SendCar(car))">Send Car</button></td>
+                                                </tr>
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        *@
     </Authorized>
 </AuthorizeView>
 
@@ -115,7 +282,9 @@
     List<Car> Cars = new List<Car>();
     public int UserId = new int();
     public string Role = string.Empty;
+    public int storeId = new int();
     public ReservationState state;
+    int storeLocationId = new int();
 
     [CascadingParameter]
     private Task<AuthenticationState> authenticationStateTask { get; set; }
@@ -158,27 +327,81 @@
     }
     private async Task RefreshReservations(int userid)
     {
-        //Get reservations based on userid and role
-        if (Role == "Customer" || Role == "Franchisee")
+        Reservations = await service.GetReservationAsync(storeId, "All");
+
+        foreach (var employee in dbContext.Employees)
         {
-            Reservations = await service.GetReservationAsync(userid, Role);
-        }
-        else if (Role == "Employee")
-        {
-            int storeId = 0;
-            foreach (var employee in dbContext.Employees)
+            if (employee.Id == UserId)
             {
-                if (UserId == employee.Id)
+                foreach (var store in dbContext.Stores)
                 {
-                    storeId = employee.StoreId;
+                    if (employee.StoreId == store.Id)
+                    {
+                        storeId = store.Id;
+                        storeLocationId = store.LocationId;
+                        Console.WriteLine(storeLocationId);
+                    }
                 }
             }
-            Reservations = await service.GetReservationAsync(storeId, Role);
         }
+
     }
     private async Task UpdateReservation(Reservation reservation)
     {
+        Car updateCar = new Car();
+
         reservation.Status = state;
+        if(reservation.Status.ToString() == "Finished")
+        {
+            foreach(var car in Cars)
+            {
+                if(car.Id == reservation.CarId)
+                {
+                    foreach(var employee in dbContext.Employees)
+                    {
+                        if(employee.Id == UserId)
+                        {
+                            int storeId = employee.StoreId;
+                            foreach(var store in dbContext.Stores.Where(s => s.Id == storeId))
+                            {
+                                foreach(var location in dbContext.Locations.Where(l => l.Id == store.LocationId))
+                                {
+                                    car.Location = location;
+                                    updateCar = car;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        await car_service.UpdateCarAsync(updateCar);
         await service.UpdateReservationAsync(reservation);
+    }
+    private async Task RequestCar(Car car)
+    {
+        car.Requested = true;
+        await car_service.UpdateCarAsync(car);
+    }
+    private async Task SendCar(Car car)
+    {
+        foreach(var store in dbContext.Stores)
+        {
+            if(car.Store.Id == store.Id)
+            {
+                foreach (var location in dbContext.Locations)
+                {
+                    if(location.Id == store.LocationId)
+                    {
+                        car.Location.City = location.City;
+                        car.Location.Address = location.Address;
+                        car.Location.CountryCode = location.CountryCode;
+                        car.Location.ZipCode = location.ZipCode;
+                    }
+                }
+            }
+        }
+        car.Requested = false;
+        await car_service.UpdateCarAsync(car);
     }
 }

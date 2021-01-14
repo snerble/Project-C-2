@@ -41,6 +41,10 @@ namespace QARS.Data.Models
 		/// </summary>
 		public Location CarLocation { get; set; }
 
+		public int pickupLocation { get; set; }
+
+		public int dropoffLocation { get; set; }
+
 		/// <summary>
 		/// Gets the mileage of the <see cref="Car"/> when this <see cref="Reservation"/>
 		/// was made.
@@ -115,7 +119,7 @@ namespace QARS.Data.Models
 		/// <param name="end">The end date and time for when this reservation will finish.</param>
 		/// <param name="extras">A collection of extras to add to the new reservation.</param>
 		/// <returns>A new <see cref="Reservation"/> instance.</returns>
-		public static Reservation Create(Customer customer, Car car, DateTimeOffset start, DateTimeOffset end, params Extra[] extras)
+		public static Reservation Create(Customer customer, Car car, int pickupLocation, int dropoffLocation, DateTimeOffset start, DateTimeOffset end, params Extra[] extras)
 		{
 
 
@@ -137,6 +141,8 @@ namespace QARS.Data.Models
 						Customer = customer,
 						Car = car,
 						CarId = car.Id,
+						pickupLocation = pickupLocation,
+						dropoffLocation = dropoffLocation,
 						CarLocation = car.Location,
 						InitialMileage = car.Mileage,
 						Start = start,

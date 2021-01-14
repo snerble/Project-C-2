@@ -32,11 +32,16 @@ namespace QARS.Data.Services
 					.Where(r => r.Car.Store.Franchisee.Id == userid)
 					.ToListAsync();
 			}
-			else
+			else if (role == "Employee")
 			{
 				return await dbContext.Reservations
 					.Where(r => r.Car.Store.Id == userid)
 					.ToListAsync();
+			}
+			else
+			{
+				return await dbContext.Reservations
+				.ToListAsync();
 			}
 		}
 

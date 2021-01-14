@@ -192,6 +192,7 @@ namespace QARS.Migrations
                     StoreId = table.Column<int>(nullable: false),
                     LocationId = table.Column<int>(nullable: false),
                     Available = table.Column<bool>(nullable: false),
+                    Requested = table.Column<bool>(nullable: false),
                     Mileage = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
@@ -226,6 +227,8 @@ namespace QARS.Migrations
                     CustomerId = table.Column<int>(nullable: true),
                     CarId = table.Column<int>(nullable: false),
                     CarLocationId = table.Column<int>(nullable: true),
+                    pickupLocation = table.Column<int>(nullable: false),
+                    dropoffLocation = table.Column<int>(nullable: false),
                     InitialMileage = table.Column<decimal>(nullable: false),
                     Start = table.Column<DateTimeOffset>(nullable: false),
                     End = table.Column<DateTimeOffset>(nullable: false),

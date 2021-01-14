@@ -50,11 +50,11 @@
                             <Authorized>
                                 <div class="form-group">
                                     <label for="dropoffstore">Dropoff Store</label><br />
-                                    <small>Select at which store in @pickupLocation you'd want to drop the car off</small>
+                                    <small>Select at which store in @dropoffLocation you'd want to drop the car off</small>
                                     <select class="form-control" @bind="dropoffLocationId">
                                         @foreach (var store in dbContext.Stores)
                                         {
-                                            @foreach (var location in dbContext.Locations.Where(l => l.Id == store.LocationId).Where(l => l.City == pickupLocation))
+                                            @foreach (var location in dbContext.Locations.Where(l => l.Id == store.LocationId).Where(l => l.City == dropoffLocation))
                                             {
                                                 <option value="@store.LocationId">@store.Name - @store.Location.City, @store.Location.CountryCode</option>
                                             }
@@ -117,6 +117,7 @@
     public int UserId = 0;
 
     public int dropoffLocationId;
+    public int pickupLocationId;
 
     protected override async Task OnInitializedAsync()
     {
@@ -177,7 +178,6 @@
 
     public void GoToVerification()
     {
-        int pickupLocationId = 0;
         foreach (var car in Cars)
         {
             if (car.Id == carId)
@@ -259,7 +259,7 @@
         Console.WriteLine(datePickup.ToString());
         Console.WriteLine(dateDropoff.ToString());
         //Reserve car
-        var reservation = Reservation.Create(customer, car, pickup, dropoff, extras.ToArray());
+        var reservation = Reservation.Create(customer, car, pickupLocationId, dropoffLocationId, pickup, dropoff, extras.ToArray());
         await reservation_service.AddReservationAsync(reservation);
         Console.WriteLine("done");
     }

@@ -9,7 +9,7 @@ using QARS.Data;
 namespace QARS.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20210113134608_InitialCreate")]
+    [Migration("20210114012746_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,9 @@ namespace QARS.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("ModelId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("Requested")
                         .HasColumnType("INTEGER");
 
                     b.Property<int>("StoreId")
@@ -227,6 +230,12 @@ namespace QARS.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("dropoffLocation")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("pickupLocation")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");

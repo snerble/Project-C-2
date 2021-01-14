@@ -52,7 +52,7 @@
         NewContact.Image = upload;
 
         await service.addcontactasync(NewContact);
-        NewContact = new Data.Models.Contact();
+        NewContact = new Contact();
         await BlazoredModal.Close(ModalResult.Ok(true));
     }
 }

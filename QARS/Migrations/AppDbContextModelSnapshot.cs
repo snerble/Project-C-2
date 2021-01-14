@@ -39,6 +39,9 @@ namespace QARS.Migrations
                     b.Property<int>("ModelId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Requested")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("StoreId")
                         .HasColumnType("INTEGER");
 
@@ -225,6 +228,12 @@ namespace QARS.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("dropoffLocation")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("pickupLocation")
                         .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
