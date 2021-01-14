@@ -7,7 +7,9 @@
 
 <link href="/css/modal.css" rel="stylesheet" />
 
-<EditForm Model="@NewContact">
+<EditForm Model="@NewContact" OnValidSubmit="AddNewContact">
+    <DataAnnotationsValidator />
+    @* creates a form for contacts so a new data object can be created. every input field is bound to a attribute within the data table this way data is put in the database *@
     <div class="form-group">
         <label for="tell">Tell</label>
         <input type="text" id="tell" class="form-control" @bind="@NewContact.Tell" />
@@ -15,6 +17,10 @@
     <div class="form-group">
         <label for="contactaddress">Contactaddress</label>
         <input type="text" id="contactaddress" class="form-control" @bind="@NewContact.Contactaddress" />
+    </div>
+    <div class="form-group">
+        <label for="contactaddress">Countrycode</label>
+        <input type="text" id="countrycode" class="form-control" @bind="@NewContact.Countrycode" />
     </div>
     <div class="form-group">
         <label for="contactaddress">City</label>
@@ -29,8 +35,9 @@
         <FileSelector @ref="FileSelector" />
     </div>
     <div class="text-center p-3 mb-3">
-        <button class="btn btn-success" @onclick="AddNewContact">Add Contact</button>
+        <button class="btn btn-success" type="submit">Add Contact</button>
     </div>
+    <ValidationSummary />
 </EditForm>
 
 @code
@@ -42,7 +49,7 @@
 
     private FileSelector FileSelector;
 
-
+    @* the functionality to actualy add the new data to contacts. *@
     private async Task AddNewContact()
     {
         FileDownloadResult result = await FileSelector.DonwloadSingleAsync();

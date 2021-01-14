@@ -2,7 +2,7 @@
 @inject NavigationManager NavigationManager
 @using System.IO
 
-
+@* first mockup for signup *@
 <style>
     button {
         font-size: 40px;
@@ -47,6 +47,7 @@
     {
         if (Email != null && userfirst != null && firstpassword != null)
         {
+            @* makes navigation to a diffrent page possible *@
             NavigationManager.NavigateTo("login");
         }
     }

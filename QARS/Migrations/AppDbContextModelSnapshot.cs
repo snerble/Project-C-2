@@ -134,12 +134,15 @@ namespace QARS.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Countrycode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Discript")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Image")
-                        .IsRequired()
                         .HasColumnType("BLOB");
 
                     b.Property<string>("Tell")
