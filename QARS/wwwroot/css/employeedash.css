@@ -1,0 +1,19 @@
+.pickups{
+    text-align: left;
+    padding: 30px;
+}
+.dropoffs{
+    text-align: left;
+    padding: 30px;
+}
+.requestcars {
+    text-align: left;
+    padding: 30px;
+}
+.requestedcars {
+    text-align: left;
+    padding: 30px;
+}
+h1{
+    font-size: 1.2em;
+}

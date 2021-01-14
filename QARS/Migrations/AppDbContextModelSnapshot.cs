@@ -39,6 +39,9 @@ namespace QARS.Migrations
                     b.Property<int>("ModelId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<bool>("Requested")
+                        .HasColumnType("INTEGER");
+
                     b.Property<int>("StoreId")
                         .HasColumnType("INTEGER");
 
@@ -131,12 +134,15 @@ namespace QARS.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Countrycode")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Discript")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<byte[]>("Image")
-                        .IsRequired()
                         .HasColumnType("BLOB");
 
                     b.Property<string>("Tell")
@@ -223,6 +229,15 @@ namespace QARS.Migrations
 
                     b.Property<DateTimeOffset>("Start")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("dropoffLocation")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("pickupLocation")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 

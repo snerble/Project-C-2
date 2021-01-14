@@ -45,6 +45,8 @@ namespace QARS.Data.Models
 		/// </summary>
 		public bool Available { get; set; }
 
+		public bool Requested { get; set; }
+
 		/// <summary>
 		/// Returns the distance that has been travelled with this <see cref="Car"/>,
 		/// measured in kilometers.

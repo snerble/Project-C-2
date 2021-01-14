@@ -32,11 +32,16 @@ namespace QARS.Data.Services
 					.Where(r => r.Car.Store.Franchisee.Id == userid)
 					.ToListAsync();
 			}
-			else
+			else if (role == "Employee")
 			{
 				return await dbContext.Reservations
 					.Where(r => r.Car.Store.Id == userid)
 					.ToListAsync();
+			}
+			else
+			{
+				return await dbContext.Reservations
+				.ToListAsync();
 			}
 		}
 
@@ -53,6 +58,25 @@ namespace QARS.Data.Services
 			}
 			return reservation;
 		}
+
+		public async Task<Reservation> UpdateReservationAsync(Reservation reservation)
+		{
+			try
+			{
+				var reservationExist = dbContext.Reservations.FirstOrDefault(p => p.Id == reservation.Id);
+				if (reservationExist != null)
+				{
+					dbContext.Update(reservation);
+					await dbContext.SaveChangesAsync();
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+			return reservation;
+		}
+
 
 		public async Task DeleteReservationAsync(Reservation reservation)
 		{

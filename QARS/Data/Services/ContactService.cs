@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace QARS.Data.Services
 {
+
 	public class ContactServices
 	{
 		private AppDbContext dbContext;

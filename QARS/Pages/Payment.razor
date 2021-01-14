@@ -344,7 +344,7 @@
             }
         }
         //Car to reserver
-        reservationToAdd = Reservation.Create(customer, car, pickup, dropoff, extraList.ToArray());
+        reservationToAdd = Reservation.Create(customer, car, Int32.Parse(pickupId), Int32.Parse(dropoffId), pickup, dropoff, extraList.ToArray());
 
         //Calculate cost of reservation
         decimal totalHours = Convert.ToDecimal((dropoff - pickup).TotalHours);

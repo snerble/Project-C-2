@@ -8,75 +8,77 @@
 <h1>the following locations are the locations of our stores</h1>
 
 <style>
-	button {
-		font-size: 40px;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 10px;
-		float: left;
-		margin-left: auto;
-	}
+    button {
+        font-size: 40px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+        float: left;
+        margin-left: auto;
+    }
 
-	#container {
-		text-align: center;
-		align-items: center;
-		margin-left: auto;
-	}
+    #container {
+        text-align: center;
+        align-items: center;
+        margin-left: auto;
+    }
 
-	#input {
-		display: block;
-		margin: auto
-	}
+    #input {
+        display: block;
+        margin: auto
+    }
 
-	#mainBody {
-		background: url(/img/a5596ffd4897b35688d3b3b882d7919d.jpg);
-	}
+    #mainBody {
+        background: url(/img/a5596ffd4897b35688d3b3b882d7919d.jpg);
+    }
 
-	#text {
-		font-size: 3040px;
-		padding: 10px;
-		border-radius: 10px;
-		margin: 10px;
-	}
+    #text {
+        font-size: 3040px;
+        padding: 10px;
+        border-radius: 10px;
+        margin: 10px;
+    }
 </style>
 
 
 <div class="col-12 d-flex justify-content-between">
-	<div class="col-9">
-		<div class="back container">
+    <div class="col-9">
+        <div class="back container">
 
 
-			<div class="customtablerow row bg-light">
-				<table class="table">
-					<thead class="thead-light">
-						<tr>
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            @* names the columns *@
+                            <th scope="col">City</th>
+                            <th scope="col">Address</th>
 
-							<th scope="col">City</th>
-							<th scope="col">Address</th>
-
-						</tr>
-					</thead>
-					<tbody>
-						@if (dbContext.Stores.Any())
-						{
-							@foreach (var store in dbContext.Stores)
-							{
-								var storeid = store.Id;
-								<tr @onclick="@(e =>Lookup(storeid))">
-									<td>@store.Location.City</td>
-									<td>@store.Location.Address</td>
-								</tr>
-							}
-						}
-						else
-						{
-							<tr><td colspan="6"><strong>No locations available</strong></td></tr>
-						}
-					</tbody>
-				</table>
-			</div>
-		</div>
-	</div>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @* loop through the database to show the options.
+                            makes the button press possible.  *@
+                        @if (dbContext.Stores.Any())
+                        {
+                            @foreach (var store in dbContext.Stores)
+                            {
+                                var storeid = store.Id;
+                                <tr @onclick="@(e =>Lookup(storeid))">
+                                    <td>@store.Location.City</td>
+                                    <td>@store.Location.Address</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No locations available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 </div>
 
 <p>address: @address</p>
@@ -85,23 +87,25 @@
 
 
 @code{
-	string address;
-	string Zipcode;
-	string Country;
+    string address;
+    string Zipcode;
+    string Country;
 
-	void Lookup(int storeid)
-	{
-		foreach (var store in dbContext.Stores)
-		{
-			if (store.Id == storeid)
-			{
-				address = store.Location.Address;
-				Country = store.Location.CountryCode;
-				Zipcode = store.Location.ZipCode;
+    void Lookup(int storeid)
+    {
 
-			}
-		}
-	}
+        @* loops through stores if the right id is found it connects data to the variables. *@
+        foreach (var store in dbContext.Stores)
+        {
+            if (store.Id == storeid)
+            {
+                address = store.Location.Address;
+                Country = store.Location.CountryCode;
+                Zipcode = store.Location.ZipCode;
+
+            }
+        }
+    }
 }
 
 
@@ -110,31 +114,31 @@
 
 
 @*@code {
-		List<QARS.Data.Models.Location>
-		Locations = new List<QARS.Data.Models.Location>
-			();
-	}*@
+        List<QARS.Data.Models.Location>
+        Locations = new List<QARS.Data.Models.Location>
+            ();
+    }*@
 
 
 
 @*<div class="container h-100">
-		<div class="searchBox d-flex flex-row justify-content-center align-items-center">
-			<div class="searchBoxContent">
-				<form method="get">
-					<div class="dropoff form-row">
-						<div class="form-group col-md-5">
-							<label for="location">LOCATIONS</label>
-							<select id="location" class="form-control">
-								<option>Rotterdam, Netherlands</option>
-								<option>Amsterdam, Netherlands</option>
-							</select>
-						</div>
-						<button class="btn btn-primary btn-lg col-md-6 ml-auto"> Get information </button>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div> *@
+        <div class="searchBox d-flex flex-row justify-content-center align-items-center">
+            <div class="searchBoxContent">
+                <form method="get">
+                    <div class="dropoff form-row">
+                        <div class="form-group col-md-5">
+                            <label for="location">LOCATIONS</label>
+                            <select id="location" class="form-control">
+                                <option>Rotterdam, Netherlands</option>
+                                <option>Amsterdam, Netherlands</option>
+                            </select>
+                        </div>
+                        <button class="btn btn-primary btn-lg col-md-6 ml-auto"> Get information </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div> *@
 
 
 

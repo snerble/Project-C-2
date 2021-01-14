@@ -1,6 +1,8 @@
 ﻿@page "/managecontactinfo"
 @inject ContactServices service
-
+@inject UserManager<User> UserManager
+@using QARS.Data.Models
+@using Microsoft.AspNetCore.Identity
 
 <link rel="searchbox stylesheet" href="/css/manage.css">
 
@@ -14,8 +16,8 @@
             <div class="col-md-9">
                 <div class="back container">
                     <div class="heading">
-                        <h1 class="display-3" style="text-align: left;">store manager</h1>
-                        <p class="lead" style="text-align: left;">all existing stores are displayed below. create new store using the 'add store' button. edit and delete stores by using the action buttons displayed in the table.</p>
+                        <h1 class="display-3" style="text-align: left;">Contact information headquarters</h1>
+                        <p class="lead" style="text-align: left;">all existing headquarters are displayed below.</p>
                     </div>
 
                     <div class="customtablerow row bg-light">
@@ -66,6 +68,8 @@
 @code
 {
     List<Contact> contacts = new List<Contact>();
+
+
     protected override async Task OnInitializedAsync()
     {
         await refreshcontacts();
