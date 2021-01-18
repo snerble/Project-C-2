@@ -5,7 +5,8 @@
 
 @attribute [NavigationTab("Locations", Index = 0)]
 
-<h1>the following locations are the locations of our stores</h1>
+<h1 class="display-4">Car Rental Locations</h1>
+<p class="lead">The locations beneath are the locations of our stores</p>
 
 <style>
     button {
@@ -51,8 +52,9 @@
                     <thead class="thead-light">
                         <tr>
                             @* names the columns *@
+                            <th scope="col">Name</th>
                             <th scope="col">City</th>
-                            <th scope="col">Address</th>
+                            <th scope="col">Country</th>
 
                         </tr>
                     </thead>
@@ -65,8 +67,9 @@
                             {
                                 var storeid = store.Id;
                                 <tr @onclick="@(e =>Lookup(storeid))">
+                                    <td>@store.Name</td>
                                     <td>@store.Location.City</td>
-                                    <td>@store.Location.Address</td>
+                                    <td>@store.Location.CountryCode</td>
                                 </tr>
                             }
                         }
@@ -81,31 +84,42 @@
     </div>
 </div>
 
-<p>address: @address</p>
-<p>zipcode: @Zipcode</p>
-<p>country: @Country</p>
+@if (displayLocations)
+{
+    <h1>@name</h1>
+    <p>@description</p>
+    <p>Address: @address, @Zipcode</p>
+    <p>City & ountry: @city  @Country</p>
+}
 
 
 @code{
     string address;
     string Zipcode;
     string Country;
+    string name;
+    string city;
+    string description;
+    bool displayLocations = false;
 
     void Lookup(int storeid)
     {
 
         @* loops through stores if the right id is found it connects data to the variables. *@
-        foreach (var store in dbContext.Stores)
+    foreach (var store in dbContext.Stores)
+    {
+        if (store.Id == storeid)
         {
-            if (store.Id == storeid)
-            {
-                address = store.Location.Address;
-                Country = store.Location.CountryCode;
-                Zipcode = store.Location.ZipCode;
-
-            }
+            name = store.Name;
+            address = store.Location.Address;
+            city = store.Location.City;
+            Country = store.Location.CountryCode;
+            Zipcode = store.Location.ZipCode;
+            description = store.Description;
+            displayLocations = true;
         }
     }
+}
 }
 
 

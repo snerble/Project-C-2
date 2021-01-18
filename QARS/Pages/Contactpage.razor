@@ -5,15 +5,62 @@
 
 @attribute [NavigationTab("Contact", Index = 0)]
 
-<h1>
-    Contactinformation from headquarters, please click on the location you want to see te information of.
+<h1 class="display-4">
+    QARS Contact Information
 </h1>
-<p>main location: @address</p>
-<p>country: @country</p>
-<p> tel: @tell </p>
-<p>@discript</p>
+<p class="lead">Please click the location you'd like to view below</p>
 
-<img src="data:image;base64,@System.Convert.ToBase64String(img)" style="width: 300px"/>
+<div class="col-12 d-flex justify-content-between">
+    <div class="col-9">
+        <div class="back container">
+
+
+            <div class="customtablerow row bg-light">
+                <table class="table">
+                    <thead class="thead-light">
+                        <tr>
+                            @* names the columns *@
+                            <th scope="col">Name</th>
+                            <th scope="col">City</th>
+                            <th scope="col">Country</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @* loop through the database to show the options.
+                            makes the button press possible.  *@
+                        @if (dbContext.Contacts.Any())
+                        {
+                            @foreach (var contact in dbContext.Contacts)
+                            {
+                                var contactid = contact.Id;
+                                <tr @onclick="@(e =>Lookup(contactid))">
+                                    <td>@contact.Discript</td>
+                                    <td>@contact.City</td>
+                                    <td>@contact.Countrycode</td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr><td colspan="6"><strong>No locations available</strong></td></tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@if (displayLocation)
+{
+    <h1>@discript</h1>
+    <img src="data:image;base64,@System.Convert.ToBase64String(img)" style="width: 300px" />
+    <p>main location: @address, @city</p>
+    <p>country: @country</p>
+    <p> tel: @tell </p>
+}
 
 <style>
     button {
@@ -48,54 +95,14 @@
     }
 </style>
 
-<div class="col-12 d-flex justify-content-between">
-    <div class="col-9">
-        <div class="back container">
-
-
-            <div class="customtablerow row bg-light">
-                <table class="table">
-                    <thead class="thead-light">
-                        <tr>
-                            @* names the columns *@
-                            <th scope="col">City</th>
-                            <th scope="col">Address</th>
-                            <th scope="col"> Country</th>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @* loop through the database to show the options.
-                            makes the button press possible.  *@
-                        @if (dbContext.Contacts.Any())
-                        {
-                            @foreach (var contact in dbContext.Contacts)
-                            {
-                                var contactid = contact.Id;
-                                <tr @onclick="@(e =>Lookup(contactid))">
-                                    <td>@contact.City</td>
-                                    <td>@contact.Contactaddress</td>
-                                    <td>@contact.Countrycode</td>
-                                </tr>
-                            }
-                        }
-                        else
-                        {
-                            <tr><td colspan="6"><strong>No locations available</strong></td></tr>
-                        }
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-</div>
-
 
 @code{
     string address;
     string tell;
     string discript;
     string country;
+    string city;
+    bool displayLocation = false;
     byte[] img = new byte[0];
 
 
@@ -109,8 +116,10 @@
             discript = contact.Discript;
             country = contact.Countrycode;
             img = contact.Image;
+            city = contact.City;
+            displayLocation = true;
         }
-    }
+    }   
 
 }
 
